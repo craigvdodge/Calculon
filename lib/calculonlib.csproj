@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Pegasus" Version="4.1.0" />
+  </ItemGroup>
+
+  <Target Name="CompilePegGrammar" BeforeTargets="BeforeBuild"  >
+    <CompilePegGrammar InputFiles="./Parser.peg" OutputFiles="./Parser.peg.g.cs" ></CompilePegGrammar>
+    <ItemGroup>
+      <Compile Remove="Parser.peg.g.cs" />
+      <Compile Include="Parser.peg.g.cs" />
+    </ItemGroup>
+  </Target>
+
+</Project>
