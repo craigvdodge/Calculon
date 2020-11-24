@@ -9,11 +9,17 @@ namespace cl
         static void Main(string[] args)
         {
             Controller calc = new Controller();
-            while (calc.Running)
+            if (Console.IsInputRedirected)
             {
-                Console.Write("calculon>");
-                EvalReturn eval = calc.Eval(Console.ReadLine());
-                Console.WriteLine(eval.Msg);
+                Console.Out.WriteLine(calc.Eval(Console.In.ReadLine()).Msg);
+            }
+            else{
+                while (calc.Running)
+                {
+                    Console.Write("calculon>");
+                    EvalReturn eval = calc.Eval(Console.ReadLine());
+                    Console.WriteLine(eval.Msg);
+                }
             }
             
         }
