@@ -9,6 +9,8 @@ namespace ut
     {
         [Theory]
         [InlineData("8675309", typeof(Integer))]
+        [InlineData("-45", typeof(Integer))]
+        [InlineData("-2.8", typeof(Real))]
         [InlineData("3.14159", typeof(Real))]
         [InlineData(@"""Plan_9_From_Outer_Space""", typeof(Literal))]
         [InlineData("@@@", typeof(ErrorType), Response.Error, "PARSE ERROR: @@@")]
@@ -43,9 +45,9 @@ namespace ut
         [InlineData("2 3 -", "-1")]
         [InlineData("2.1 1 -","1.1",3)]
         [InlineData("2.1 1.1 -","1")]
-        [InlineData("3 3 *", "9")]
+        [InlineData("3 -3 *", "-9")]
         [InlineData("1.1 2 *", "2.2", 3)]
-        [InlineData("3.14 2.0 *", "6.28", 4)]
+        [InlineData("3.14 -2.0 *", "-6.28", 4)]
         [InlineData("8 4 /", "2")]
         public void ArithOpTest(string test, string expectedOut, int maxChar = -1)
         {

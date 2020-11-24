@@ -39,7 +39,7 @@ number <ICalculonType>
     / integer
 
 decimal <Real>
-    = value:([0-9]+ ("." [0-9]+)) { new Real(value) }
+    = value:("-"*[0-9]+ ("." [0-9]+)) { new Real(value) }
 
 integer <Integer>
-    = value:([0-9]+) { new Integer(util.Concat(value)) }
+    = value:("-"*[0-9]+) { new Integer(value) }
