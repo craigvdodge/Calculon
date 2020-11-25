@@ -83,7 +83,17 @@ namespace Calculon.Types
         internal Int64 data;
         public string Display
         {
-            get { return Convert.ToString(data, (int) displayBase); }
+            get 
+            { 
+                string val = Convert.ToString(data, (int) displayBase).ToUpper();
+                switch (this.displayBase)
+                {
+                    case Base.Hex : val += "h"; break;
+                    case Base.Bin : val += "b"; break;
+                    case Base.Oct : val += "o"; break;
+                }
+                return val; 
+            }
         }
     }
 
