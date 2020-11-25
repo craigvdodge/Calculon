@@ -47,11 +47,13 @@ namespace ut
         [InlineData("2.1 1.1 -","1")]
         [InlineData("3 -3 *", "-9")]
         [InlineData("1.1 2 *", "2.2", 3)]
-        [InlineData("3.14 -2.0 *", "-6.28", 4)]
+        [InlineData("3.14 -2.0 *", "-6.28", 5)]
         [InlineData("8 4 /", "2")]
         [InlineData("ah 1 +", "Bh")]
         [InlineData("7o 2o *", "16o")]
         [InlineData("101b 10b + todec", "7")]
+        [InlineData("8 8 mod", "0")]
+        [InlineData("2.1 2 mod", "0.1", 3)]
         public void ArithOpTest(string test, string expectedOut, int maxChar = -1)
         {
             // What Calculon returns is a string, without data type
@@ -69,7 +71,7 @@ namespace ut
             {
                 Actual = ret.Msg.Substring(0, maxChar);
             }
-            Assert.Equal(expectedOut, ret.Msg);
+            Assert.Equal(expectedOut, Actual);
         }
 
         [Theory]

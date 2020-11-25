@@ -17,6 +17,7 @@ op <ICalculonType>
     / subop
     / multop
     / divop
+    / modop
     / baseconvop
 
 addop <AddOp>
@@ -30,6 +31,9 @@ multop <MultOp>
 
 divop <DivOp>
     = ("/") { new DivOp() }
+
+modop <ModOp>
+    = ("mod"i) { new ModOp() }
 
 baseconvop <BaseConvOp>
     = ("todec"i) { new BaseConvOp(Integer.Base.Dec)}

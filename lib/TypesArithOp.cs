@@ -150,4 +150,21 @@ namespace Calculon.Types
 
         public string Display { get{ return "/"; } }
     }
+
+    public class ModOp: ArithOpBase, ICalculonType
+    {
+        public ModOp(){}
+
+        public override Int64 DoOp(Int64 lhs, Int64 rhs)
+        {
+            return lhs % rhs;
+        }
+
+        public override double DoOp(double lhs, double rhs)
+        {
+            return lhs % rhs;
+        }
+
+        public string Display { get{ return "%"; } }
+    }
 }
