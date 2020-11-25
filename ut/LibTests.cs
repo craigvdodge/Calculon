@@ -49,6 +49,9 @@ namespace ut
         [InlineData("1.1 2 *", "2.2", 3)]
         [InlineData("3.14 -2.0 *", "-6.28", 4)]
         [InlineData("8 4 /", "2")]
+        [InlineData("ah 1 +", "b")]
+        [InlineData("7o 2o *", "16")]
+        [InlineData("101b 10b + todec", "7")]
         public void ArithOpTest(string test, string expectedOut, int maxChar = -1)
         {
             // What Calculon returns is a string, without data type
@@ -66,6 +69,19 @@ namespace ut
             {
                 Actual = ret.Msg.Substring(0, maxChar);
             }
+            Assert.Equal(expectedOut, ret.Msg);
+        }
+
+        [Theory]
+        [InlineData("10 toHex", "a")]
+        [InlineData("9 ToOct", "11")]
+        [InlineData("3 tobin", "11")]
+        [InlineData("todec", "ARG ERROR: Need Integer to convert")]
+        [InlineData("1.5 toHex", "TYPE ERROR: Base Op Requires Integer")]
+        public void BaseConversionTest(string test, string expectedOut)
+        {
+            Controller calc = new Controller();
+            EvalReturn ret = calc.Eval(test);
             Assert.Equal(expectedOut, ret.Msg);
         }
     }

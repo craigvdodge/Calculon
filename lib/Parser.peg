@@ -17,6 +17,7 @@ op <ICalculonType>
     / subop
     / multop
     / divop
+    / baseconvop
 
 addop <AddOp>
     = ("+") { new AddOp() }
@@ -30,6 +31,12 @@ multop <MultOp>
 divop <DivOp>
     = ("/") { new DivOp() }
 
+baseconvop <BaseConvOp>
+    = ("todec"i) { new BaseConvOp(Integer.Base.Dec)}
+    / ("tobin"i) { new BaseConvOp(Integer.Base.Bin)}
+    / ("tohex"i) { new BaseConvOp(Integer.Base.Hex)}
+    / ("tooct"i) { new BaseConvOp(Integer.Base.Oct)}
+
 exit <ExitType>
     = ("exit"i) { new ExitType() }
     / ("quit"i) { new ExitType() }
@@ -41,5 +48,10 @@ number <ICalculonType>
 decimal <Real>
     = value:("-"*[0-9]+ ("." [0-9]+)) { new Real(value) }
 
+// # note order is vitally important below.
 integer <Integer>
-    = value:("-"*[0-9]+) { new Integer(value) }
+    = value:("-"*[0-9A-Fa-f]+"h"i) { new Integer(value.TrimEnd(value[value.Length - 1]), Integer.Base.Hex) }
+    / value:("-"*[0-9]+"d"i) { new Integer(value.TrimEnd(value[value.Length - 1]), Integer.Base.Dec) }
+    / value:("-"*[0-7]+"o"i) { new Integer(value.TrimEnd(value[value.Length - 1]), Integer.Base.Oct) }
+    / value:("-"*[0-1]+"b"i) { new Integer(value.TrimEnd(value[value.Length - 1]), Integer.Base.Bin) }
+    / value:("-"*[0-9]+) { new Integer(value) }

@@ -51,24 +51,77 @@ namespace Calculon.Types
 
     public class Integer: ICalculonType
     {
-        
         public Integer(string s)
         {
-            data = Int64.Parse(s, CultureInfo.InvariantCulture);
+            data = Convert.ToInt64(s, (int) Base.Dec);
+            displayBase = Base.Dec;
+        }
+        public Integer(string s, Integer.Base b)
+        {
+            data = Convert.ToInt64(s, (int) b);
+            displayBase = b;
         }
 
-        public Integer(Int64 i) => (data) = (i);
+        public Integer(Int64 i) => (data, displayBase) = (i, Base.Dec);
 
         public EvalReturn Eval(ref ControllerState cs)
         {
             cs.stack.Push(this);
-            return new EvalReturn(Response.Ok, data.ToString(), this.GetType());
+            return new EvalReturn(Response.Ok, this.Display, this.GetType());
+        }
+
+        public enum Base {Dec=10, Hex=16, Oct=8, Bin=2};
+
+        private Integer.Base displayBase;
+
+        public Base DisplayBase
+        {
+            get { return displayBase; }
+            set { displayBase = value; }
         }
 
         internal Int64 data;
         public string Display
         {
-            get {return data.ToString();}
+            get { return Convert.ToString(data, (int) displayBase); }
+        }
+    }
+
+    public class BaseConvOp: ICalculonType
+    {
+        public BaseConvOp(Integer.Base baseOp) => (data) = (baseOp);
+
+        private Integer.Base data;
+
+        public EvalReturn Eval(ref ControllerState cs)
+        {
+            if (cs.stack.Count < 1)
+            {
+                return new EvalReturn(Response.Error, "ARG ERROR: Need Integer to convert", this.GetType());
+            }
+            if (cs.stack.Peek().GetType() != typeof(Integer))
+            {
+                return new EvalReturn(Response.Error, "TYPE ERROR: Base Op Requires Integer", this.GetType());
+            }
+
+            ((Integer) cs.stack.Peek()).DisplayBase = data;
+            
+            return new EvalReturn(Response.Ok, cs.stack.Peek().Display, cs.stack.Peek().GetType());
+        }
+
+        public string Display
+        {
+            get
+            {
+                switch (data)
+                {
+                    case Integer.Base.Dec : return "ToDec";
+                    case Integer.Base.Bin : return "ToBin";
+                    case Integer.Base.Hex : return "ToHex";
+                    case Integer.Base.Oct : return "ToOct";
+                    default: return "BASE TYPE ERROR";
+                }
+            }
         }
     }
 

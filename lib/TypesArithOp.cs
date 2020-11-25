@@ -34,6 +34,12 @@ namespace Calculon.Types
             if (lhs.GetType() == typeof(Integer) && rhs.GetType() == typeof(Integer))
             {
                 Integer retval = new Integer(DoOp(((Integer) lhs).data, ((Integer) rhs).data) );
+                // Only checking if lhs is not base 10 so when the user does 
+                // something like add 1 w/o explicit base, does what they expect
+                if (((Integer) lhs).DisplayBase != Integer.Base.Dec)
+                {
+                    retval.DisplayBase = ((Integer) lhs).DisplayBase;
+                }
                 cs.stack.Push(retval);
                 return new EvalReturn(Response.Ok, retval.Display, this.GetType());
             }
