@@ -86,5 +86,22 @@ namespace ut
             EvalReturn ret = calc.Eval(test);
             Assert.Equal(expectedOut, ret.Msg);
         }
+
+        [Theory]
+        [InlineData("3.14159 round", "3")]
+        [InlineData("3.14159 2 roundto", "3.14")]
+        [InlineData("3.6 floor", "3")]
+        [InlineData("3.2 ceiling", "4")]
+        [InlineData("2 floor", "TYPE ERROR: Argument is not Real")]
+        [InlineData("ceiling", "ARG ERROR: Requires Real")]
+        [InlineData("roundTo", "ARG ERROR: Requires Real and int decimal places")]
+        [InlineData("1.1 1.2 roundto", "TYPE ERROR: Places Argument not Integerl")]
+        [InlineData("33 1 roundto", "TYPE ERROR: Attempting to RoundTo on non-Real")]
+        public void RoundingOpsTests(string test, string expected)
+        {
+            Controller calc = new Controller();
+            EvalReturn ret = calc.Eval(test);
+            Assert.Equal(expected, ret.Msg);
+        }
     }
 }

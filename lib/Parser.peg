@@ -19,6 +19,7 @@ op <ICalculonType>
     / divop
     / modop
     / baseconvop
+    / roundingops
 
 addop <AddOp>
     = ("+") { new AddOp() }
@@ -40,6 +41,24 @@ baseconvop <BaseConvOp>
     / ("tobin"i) { new BaseConvOp(Integer.Base.Bin)}
     / ("tohex"i) { new BaseConvOp(Integer.Base.Hex)}
     / ("tooct"i) { new BaseConvOp(Integer.Base.Oct)}
+
+roundingops <ICalculonType>
+    = roundtoop
+    / roundop
+    / floorop
+    / ceilingop
+
+roundtoop <RoundToOp>
+    = ("roundto"i) { new RoundToOp() }
+
+roundop <RoundOp>
+    = ("round"i) { new RoundOp() }
+
+floorop <FloorOp>
+    = ("floor"i) { new FloorOp() }
+
+ceilingop <CeilingOp>
+    = ("ceiling"i) { new CeilingOp() }
 
 exit <ExitType>
     = ("exit"i) { new ExitType() }
