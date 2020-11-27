@@ -135,4 +135,58 @@ namespace Calculon.Types
         }
     }
 
+    public class Rational : ICalculonType
+    {
+        public Rational(string s)
+        {
+            string[] parts = s.Split('/');
+            numerator = Int64.Parse(parts[0]);
+            denominator = Int64.Parse(parts[1]);
+        }
+
+        public Rational(Int64 num, Int64 denom)
+        {
+            numerator = num;
+            denominator = denom;
+        }
+
+        public Rational(Integer i)
+        {
+            numerator = i.data;
+            denominator = 1;
+        }
+
+        internal Int64 numerator;
+        internal Int64 denominator;
+
+        // utility functions
+        // Eventually this will be code external to class
+        static internal Int64 GreatestCommonFactor(Int64 a, Int64 b)
+        {
+            while (b != 0)
+            {
+                Int64 temp = b;
+                b = a % b;
+                a = temp;
+            }
+            return a;
+        }
+
+        static internal Int64 LeastCommonMultiple(Int64 a, Int64 b)
+        {
+            return (a / GreatestCommonFactor(a, b)) * b;
+        }
+
+        public string Display
+        {
+            get { return numerator.ToString() + "/" + denominator.ToString();}
+        }
+
+        public EvalReturn Eval(ref ControllerState cs)
+        {
+            cs.stack.Push(this);
+            return new EvalReturn(Response.Ok, this.Display, this.GetType());
+        }
+    }
+
 }

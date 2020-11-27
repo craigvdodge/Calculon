@@ -9,8 +9,10 @@ namespace Calculon.Types
 { 
     public abstract class ArithOpBase
     {
-        public abstract Int64 DoOp(Int64 lhs, Int64 rhs);
-        public abstract double DoOp(double lhs, double rhs);
+        public abstract Integer DoOp(Integer lhs, Integer rhs);
+        public abstract Real DoOp(Real lhs, Real rhs);
+        public abstract Rational DoOp(Rational lhs, Rational rhs);
+
         public EvalReturn Eval(ref ControllerState cs)
         {
             if (cs.stack.Count < 2)
@@ -33,7 +35,7 @@ namespace Calculon.Types
 
             if (lhs.GetType() == typeof(Integer) && rhs.GetType() == typeof(Integer))
             {
-                Integer retval = new Integer(DoOp(((Integer) lhs).data, ((Integer) rhs).data) );
+                Integer retval = DoOp((Integer) lhs, (Integer) rhs );
                 // Only checking if lhs is not base 10 so when the user does 
                 // something like add 1 w/o explicit base, does what they expect
                 if (((Integer) lhs).DisplayBase != Integer.Base.Dec)
@@ -43,13 +45,38 @@ namespace Calculon.Types
                 cs.stack.Push(retval);
                 return new EvalReturn(Response.Ok, retval.Display, this.GetType());
             }
+
+            if (lhs.GetType() == typeof(Rational) || rhs.GetType() == typeof(Rational))
+            {   
+                Rational newLhs;
+                if (lhs.GetType() == typeof(Integer))
+                {
+                    newLhs = new Rational((Integer) lhs);
+                }
+                else
+                {
+                    newLhs = (Rational) lhs;
+                }
+                Rational newRhs;
+                if (rhs.GetType() == typeof(Integer))
+                {
+                    newRhs = new Rational((Integer) rhs);
+                }
+                else
+                {
+                    newRhs = (Rational) rhs;
+                }
+                Rational retVal = DoOp(newLhs, newRhs);
+                cs.stack.Push(retVal);
+                return new EvalReturn(Response.Ok, retVal.Display, retVal.GetType());
+            }
             
             if (lhs.GetType() == typeof(Real) || rhs.GetType() == typeof(Real))
             {
                 // We're making copies so the Real ctor will handle any needed conversion
                 Real newLhs = new Real(lhs);
                 Real newRhs = new Real(rhs);
-                Real retVal = new Real(DoOp(newLhs.data, newRhs.data));
+                Real retVal = DoOp(newLhs, newRhs);
                 cs.stack.Push(retVal);
                 return new EvalReturn(Response.Ok, retVal.Display, retVal.GetType());
             }
@@ -63,6 +90,7 @@ namespace Calculon.Types
             System.Type lhsType = lhs.GetType();
             if (lhsType != typeof(Integer)
                 && lhsType != typeof(Real)
+                && lhsType != typeof(Rational)
                 ) // add more checks as more types supported
             {
                 return "ERROR: " + lhs.Display + " unsupported type " + lhsType.ToString();
@@ -71,6 +99,7 @@ namespace Calculon.Types
             System.Type rhsType = rhs.GetType();
             if (rhsType != typeof(Integer)
                 && rhsType != typeof(Real)
+                && rhsType != typeof(Rational)
                 ) // add more checks as more types supported
             {
                 return "ERROR: " + rhs.Display + " unsupported type " + rhsType.ToString();
@@ -78,6 +107,15 @@ namespace Calculon.Types
 
             // add any checks of the two types together here
 
+            // Rational only supports other Rationals and Integer
+            if ( ((lhsType == typeof(Rational)) && 
+                    (rhsType != typeof(Rational) && rhsType != typeof(Integer)))
+                 || ((rhsType == typeof(Rational)) &&
+                    (lhsType != typeof(Rational) && lhsType != typeof(Integer))))
+            {
+                return "ERROR: Rational numbers only support Rational and Integers";
+            }
+            
             return string.Empty;
         }
 
@@ -86,14 +124,23 @@ namespace Calculon.Types
     {
         public AddOp() {}
 
-        public override Int64 DoOp(Int64 lhs, Int64 rhs)
+        public override Integer DoOp(Integer lhs, Integer rhs)
         {
-            return lhs + rhs;
+            return new Integer(lhs.data + rhs.data);
         }
 
-        public override double DoOp(double lhs, double rhs)
+        public override Real DoOp(Real lhs, Real rhs)
         {
-            return lhs + rhs;
+            return new Real(lhs.data + rhs.data);
+        }
+
+        public override Rational DoOp(Rational lhs, Rational rhs)
+        {
+            Int64 newDenom = Rational.LeastCommonMultiple(lhs.denominator, rhs.denominator);
+            Int64 newLhsNum = lhs.numerator * (newDenom / lhs.denominator);
+            Int64 newRhsNum = rhs.numerator * (newDenom / rhs.denominator);
+
+            return new Rational((newLhsNum + newRhsNum), newDenom);
         }
 
         public string Display { get{ return "+"; } }
@@ -104,14 +151,23 @@ namespace Calculon.Types
     {
         public SubOp(){}
 
-        public override Int64 DoOp(Int64 lhs, Int64 rhs)
+        public override Integer DoOp(Integer lhs, Integer rhs)
         {
-            return lhs - rhs;
+            return new Integer(lhs.data - rhs.data);
         }
 
-        public override double DoOp(double lhs, double rhs)
+        public override Real DoOp(Real lhs, Real rhs)
         {
-            return lhs - rhs;
+            return new Real(lhs.data - rhs.data);
+        }
+
+        public override Rational DoOp(Rational lhs, Rational rhs)
+        {
+            Int64 newDenom = Rational.LeastCommonMultiple(lhs.denominator, rhs.denominator);
+            Int64 newLhsNum = lhs.numerator * (newDenom / lhs.denominator);
+            Int64 newRhsNum = rhs.numerator * (newDenom / rhs.denominator);
+
+            return new Rational((newLhsNum - newRhsNum), newDenom);
         }
 
         public string Display { get{ return "-"; } }
@@ -121,14 +177,19 @@ namespace Calculon.Types
     {
         public MultOp(){}
 
-        public override Int64 DoOp(Int64 lhs, Int64 rhs)
+        public override Integer DoOp(Integer lhs, Integer rhs)
         {
-            return lhs * rhs;
+            return new Integer(lhs.data * rhs.data);
         }
 
-        public override double DoOp(double lhs, double rhs)
+        public override Real DoOp(Real lhs, Real rhs)
         {
-            return lhs * rhs;
+            return new Real(lhs.data * rhs.data);
+        }
+
+        public override Rational DoOp(Rational lhs, Rational rhs)
+        {
+            return new Rational((lhs.numerator * rhs.numerator), (lhs.denominator * rhs.denominator));
         }
 
         public string Display { get{ return "*"; } }
@@ -138,14 +199,19 @@ namespace Calculon.Types
     {
         public DivOp(){}
 
-        public override Int64 DoOp(Int64 lhs, Int64 rhs)
+        public override Integer DoOp(Integer lhs, Integer rhs)
         {
-            return lhs / rhs;
+            return new Integer(lhs.data / rhs.data);
         }
 
-        public override double DoOp(double lhs, double rhs)
+        public override Real DoOp(Real lhs, Real rhs)
         {
-            return lhs / rhs;
+            return new Real(lhs.data / rhs.data);
+        }
+
+        public override Rational DoOp(Rational lhs, Rational rhs)
+        {
+           return new Rational((lhs.numerator * rhs.denominator), (lhs.denominator * rhs.numerator));
         }
 
         public string Display { get{ return "/"; } }
@@ -155,14 +221,19 @@ namespace Calculon.Types
     {
         public ModOp(){}
 
-        public override Int64 DoOp(Int64 lhs, Int64 rhs)
+        public override Integer DoOp(Integer lhs, Integer rhs)
         {
-            return lhs % rhs;
+            return new Integer(lhs.data % rhs.data);
         }
 
-        public override double DoOp(double lhs, double rhs)
+        public override Real DoOp(Real lhs, Real rhs)
         {
-            return lhs % rhs;
+            return new Real(lhs.data % rhs.data);
+        }
+
+        public override Rational DoOp(Rational lhs, Rational rhs)
+        {
+            throw new NotImplementedException();
         }
 
         public string Display { get{ return "%"; } }

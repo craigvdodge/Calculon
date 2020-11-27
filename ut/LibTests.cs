@@ -12,6 +12,8 @@ namespace ut
         [InlineData("-45", typeof(Integer))]
         [InlineData("-2.8", typeof(Real))]
         [InlineData("3.14159", typeof(Real))]
+        [InlineData("3/4", typeof(Rational))]
+        [InlineData("-5/8", typeof(Rational))]
         [InlineData(@"""Plan_9_From_Outer_Space""", typeof(Literal))]
         [InlineData("@@@", typeof(ErrorType), Response.Error, "PARSE ERROR: @@@")]
         [InlineData("Exit", typeof(ExitType), Response.Exit, "")]
@@ -54,6 +56,10 @@ namespace ut
         [InlineData("101b 10b + todec", "7")]
         [InlineData("8 8 mod", "0")]
         [InlineData("2.1 2 mod", "0.1", 3)]
+        [InlineData("1/2 1/4 +", "3/4")]
+        [InlineData("1/4 1/2 -", "-1/4")]
+        [InlineData("1/4 -1/4 *", "-1/16")]
+        [InlineData("1/2 1/6 /", "6/2")]
         public void ArithOpTest(string test, string expectedOut, int maxChar = -1)
         {
             // What Calculon returns is a string, without data type
