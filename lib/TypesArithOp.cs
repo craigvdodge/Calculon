@@ -231,9 +231,17 @@ namespace Calculon.Types
             return new Real(lhs.data % rhs.data);
         }
 
+        // a mod b = a - b*(floor(a/b))
         public override Rational DoOp(Rational lhs, Rational rhs)
         {
-            throw new NotImplementedException();
+            DivOp div = new DivOp();
+            Rational AonB = div.DoOp(lhs, rhs);
+            double intermediateDiv = (double) AonB;
+            Integer floorOfDiv = new Integer((Int64) Math.Floor(intermediateDiv));
+            MultOp mult = new MultOp();
+            Rational newRhs = mult.DoOp(rhs, new Rational(floorOfDiv));
+            SubOp sub = new SubOp();
+            return sub.DoOp(lhs, newRhs);
         }
 
         public string Display { get{ return "%"; } }

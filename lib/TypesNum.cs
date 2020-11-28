@@ -159,6 +159,8 @@ namespace Calculon.Types
         internal Int64 numerator;
         internal Int64 denominator;
 
+        public static explicit operator double(Rational r) => (double) (r.numerator / r.denominator);
+
         // utility functions
         // Eventually this will be code external to class
         static internal Int64 GreatestCommonFactor(Int64 a, Int64 b)
