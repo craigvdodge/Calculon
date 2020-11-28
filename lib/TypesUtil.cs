@@ -20,7 +20,7 @@ namespace Calculon.Types
 
         public EvalReturn Eval(ref ControllerState cs)
         {
-             return new EvalReturn(Response.Ok, Display, this.GetType());
+             return new EvalReturn(Response.Ok, this);
         }
         
         public string Display { get {return string.Empty;} }
@@ -32,7 +32,7 @@ namespace Calculon.Types
         
         public EvalReturn Eval(ref ControllerState cs)
         {
-             return new EvalReturn(Response.Error, Display, this.GetType());
+             return new EvalReturn(Response.Error, this);
         }
 
         public string Display {get;}

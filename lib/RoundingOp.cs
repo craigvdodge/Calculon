@@ -27,7 +27,7 @@ namespace Calculon.Types
             Integer retVal = new Integer(newData);
             cs.stack.Push(retVal);
             
-            return new EvalReturn(Response.Ok, retVal.Display, typeof(Integer));
+            return new EvalReturn(Response.Ok, retVal);
         }
 
     }
@@ -66,7 +66,7 @@ namespace Calculon.Types
             Real retval = new Real(Math.Round(number.data, digits));
             cs.stack.Push(retval);
             
-            return new EvalReturn(Response.Ok, retval.Display, retval.GetType());
+            return new EvalReturn(Response.Ok, retval);
         }
 
         public string Display { get{ return "Round"; } }

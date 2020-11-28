@@ -36,7 +36,7 @@ namespace Calculon.Types
         public EvalReturn Eval(ref ControllerState cs)
         {
             cs.stack.Push(this);
-            return new EvalReturn(Response.Ok, data.ToString(), this.GetType());
+            return new EvalReturn(Response.Ok, this);
         }
 
         internal double data;
@@ -67,7 +67,7 @@ namespace Calculon.Types
         public EvalReturn Eval(ref ControllerState cs)
         {
             cs.stack.Push(this);
-            return new EvalReturn(Response.Ok, this.Display, this.GetType());
+            return new EvalReturn(Response.Ok, this);
         }
 
         public enum Base {Dec=10, Hex=16, Oct=8, Bin=2};
@@ -116,7 +116,7 @@ namespace Calculon.Types
 
             ((Integer) cs.stack.Peek()).DisplayBase = data;
             
-            return new EvalReturn(Response.Ok, cs.stack.Peek().Display, cs.stack.Peek().GetType());
+            return new EvalReturn(Response.Ok, cs.stack.Peek());
         }
 
         public string Display
@@ -187,7 +187,7 @@ namespace Calculon.Types
         public EvalReturn Eval(ref ControllerState cs)
         {
             cs.stack.Push(this);
-            return new EvalReturn(Response.Ok, this.Display, this.GetType());
+            return new EvalReturn(Response.Ok, this);
         }
     }
 

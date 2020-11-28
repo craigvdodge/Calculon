@@ -43,7 +43,7 @@ namespace Calculon.Types
                     retval.DisplayBase = ((Integer) lhs).DisplayBase;
                 }
                 cs.stack.Push(retval);
-                return new EvalReturn(Response.Ok, retval.Display, this.GetType());
+                return new EvalReturn(Response.Ok, retval);
             }
 
             if (lhs.GetType() == typeof(Rational) || rhs.GetType() == typeof(Rational))
@@ -68,7 +68,7 @@ namespace Calculon.Types
                 }
                 Rational retVal = DoOp(newLhs, newRhs);
                 cs.stack.Push(retVal);
-                return new EvalReturn(Response.Ok, retVal.Display, retVal.GetType());
+                return new EvalReturn(Response.Ok, retVal);
             }
             
             if (lhs.GetType() == typeof(Real) || rhs.GetType() == typeof(Real))
@@ -78,7 +78,7 @@ namespace Calculon.Types
                 Real newRhs = new Real(rhs);
                 Real retVal = DoOp(newLhs, newRhs);
                 cs.stack.Push(retVal);
-                return new EvalReturn(Response.Ok, retVal.Display, retVal.GetType());
+                return new EvalReturn(Response.Ok, retVal);
             }
 
             return new EvalReturn(Response.Error, "ERROR: Calculon bug. You shouldn't see this!", this.GetType());

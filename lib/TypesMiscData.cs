@@ -17,7 +17,7 @@ namespace Calculon.Types
         public EvalReturn Eval(ref ControllerState cs)
         {
             cs.stack.Push(this);
-            return new EvalReturn(Response.Ok, data, this.GetType());
+            return new EvalReturn(Response.Ok, this);
         }
 
         private string data;
