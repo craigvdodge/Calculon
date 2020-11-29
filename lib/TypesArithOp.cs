@@ -7,12 +7,34 @@ using System.Collections.Generic;
 // These are Arithmetic operatorss
 namespace Calculon.Types
 { 
-    public abstract class ArithOpBase
+    public interface IArithOpBase
     {
-        public abstract Integer DoOp(Integer lhs, Integer rhs);
-        public abstract Real DoOp(Real lhs, Real rhs);
-        public abstract Rational DoOp(Rational lhs, Rational rhs);
+        Integer DoOp(Integer lhs, Integer rhs);
+        Real DoOp(Real lhs, Real rhs);
+        Rational DoOp(Rational lhs, Rational rhs);
+    }
+    // Moved all Arithmetic ops to a factory-type model
+    // This lets us simplify the peg files
+    public class ArithOp: ICalculonType, IArithOpBase
+    {
+        public ArithOp(Op Operation)
+        {
+            switch(Operation)
+            {
+                case Op.Add : op = (IArithOpBase) new AddOp(); break;
+                case Op.Sub : op = (IArithOpBase) new SubOp(); break;
+                case Op.Mult: op = (IArithOpBase) new MultOp(); break;
+                case Op.Div: op = (IArithOpBase) new DivOp(); break;
+                case Op.Mod: op = (IArithOpBase) new ModOp(); break;
+            }
+        }
+        public enum Op {Add, Sub, Mult, Div, Mod}
 
+        #region IArithOpBase
+        public Integer DoOp(Integer lhs, Integer rhs) {return op.DoOp(lhs, rhs); }
+        public Real DoOp(Real lhs, Real rhs) {return op.DoOp(lhs, rhs); }
+        public Rational DoOp(Rational lhs, Rational rhs) {return op.DoOp(lhs, rhs); }
+        #endregion
         public EvalReturn Eval(ref ControllerState cs)
         {
             if (cs.stack.Count < 2)
@@ -35,7 +57,7 @@ namespace Calculon.Types
 
             if (lhs.GetType() == typeof(Integer) && rhs.GetType() == typeof(Integer))
             {
-                Integer retval = DoOp((Integer) lhs, (Integer) rhs );
+                Integer retval = op.DoOp((Integer) lhs, (Integer) rhs );
                 // Only checking if lhs is not base 10 so when the user does 
                 // something like add 1 w/o explicit base, does what they expect
                 if (((Integer) lhs).DisplayBase != Integer.Base.Dec)
@@ -66,7 +88,7 @@ namespace Calculon.Types
                 {
                     newRhs = (Rational) rhs;
                 }
-                Rational retVal = DoOp(newLhs, newRhs);
+                Rational retVal = op.DoOp(newLhs, newRhs);
                 cs.stack.Push(retVal);
                 return new EvalReturn(Response.Ok, retVal);
             }
@@ -76,7 +98,7 @@ namespace Calculon.Types
                 // We're making copies so the Real ctor will handle any needed conversion
                 Real newLhs = new Real(lhs);
                 Real newRhs = new Real(rhs);
-                Real retVal = DoOp(newLhs, newRhs);
+                Real retVal = op.DoOp(newLhs, newRhs);
                 cs.stack.Push(retVal);
                 return new EvalReturn(Response.Ok, retVal);
             }
@@ -119,22 +141,36 @@ namespace Calculon.Types
             return string.Empty;
         }
 
+        public string Display 
+        { 
+            get
+            { 
+                Type OpType = op.GetType();
+                // not a switch b/c C# no likey case typeof()
+                if (OpType == typeof(AddOp)) { return "+"; }
+                else if (OpType == typeof(SubOp)) { return "-"; }
+                else if (OpType == typeof(MultOp)) { return "*"; }
+                else if (OpType == typeof(DivOp)) { return "/"; }
+                else if (OpType == typeof(ModOp)) { return "mod"; }
+                else { throw new Exception("Unknown Operator"); }
+            }
+        }
+        private IArithOpBase op;
     }
-    public class AddOp: ArithOpBase, ICalculonType
+    
+    internal class AddOp: IArithOpBase
     {
-        public AddOp() {}
-
-        public override Integer DoOp(Integer lhs, Integer rhs)
+        public Integer DoOp(Integer lhs, Integer rhs)
         {
             return new Integer(lhs.data + rhs.data);
         }
 
-        public override Real DoOp(Real lhs, Real rhs)
+        public Real DoOp(Real lhs, Real rhs)
         {
             return new Real(lhs.data + rhs.data);
         }
 
-        public override Rational DoOp(Rational lhs, Rational rhs)
+        public Rational DoOp(Rational lhs, Rational rhs)
         {
             Int64 newDenom = Rational.LeastCommonMultiple(lhs.denominator, rhs.denominator);
             Int64 newLhsNum = lhs.numerator * (newDenom / lhs.denominator);
@@ -142,26 +178,21 @@ namespace Calculon.Types
 
             return new Rational((newLhsNum + newRhsNum), newDenom);
         }
-
-        public string Display { get{ return "+"; } }
-
     }
 
-    public class SubOp: ArithOpBase, ICalculonType
+    internal class SubOp: IArithOpBase
     {
-        public SubOp(){}
-
-        public override Integer DoOp(Integer lhs, Integer rhs)
+        public Integer DoOp(Integer lhs, Integer rhs)
         {
             return new Integer(lhs.data - rhs.data);
         }
 
-        public override Real DoOp(Real lhs, Real rhs)
+        public Real DoOp(Real lhs, Real rhs)
         {
             return new Real(lhs.data - rhs.data);
         }
 
-        public override Rational DoOp(Rational lhs, Rational rhs)
+        public Rational DoOp(Rational lhs, Rational rhs)
         {
             Int64 newDenom = Rational.LeastCommonMultiple(lhs.denominator, rhs.denominator);
             Int64 newLhsNum = lhs.numerator * (newDenom / lhs.denominator);
@@ -169,81 +200,67 @@ namespace Calculon.Types
 
             return new Rational((newLhsNum - newRhsNum), newDenom);
         }
-
-        public string Display { get{ return "-"; } }
     }
 
-    public class MultOp: ArithOpBase, ICalculonType
+    internal class MultOp: IArithOpBase
     {
-        public MultOp(){}
-
-        public override Integer DoOp(Integer lhs, Integer rhs)
+        public Integer DoOp(Integer lhs, Integer rhs)
         {
             return new Integer(lhs.data * rhs.data);
         }
 
-        public override Real DoOp(Real lhs, Real rhs)
+        public Real DoOp(Real lhs, Real rhs)
         {
             return new Real(lhs.data * rhs.data);
         }
 
-        public override Rational DoOp(Rational lhs, Rational rhs)
+        public Rational DoOp(Rational lhs, Rational rhs)
         {
             return new Rational((lhs.numerator * rhs.numerator), (lhs.denominator * rhs.denominator));
         }
-
-        public string Display { get{ return "*"; } }
     }
 
-    public class DivOp: ArithOpBase, ICalculonType
+    internal class DivOp: IArithOpBase
     {
-        public DivOp(){}
-
-        public override Integer DoOp(Integer lhs, Integer rhs)
+        public Integer DoOp(Integer lhs, Integer rhs)
         {
             return new Integer(lhs.data / rhs.data);
         }
 
-        public override Real DoOp(Real lhs, Real rhs)
+        public Real DoOp(Real lhs, Real rhs)
         {
             return new Real(lhs.data / rhs.data);
         }
 
-        public override Rational DoOp(Rational lhs, Rational rhs)
+        public Rational DoOp(Rational lhs, Rational rhs)
         {
            return new Rational((lhs.numerator * rhs.denominator), (lhs.denominator * rhs.numerator));
         }
-
-        public string Display { get{ return "/"; } }
     }
 
-    public class ModOp: ArithOpBase, ICalculonType
+    internal class ModOp: IArithOpBase
     {
-        public ModOp(){}
-
-        public override Integer DoOp(Integer lhs, Integer rhs)
+        public Integer DoOp(Integer lhs, Integer rhs)
         {
             return new Integer(lhs.data % rhs.data);
         }
 
-        public override Real DoOp(Real lhs, Real rhs)
+        public Real DoOp(Real lhs, Real rhs)
         {
             return new Real(lhs.data % rhs.data);
         }
 
         // a mod b = a - b*(floor(a/b))
-        public override Rational DoOp(Rational lhs, Rational rhs)
+        public Rational DoOp(Rational lhs, Rational rhs)
         {
-            DivOp div = new DivOp();
+            ArithOp div = new ArithOp(ArithOp.Op.Div);
             Rational AonB = div.DoOp(lhs, rhs);
             double intermediateDiv = (double) AonB;
             Integer floorOfDiv = new Integer((Int64) Math.Floor(intermediateDiv));
-            MultOp mult = new MultOp();
+            ArithOp mult = new ArithOp(ArithOp.Op.Mult);
             Rational newRhs = mult.DoOp(rhs, new Rational(floorOfDiv));
-            SubOp sub = new SubOp();
+            ArithOp sub = new ArithOp(ArithOp.Op.Sub);
             return sub.DoOp(lhs, newRhs);
         }
-
-        public string Display { get{ return "%"; } }
     }
 }

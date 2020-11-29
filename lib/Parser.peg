@@ -13,28 +13,16 @@ literal <Literal>
     = value:("\"" [A-Za-z0-9_]+ "\"") { new Literal(value) }
 
 op <ICalculonType>
-    = addop
-    / subop
-    / multop
-    / divop
-    / modop
+    = arithop
     / baseconvop
     / roundingops
 
-addop <AddOp>
-    = ("+") { new AddOp() }
-
-subop <SubOp>
-    = ("-") { new SubOp() }
-
-multop <MultOp>
-    = ("*") { new MultOp() }
-
-divop <DivOp>
-    = ("/") { new DivOp() }
-
-modop <ModOp>
-    = ("mod"i) { new ModOp() }
+arithop <ArithOp>
+    = ("+") { new ArithOp(ArithOp.Op.Add) }
+    / ("-") { new ArithOp(ArithOp.Op.Sub) }
+    / ("*") { new ArithOp(ArithOp.Op.Mult) }
+    / ("/") { new ArithOp(ArithOp.Op.Div) }
+    / ("mod"i) { new ArithOp(ArithOp.Op.Mod) }
 
 baseconvop <BaseConvOp>
     = ("todec"i) { new BaseConvOp(Integer.Base.Dec)}
