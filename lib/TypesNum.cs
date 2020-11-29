@@ -142,12 +142,14 @@ namespace Calculon.Types
             string[] parts = s.Split('/');
             numerator = Int64.Parse(parts[0]);
             denominator = Int64.Parse(parts[1]);
+            this.Reduce();
         }
 
         public Rational(Int64 num, Int64 denom)
         {
             numerator = num;
             denominator = denom;
+            this.Reduce();
         }
 
         public Rational(Integer i)
@@ -160,6 +162,16 @@ namespace Calculon.Types
         internal Int64 denominator;
 
         public static explicit operator double(Rational r) => (double) (r.numerator / r.denominator);
+
+        public void Reduce()
+        {
+            Int64 gcf = GreatestCommonFactor(numerator, denominator);
+            if (gcf > 1)
+            {
+                numerator = numerator / gcf;
+                denominator = denominator / gcf;
+            }
+        }
 
         // utility functions
         // Eventually this will be code external to class

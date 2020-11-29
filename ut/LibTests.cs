@@ -59,7 +59,7 @@ namespace ut
         [InlineData("1/2 1/4 +", "3/4")]
         [InlineData("1/4 1/2 -", "-1/4")]
         [InlineData("1/4 -1/4 *", "-1/16")]
-        [InlineData("1/2 1/6 /", "6/2")]
+        [InlineData("1/2 1/6 /", "3/1")]
         [InlineData("28/11 10 mod", "28/11")]
         [InlineData("1/2 3 mod", "1/2")]
         public void ArithOpTest(string test, string expectedOut, int maxChar = -1)
