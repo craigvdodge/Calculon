@@ -165,30 +165,12 @@ namespace Calculon.Types
 
         public void Reduce()
         {
-            Int64 gcf = GreatestCommonFactor(numerator, denominator);
+            Int64 gcf = IntegerOp.GreatestCommonFactor(numerator, denominator);
             if (gcf > 1)
             {
                 numerator = numerator / gcf;
                 denominator = denominator / gcf;
             }
-        }
-
-        // utility functions
-        // Eventually this will be code external to class
-        static internal Int64 GreatestCommonFactor(Int64 a, Int64 b)
-        {
-            while (b != 0)
-            {
-                Int64 temp = b;
-                b = a % b;
-                a = temp;
-            }
-            return a;
-        }
-
-        static internal Int64 LeastCommonMultiple(Int64 a, Int64 b)
-        {
-            return (a / GreatestCommonFactor(a, b)) * b;
         }
 
         public string Display

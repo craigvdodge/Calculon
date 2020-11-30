@@ -62,6 +62,9 @@ namespace ut
         [InlineData("1/2 1/6 /", "3/1")]
         [InlineData("28/11 10 mod", "28/11")]
         [InlineData("1/2 3 mod", "1/2")]
+        [InlineData("5 !", "120")]
+        [InlineData("2 4 lcm", "4")]
+        [InlineData("2 4 gcf", "2")]
         public void ArithOpTest(string test, string expectedOut, int maxChar = -1)
         {
             // What Calculon returns is a string, without data type

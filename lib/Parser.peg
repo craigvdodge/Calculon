@@ -15,7 +15,8 @@ literal <Literal>
 op <ICalculonType>
     = arithop
     / baseconvop
-    / roundingops
+    / roundingop
+    / integerop
 
 arithop <ArithOp>
     = ("+") { new ArithOp(ArithOp.Op.Add) }
@@ -30,11 +31,16 @@ baseconvop <BaseConvOp>
     / ("tohex"i) { new BaseConvOp(Integer.Base.Hex)}
     / ("tooct"i) { new BaseConvOp(Integer.Base.Oct)}
 
-roundingops <RoundingOpType>
+roundingop <RoundingOpType>
     = ("roundto"i) { new RoundingOpType(RoundingOpType.OpType.RoundTo) } 
     /("round"i) { new RoundingOpType(RoundingOpType.OpType.Round) }
     / ("floor"i) { new RoundingOpType(RoundingOpType.OpType.Floor) }
     / ("ceiling"i) { new RoundingOpType(RoundingOpType.OpType.Ceiling) }
+
+integerop <IntegerOp>
+    = ("!") { new IntegerOp(IntegerOp.Function.Fact) }
+    / ("gcf"i) { new IntegerOp(IntegerOp.Function.GCF) }
+    / ("lcm"i) { new IntegerOp(IntegerOp.Function.LCM) }
 
 exit <ExitType>
     = ("exit"i) { new ExitType() }
