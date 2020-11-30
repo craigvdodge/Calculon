@@ -7,11 +7,26 @@ using System.Collections.Generic;
 // These are Rounding operatorss
 namespace Calculon.Types
 {
-    public abstract class OneArgRoundingOp
+    public class RoundingOpType: ICalculonType
     {
-        public abstract double IntermediateOp(double data);
+        public RoundingOpType(OpType type) => (Op) = (type);
+        public enum OpType {RoundTo, Round, Floor, Ceiling}
+        private OpType Op { get; }
 
         public EvalReturn Eval(ref ControllerState cs)
+        {
+            if (this.Op == OpType.Round ||
+                 this.Op == OpType.Floor || 
+                 this.Op == OpType.Ceiling)
+            {
+                return OneArgEval(ref cs);
+            }
+            else
+            {
+                return RoundToEval(ref cs);
+            }
+        }
+        public EvalReturn OneArgEval(ref ControllerState cs)
         {
             if (cs.stack.Count < 1)
             {
@@ -23,27 +38,21 @@ namespace Calculon.Types
             }
 
             Real input = (Real) cs.stack.Pop();
-            Int64 newData = Convert.ToInt64(IntermediateOp(input.data));
+            double intermediate = 0.0;
+            switch (this.Op)
+            {
+                case OpType.Round: intermediate = Math.Round(input.data); break;
+                case OpType.Floor: intermediate = Math.Floor(input.data); break;
+                case OpType.Ceiling: intermediate = Math.Ceiling(input.data); break;
+            }
+
+            Int64 newData = Convert.ToInt64(intermediate);
             Integer retVal = new Integer(newData);
             cs.stack.Push(retVal);
             
             return new EvalReturn(Response.Ok, retVal);
         }
-
-    }
-    public class RoundOp: OneArgRoundingOp, ICalculonType
-    {
-        public override double IntermediateOp(double data)
-        {
-            return Math.Round(data);
-        }
-
-        public string Display { get{ return "Round"; } }
-    }
-
-    public class RoundToOp: ICalculonType
-    {
-        public EvalReturn Eval(ref ControllerState cs)
+        public EvalReturn RoundToEval(ref ControllerState cs)
         {
             if (cs.stack.Count < 2)
             {
@@ -69,26 +78,6 @@ namespace Calculon.Types
             return new EvalReturn(Response.Ok, retval);
         }
 
-        public string Display { get{ return "Round"; } }
-    }
-
-    public class FloorOp: OneArgRoundingOp, ICalculonType
-    {
-        public override double IntermediateOp(double data)
-        {
-            return Math.Floor(data);
-        }
-
-        public string Display { get{ return "Floor"; } }
-    }
-
-    public class CeilingOp: OneArgRoundingOp, ICalculonType
-    {
-        public override double IntermediateOp(double data)
-        {
-            return Math.Ceiling(data);
-        }
-
-        public string Display { get{ return "Ceiling"; } }
+        public string Display { get{ return Op.ToString(); } }
     }
 }

@@ -30,23 +30,11 @@ baseconvop <BaseConvOp>
     / ("tohex"i) { new BaseConvOp(Integer.Base.Hex)}
     / ("tooct"i) { new BaseConvOp(Integer.Base.Oct)}
 
-roundingops <ICalculonType>
-    = roundtoop
-    / roundop
-    / floorop
-    / ceilingop
-
-roundtoop <RoundToOp>
-    = ("roundto"i) { new RoundToOp() }
-
-roundop <RoundOp>
-    = ("round"i) { new RoundOp() }
-
-floorop <FloorOp>
-    = ("floor"i) { new FloorOp() }
-
-ceilingop <CeilingOp>
-    = ("ceiling"i) { new CeilingOp() }
+roundingops <RoundingOpType>
+    = ("roundto"i) { new RoundingOpType(RoundingOpType.OpType.RoundTo) } 
+    /("round"i) { new RoundingOpType(RoundingOpType.OpType.Round) }
+    / ("floor"i) { new RoundingOpType(RoundingOpType.OpType.Floor) }
+    / ("ceiling"i) { new RoundingOpType(RoundingOpType.OpType.Ceiling) }
 
 exit <ExitType>
     = ("exit"i) { new ExitType() }
