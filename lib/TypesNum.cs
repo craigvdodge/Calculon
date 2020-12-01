@@ -26,6 +26,11 @@ namespace Calculon.Types
             else if (toCopy.GetType() == typeof(Real))
             {
                 data = ((Real) toCopy).data;
+            } 
+            else if (toCopy.GetType() == typeof(RealConstant))
+            {
+                Real temp = ((RealConstant) toCopy).ToReal();
+                data = temp.data;
             }
             else
             {

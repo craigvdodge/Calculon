@@ -93,7 +93,8 @@ namespace Calculon.Types
                 return new EvalReturn(Response.Ok, retVal);
             }
             
-            if (lhs.GetType() == typeof(Real) || rhs.GetType() == typeof(Real))
+            if (lhs.GetType() == typeof(Real) || rhs.GetType() == typeof(Real)
+                || lhs.GetType() == typeof(RealConstant) || rhs.GetType() == typeof(RealConstant))
             {
                 // We're making copies so the Real ctor will handle any needed conversion
                 Real newLhs = new Real(lhs);
@@ -112,6 +113,7 @@ namespace Calculon.Types
             System.Type lhsType = lhs.GetType();
             if (lhsType != typeof(Integer)
                 && lhsType != typeof(Real)
+                && lhsType != typeof(RealConstant)
                 && lhsType != typeof(Rational)
                 ) // add more checks as more types supported
             {
@@ -121,6 +123,7 @@ namespace Calculon.Types
             System.Type rhsType = rhs.GetType();
             if (rhsType != typeof(Integer)
                 && rhsType != typeof(Real)
+                && rhsType != typeof(RealConstant)
                 && rhsType != typeof(Rational)
                 ) // add more checks as more types supported
             {

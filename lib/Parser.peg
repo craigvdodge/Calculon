@@ -5,9 +5,9 @@
 
 item <ICalculonType>
     = literal
+    / exit
     / number
     / op
-    / exit
 
 literal <Literal>
     = value:("\"" [A-Za-z0-9_]+ "\"") { new Literal(value) }
@@ -50,6 +50,7 @@ number <ICalculonType>
     = decimal
     / rational
     / integer
+    / realconstant
 
 decimal <Real>
     = value:("-"*[0-9]+ ("." [0-9]+)) { new Real(value) }
@@ -64,3 +65,9 @@ integer <Integer>
     / value:("-"*[0-7]+"o"i) { new Integer(value.TrimEnd(value[value.Length - 1]), Integer.Base.Oct) }
     / value:("-"*[0-1]+"b"i) { new Integer(value.TrimEnd(value[value.Length - 1]), Integer.Base.Bin) }
     / value:("-"*[0-9]+) { new Integer(value) }
+
+realconstant <RealConstant>
+    = ("pi"i) { new RealConstant(RealConstant.Constant.pi) }
+    / ("e"i) { new RealConstant(RealConstant.Constant.e) }
+    / ("tau"i) { new RealConstant(RealConstant.Constant.tau) }
+    
