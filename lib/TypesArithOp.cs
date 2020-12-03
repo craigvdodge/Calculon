@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Collections.Generic;
 
 // For readablity, breaking the ICalculonTypes files based on roles.
-// These are Arithmetic operatorss
+// These are Arithmetic operators
 namespace Calculon.Types
 { 
     public interface IArithOpBase

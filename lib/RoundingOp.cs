@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Collections.Generic;
 
 // For readablity, breaking the ICalculonTypes files based on roles.
-// These are Rounding operatorss
+// These are Rounding operators
 namespace Calculon.Types
 {
     public class RoundingOpType: ICalculonType
