@@ -4,6 +4,48 @@ using System;
 // These are functions that operate on integers
 namespace Calculon.Types
 {
+    public class Factorial : IFunctionCog
+    {
+        public Factorial()
+        {
+            allowedTypes = new Type[1][];
+            allowedTypes[0] = new Type[1];
+            allowedTypes[0][0] = typeof(Integer);
+        }
+
+        public string FunctionName { get { return "fact"; } }
+
+        public int NumArgs { get { return 1; } }
+
+        private Type[][] allowedTypes;
+        public Type[][] AllowedTypes { get { return allowedTypes; } }
+
+        public ICalculonType Execute(ref ControllerState cs)
+        {
+            Integer input = (Integer) cs.stack.Pop();
+            Integer result = new Integer(factHelper(input.data));
+            return result;         
+        }
+
+        // TODO: Reimpement more efficently
+        private Int64 factHelper(Int64 input) 
+        {
+            if (input < 0)
+            {
+                throw new ArgumentException("ERROR: Factorial needs positive integers");
+            }
+
+            if (input == 0)
+            {
+                return 1;
+            }
+            else
+            {
+                return input * factHelper(input - 1);
+            }
+        }
+    }
+
     public class IntegerOp: ICalculonType
     {
         public IntegerOp(Function f) => (Fun) = (f);

@@ -17,6 +17,7 @@ op <ICalculonType>
     / baseconvop
     / roundingop
     / integerop
+    / ("!") { FunctionFactory.Instance["fact"] }
 
 arithop <ArithOp>
     = ("+") { new ArithOp(ArithOp.Op.Add) }
@@ -38,8 +39,7 @@ roundingop <RoundingOpType>
     / ("ceiling"i) { new RoundingOpType(RoundingOpType.OpType.Ceiling) }
 
 integerop <IntegerOp>
-    = ("!") { new IntegerOp(IntegerOp.Function.Fact) }
-    / ("gcf"i) { new IntegerOp(IntegerOp.Function.GCF) }
+    = ("gcf"i) { new IntegerOp(IntegerOp.Function.GCF) }
     / ("lcm"i) { new IntegerOp(IntegerOp.Function.LCM) }
 
 exit <ExitType>
