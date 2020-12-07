@@ -18,6 +18,7 @@ op <ICalculonType>
     / roundingop
     / integerop
     / ("!") { FunctionFactory.Instance["fact"] }
+    / value:([A-Za-z0-9_]+) {FunctionFactory.Instance[util.Concat(value)]}
 
 arithop <ArithOp>
     = ("+") { new ArithOp(ArithOp.Op.Add) }
