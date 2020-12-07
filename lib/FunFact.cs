@@ -19,6 +19,7 @@ namespace Calculon.Types
             
             var cogType = typeof(IFunctionCog);
             var cogs = AppDomain.CurrentDomain.GetAssemblies()
+                .Where(p => !p.IsDynamic)
                 .SelectMany(s => s.GetExportedTypes())
                 .Where(p => cogType.IsAssignableFrom(p) && !p.IsInterface);
 
