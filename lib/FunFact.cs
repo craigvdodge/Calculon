@@ -41,9 +41,9 @@ namespace Calculon.Types
                 {
                     return new FunctionInstance(fname.ToLower());
                 }
-                // TODO: Exception causes everything to grind to halt
-                // should return some kind of error function
-                throw new ArgumentOutOfRangeException("fname", "function not found");
+                //This should be a derived class but the compiler was
+                //being belligerent so the error version is a bool.
+                return new FunctionInstance(fname.ToLower(), true);
             }
         }
 
@@ -110,12 +110,17 @@ namespace Calculon.Types
     // Externalizes the "state" of the FUnction Factory, i.e. the selected function
     public class FunctionInstance : ICalculonType
     {
-        public FunctionInstance(string fname) => (Display) = (fname.ToLower());
+        public FunctionInstance(string fname, bool isErr = false) => (Display, IsError) = (fname.ToLower(), isErr);
 
         public string Display { get; }
+        public bool IsError { get; }
 
         public EvalReturn Eval(ref ControllerState cs)
         {
+            if (IsError)
+            {
+                return new EvalReturn(Response.Error, "Function " + Display + " not found.", this.GetType());
+            }
             return FunctionFactory.Instance.Execute(Display, ref cs); 
         }
     }
