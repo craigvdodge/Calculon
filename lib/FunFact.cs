@@ -41,6 +41,8 @@ namespace Calculon.Types
                 {
                     return new FunctionInstance(fname.ToLower());
                 }
+                // TODO: Exception causes everything to grind to halt
+                // should return some kind of error function
                 throw new ArgumentOutOfRangeException("fname", "function not found");
             }
         }
