@@ -4,6 +4,7 @@ using System;
 // These are functions that operate on integers
 namespace Calculon.Types
 {
+    // BUGBUG: has an overflow wrap-around bug
     public class Factorial : IFunctionCog
     {
         public Factorial()
