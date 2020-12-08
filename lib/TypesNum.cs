@@ -170,7 +170,7 @@ namespace Calculon.Types
 
         public void Reduce()
         {
-            Int64 gcf = IntegerOp.GreatestCommonFactor(numerator, denominator);
+            Int64 gcf = GreatestCommonFactor.GCF(numerator, denominator);
             if (gcf > 1)
             {
                 numerator = numerator / gcf;

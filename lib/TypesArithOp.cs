@@ -175,7 +175,7 @@ namespace Calculon.Types
 
         public Rational DoOp(Rational lhs, Rational rhs)
         {
-            Int64 newDenom = IntegerOp.LeastCommonMultiple(lhs.denominator, rhs.denominator);
+            Int64 newDenom = LeastCommonMultiple.LCM(lhs.denominator, rhs.denominator);
             Int64 newLhsNum = lhs.numerator * (newDenom / lhs.denominator);
             Int64 newRhsNum = rhs.numerator * (newDenom / rhs.denominator);
 
@@ -197,7 +197,7 @@ namespace Calculon.Types
 
         public Rational DoOp(Rational lhs, Rational rhs)
         {
-            Int64 newDenom = IntegerOp.LeastCommonMultiple(lhs.denominator, rhs.denominator);
+            Int64 newDenom = LeastCommonMultiple.LCM(lhs.denominator, rhs.denominator);
             Int64 newLhsNum = lhs.numerator * (newDenom / lhs.denominator);
             Int64 newRhsNum = rhs.numerator * (newDenom / rhs.denominator);
 

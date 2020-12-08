@@ -46,74 +46,29 @@ namespace Calculon.Types
         }
     }
 
-    public class IntegerOp: ICalculonType
+    public class GreatestCommonFactor : IFunctionCog
     {
-        public IntegerOp(Function f) => (Fun) = (f);
-
-        public enum Function {GCF, LCM, Fact};
-        public Function Fun { get; }
-
-        public EvalReturn Eval(ref ControllerState cs)
+        public GreatestCommonFactor()
         {
-            string typecheck = TypeCheck(ref cs);
-            if (typecheck != string.Empty)
-            {
-                return new EvalReturn(Response.Error, typecheck, this.GetType());
-            }
-            if (Fun == Function.GCF || Fun == Function.LCM)
-            {
-                Integer rhs = (Integer) cs.stack.Pop();
-                Integer lhs = (Integer) cs.stack.Pop();
-                Int64 result;
-                if (Fun == Function.GCF)
-                {
-                    result = GreatestCommonFactor(lhs.data, rhs.data);
-                }
-                else 
-                {
-                    result = LeastCommonMultiple(lhs.data, rhs.data);
-                }
-                cs.stack.Push(new Integer(result));
-            }
-            else
-            {
-                Integer i = (Integer) cs.stack.Pop();
-                cs.stack.Push(new Integer(Factorial(i.data)));
-            }
-            return new EvalReturn(Response.Ok, cs.stack.Peek().Display, this.GetType());
+            allowedTypes = new Type[1][];
+            allowedTypes[0] = new Type[] { typeof(Integer), typeof(Integer) };
+        }
+        public string FunctionName { get { return "gcf"; } }
+
+        public int NumArgs { get { return 2; } }
+
+        private Type[][] allowedTypes;
+        public Type[][] AllowedTypes { get { return allowedTypes; } }
+
+        public ICalculonType Execute(ref ControllerState cs)
+        {
+            Int64 b = ((Integer)cs.stack.Pop()).data;
+            Int64 a = ((Integer) cs.stack.Pop()).data;
+            Integer result = new Integer(GreatestCommonFactor.GCF(a, b));
+            return result;
         }
 
-        public string TypeCheck(ref ControllerState cs)
-        {
-            if (Fun == Function.Fact)
-            {
-                if ((cs.stack.Count < 1) ||  (cs.stack.Peek().GetType() != typeof(Integer)))
-                {
-                    return "ERROR: Requires an integer to operate on";
-                }
-            }
-            else
-            {
-                if (cs.stack.Count < 2)
-                {
-                    return "ERROR: Requries two integers to operate on";
-                }
-                if (cs.stack.Peek().GetType() != typeof(Integer))
-                {
-                    return "ERROR: Only works on integers";
-                }
-                ICalculonType temp = cs.stack.Pop();
-                Type t = cs.stack.Peek().GetType();
-                cs.stack.Push(temp);
-                if (t != typeof(Integer))
-                {
-                    return "ERROR: Only works on integers";
-                }
-            }
-            return string.Empty;
-        }
-
-        static internal Int64 GreatestCommonFactor(Int64 a, Int64 b)
+        static internal Int64 GCF(Int64 a, Int64 b)
         {
             while (b != 0)
             {
@@ -123,30 +78,33 @@ namespace Calculon.Types
             }
             return a;
         }
+    }
 
-        static internal Int64 LeastCommonMultiple(Int64 a, Int64 b)
+    public class LeastCommonMultiple : IFunctionCog
+    {
+        public LeastCommonMultiple()
         {
-            return (a / GreatestCommonFactor(a, b)) * b;
+            allowedTypes = new Type[1][];
+            allowedTypes[0] = new Type[] { typeof(Integer), typeof(Integer) };
+        }
+        public string FunctionName { get { return "lcm"; } }
+
+        public int NumArgs { get { return 2; } }
+
+        private Type[][] allowedTypes;
+        public Type[][] AllowedTypes { get { return allowedTypes; } }
+
+        public ICalculonType Execute(ref ControllerState cs)
+        {
+            Int64 b = ((Integer)cs.stack.Pop()).data;
+            Int64 a = ((Integer)cs.stack.Pop()).data;
+            Integer result = new Integer(LeastCommonMultiple.LCM(a, b));
+            return result;
         }
 
-        // TODO: Reimpement more efficently
-        static internal Int64 Factorial(Int64 input)
+        static internal Int64 LCM(Int64 a, Int64 b)
         {
-            if (input < 0)
-            {
-                throw new ArgumentException("ERROR: Factorial needs positive integers");
-            }
-
-            if (input == 0)
-            {
-                return 1;
-            }
-            else
-            {
-                return input * Factorial(input-1);
-            }
+            return (a / GreatestCommonFactor.GCF(a, b)) * b;
         }
-
-        public string Display { get{ return Fun.ToString(); } }
     }
 }
