@@ -100,6 +100,7 @@ namespace Calculon.Types
             }
             // call cog Execute
             ICalculonType retVal = cog.Execute(ref cs);
+            cs.stack.Push(retVal);
             return new EvalReturn(Response.Ok, retVal.Display, retVal.GetType());
         } 
     }
