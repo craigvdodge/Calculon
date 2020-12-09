@@ -89,11 +89,11 @@ namespace ut
         [InlineData("3.14159 2 roundto", "3.14")]
         [InlineData("3.6 floor", "3")]
         [InlineData("3.2 ceiling", "4")]
-        [InlineData("2 floor", "TYPE ERROR: Argument is not Real")]
-        [InlineData("ceiling", "ARG ERROR: Requires Real")]
-        [InlineData("roundTo", "ARG ERROR: Requires Real and int decimal places")]
-        [InlineData("1.1 1.2 roundto", "TYPE ERROR: Places Argument not Integerl")]
-        [InlineData("33 1 roundto", "TYPE ERROR: Attempting to RoundTo on non-Real")]
+        [InlineData("2 floor", "Unsupported types (Calculon.Types.Integer )")]
+        [InlineData("ceiling", "ceiling requires 1 argument(s)")]
+        [InlineData("roundTo", "roundto requires 2 argument(s)")]
+        [InlineData("1.1 1.2 roundto", "Unsupported types (Calculon.Types.Real Calculon.Types.Real )")]
+        [InlineData("round", "round requires 1 argument(s)")]
         public void RoundingOpsTests(string test, string expected)
         {
             BasicTest(test, expected);

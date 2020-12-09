@@ -7,77 +7,103 @@ using System.Collections.Generic;
 // These are Rounding operators
 namespace Calculon.Types
 {
-    public class RoundingOpType: ICalculonType
+    public class Round : IFunctionCog
     {
-        public RoundingOpType(OpType type) => (Op) = (type);
-        public enum OpType {RoundTo, Round, Floor, Ceiling}
-        private OpType Op { get; }
+        public string FunctionName { get { return "round"; } }
 
-        public EvalReturn Eval(ref ControllerState cs)
+        public int NumArgs { get { return 1; } }
+
+        public Type[][] AllowedTypes
         {
-            if (this.Op == OpType.Round ||
-                 this.Op == OpType.Floor || 
-                 this.Op == OpType.Ceiling)
+            get
             {
-                return OneArgEval(ref cs);
-            }
-            else
-            {
-                return RoundToEval(ref cs);
+                Type[][] retVal = new Type[1][];
+                retVal[0] = new Type[] { typeof(Real) };
+                return retVal;
             }
         }
-        public EvalReturn OneArgEval(ref ControllerState cs)
+
+        public ICalculonType Execute(ref ControllerState cs)
         {
-            if (cs.stack.Count < 1)
-            {
-                return new EvalReturn(Response.Error, "ARG ERROR: Requires Real", this.GetType());
-            }
-            if (cs.stack.Peek().GetType() != typeof(Real))
-            {
-                return new EvalReturn(Response.Error, "TYPE ERROR: Argument is not Real", this.GetType());
-            }
-
-            Real input = (Real) cs.stack.Pop();
-            double intermediate = 0.0;
-            switch (this.Op)
-            {
-                case OpType.Round: intermediate = Math.Round(input.data); break;
-                case OpType.Floor: intermediate = Math.Floor(input.data); break;
-                case OpType.Ceiling: intermediate = Math.Ceiling(input.data); break;
-            }
-
-            Int64 newData = Convert.ToInt64(intermediate);
-            Integer retVal = new Integer(newData);
-            cs.stack.Push(retVal);
-            
-            return new EvalReturn(Response.Ok, retVal);
+            Real arg = (Real) cs.stack.Pop();
+            //Note underlying .net function is double->double
+            //But I'm writing my on calculator (with blackjack and hookers)
+            //and returning Integer makes more sense to me
+            return new Integer((Int64) Math.Round(arg.data));
         }
-        public EvalReturn RoundToEval(ref ControllerState cs)
+    }
+
+    public class Floor : IFunctionCog
+    {
+        public string FunctionName { get { return "floor"; } }
+
+        public int NumArgs { get { return 1; } }
+
+        public Type[][] AllowedTypes
         {
-            if (cs.stack.Count < 2)
+            get
             {
-                return new EvalReturn(Response.Error, "ARG ERROR: Requires Real and int decimal places", this.GetType());
+                Type[][] retVal = new Type[1][];
+                retVal[0] = new Type[] { typeof(Real) };
+                return retVal;
             }
-            if (cs.stack.Peek().GetType() != typeof(Integer))
+        }
+
+        public ICalculonType Execute(ref ControllerState cs)
+        {
+            Real arg = (Real)cs.stack.Pop();
+            //see comment on Round
+            return new Integer((Int64)Math.Floor(arg.data));
+        }
+    }
+
+    public class Ceiling : IFunctionCog
+    {
+        public string FunctionName { get { return "ceiling"; } }
+
+        public int NumArgs { get { return 1; } }
+
+        public Type[][] AllowedTypes
+        {
+            get
             {
-                return new EvalReturn(Response.Error, "TYPE ERROR: Places Argument not Integerl", this.GetType());
+                Type[][] retVal = new Type[1][];
+                retVal[0] = new Type[] { typeof(Real) };
+                return retVal;
             }
+        }
+
+        public ICalculonType Execute(ref ControllerState cs)
+        {
+            Real arg = (Real)cs.stack.Pop();
+            //see comment on Round
+            return new Integer((Int64)Math.Ceiling(arg.data));
+        }
+    }
+
+    public class RoundTo : IFunctionCog
+    {
+        public string FunctionName { get { return "roundto"; } }
+
+        public int NumArgs { get { return 2; } }
+
+        public Type[][] AllowedTypes
+        {
+            get
+            {
+                Type[][] retVal = new Type[1][];
+                retVal[0] = new Type[] { typeof(Integer), typeof(Real) };
+                return retVal;
+            }
+        }
+
+        public ICalculonType Execute(ref ControllerState cs)
+        {
             Integer places = (Integer) cs.stack.Pop();
-            if (cs.stack.Peek().GetType() != typeof(Real))
-            {
-                //Push 1st arg back onto stack
-                cs.stack.Push(places);
-                return new EvalReturn(Response.Error, "TYPE ERROR: Attempting to RoundTo on non-Real", this.GetType());
-            }
-            Real number = (Real) cs.stack.Pop();
-            Int32 digits = (Int32) places.data;
-            
-            Real retval = new Real(Math.Round(number.data, digits));
-            cs.stack.Push(retval);
-            
-            return new EvalReturn(Response.Ok, retval);
+            Real arg = (Real)cs.stack.Pop();
+            // We're rounding to decimal palces so still should be Real
+            double newData = Math.Round(arg.data, (Int32)places.data);
+            return new Real(newData);
         }
-
-        public string Display { get{ return Op.ToString(); } }
     }
 }
