@@ -19,8 +19,6 @@ namespace ut
         [InlineData("e", typeof(RealConstant))]
         [InlineData("tau", typeof(RealConstant))]
         [InlineData("@@@", typeof(ErrorType), Response.Error, "PARSE ERROR: @@@")]
-        [InlineData("Exit", typeof(ExitType), Response.Exit, "")]
-        [InlineData("quIt", typeof(ExitType), Response.Exit, "")]
         public void BasicPushParsingTest(
             string testStr,
             Type ExpectedType,

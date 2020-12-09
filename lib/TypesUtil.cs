@@ -38,19 +38,32 @@ namespace Calculon.Types
         public string Display {get;}
     }
 
-    public class ExitType: ICalculonType
+    public class Exit : IFunctionCog
     {
-        public ExitType(){}
+        public virtual string FunctionName { get { return "exit"; } }
 
-        public EvalReturn Eval(ref ControllerState cs)
+        public int NumArgs { get { return 0; } }
+
+        public Type[][] AllowedTypes
         {
-            cs.running = false;
-            return new EvalReturn(Response.Exit, string.Empty, this.GetType());
+            get
+            {
+                Type[][] retVal = new Type[0][];
+                return retVal;
+            }
         }
 
-        public string Display { get{ return string.Empty; } }
+        public ICalculonType Execute(ref ControllerState cs)
+        {
+            cs.running = false;
+            return new EmptyType();
+        }
     }
 
+    public class Quit : Exit 
+    {
+        public override string FunctionName { get { return "quit"; } }
+    }
 
     public class util
     {
