@@ -21,7 +21,7 @@ namespace Calculon.Types
             var cogs = AppDomain.CurrentDomain.GetAssemblies()
                 .Where(p => !p.IsDynamic)
                 .SelectMany(s => s.GetExportedTypes())
-                .Where(p => cogType.IsAssignableFrom(p) && !p.IsInterface);
+                .Where(p => cogType.IsAssignableFrom(p) && !p.IsInterface && !p.IsAbstract);
 
             foreach (Type t in cogs)
             {

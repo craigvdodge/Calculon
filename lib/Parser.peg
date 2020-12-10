@@ -13,7 +13,6 @@ literal <Literal>
 
 op <ICalculonType>
     = arithop
-    / baseconvop
     / ("!") { FunctionFactory.Instance["fact"] }
     / value:([A-Za-z0-9_]+) {FunctionFactory.Instance[util.Concat(value)]}
 
@@ -23,12 +22,6 @@ arithop <ArithOp>
     / ("*") { new ArithOp(ArithOp.Op.Mult) }
     / ("/") { new ArithOp(ArithOp.Op.Div) }
     / ("mod"i) { new ArithOp(ArithOp.Op.Mod) }
-
-baseconvop <BaseConvOp>
-    = ("todec"i) { new BaseConvOp(Integer.Base.Dec)}
-    / ("tobin"i) { new BaseConvOp(Integer.Base.Bin)}
-    / ("tohex"i) { new BaseConvOp(Integer.Base.Hex)}
-    / ("tooct"i) { new BaseConvOp(Integer.Base.Oct)}
 
 number <ICalculonType>
     = decimal

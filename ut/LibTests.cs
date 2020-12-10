@@ -75,8 +75,8 @@ namespace ut
         [InlineData("10 toHex", "Ah")]
         [InlineData("9 ToOct", "11o")]
         [InlineData("3 tobin", "11b")]
-        [InlineData("todec", "ARG ERROR: Need Integer to convert")]
-        [InlineData("1.5 toHex", "TYPE ERROR: Base Op Requires Integer")]
+        [InlineData("todec", "todec requires 1 argument(s)")]
+        [InlineData("1.5 toHex", "Unsupported types (Calculon.Types.Real )")]
         public void BaseConversionTest(string test, string expectedOut)
         {
             BasicTest(test, expectedOut);

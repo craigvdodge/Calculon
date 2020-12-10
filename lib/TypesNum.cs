@@ -102,44 +102,6 @@ namespace Calculon.Types
         }
     }
 
-    public class BaseConvOp: ICalculonType
-    {
-        public BaseConvOp(Integer.Base baseOp) => (data) = (baseOp);
-
-        private Integer.Base data;
-
-        public EvalReturn Eval(ref ControllerState cs)
-        {
-            if (cs.stack.Count < 1)
-            {
-                return new EvalReturn(Response.Error, "ARG ERROR: Need Integer to convert", this.GetType());
-            }
-            if (cs.stack.Peek().GetType() != typeof(Integer))
-            {
-                return new EvalReturn(Response.Error, "TYPE ERROR: Base Op Requires Integer", this.GetType());
-            }
-
-            ((Integer) cs.stack.Peek()).DisplayBase = data;
-            
-            return new EvalReturn(Response.Ok, cs.stack.Peek());
-        }
-
-        public string Display
-        {
-            get
-            {
-                switch (data)
-                {
-                    case Integer.Base.Dec : return "ToDec";
-                    case Integer.Base.Bin : return "ToBin";
-                    case Integer.Base.Hex : return "ToHex";
-                    case Integer.Base.Oct : return "ToOct";
-                    default: return "BASE TYPE ERROR";
-                }
-            }
-        }
-    }
-
     public class Rational : ICalculonType
     {
         public Rational(string s)
