@@ -31,6 +31,11 @@ namespace Calculon.Types
             {
                 Real temp = ((RealConstant) toCopy).ToReal();
                 data = temp.data;
+            } else if (toCopy.GetType() == typeof(Rational))
+            {
+                double numerator = (double) ((Rational)toCopy).numerator;
+                double denominator = (double)((Rational)toCopy).denominator;
+                data = numerator / denominator;
             }
             else
             {
