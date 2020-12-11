@@ -72,7 +72,7 @@ namespace Calculon.Types
             displayBase = b;
         }
 
-        public Integer(Int64 i) => (data, displayBase) = (i, Base.Dec);
+        public Integer(Int64 i, Base b = Base.Dec) => (data, displayBase) = (i, b);
 
         public EvalReturn Eval(ref ControllerState cs)
         {
