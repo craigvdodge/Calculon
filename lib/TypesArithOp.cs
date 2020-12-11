@@ -26,13 +26,13 @@ namespace Calculon.Types
             ICalculonType lhs = cs.stack.Pop();
             Type[] argTypes = new Type[] { lhs.GetType(), rhs.GetType() };
 
-            //TODO: some of these clauses can be grouped together
-
             if (argTypes.SequenceEqual(new Type[] { typeof(Integer), typeof(Integer) }))
             {
                 return Op((Integer)lhs, (Integer)rhs);
             }
-            if (argTypes.SequenceEqual(new Type[] { typeof(Integer), typeof(Real) }))
+            if (argTypes.SequenceEqual(new Type[] { typeof(Integer), typeof(Real) })
+                || argTypes.SequenceEqual(new Type[] { typeof(Rational), typeof(Real) })
+                || argTypes.SequenceEqual(new Type[] { typeof(RealConstant), typeof(Real) }))
             {
                 return Op(new Real(lhs), (Real)rhs);
             }
@@ -40,7 +40,8 @@ namespace Calculon.Types
             {
                 return Op(new Rational((Integer)lhs), (Rational)rhs);
             }
-            if (argTypes.SequenceEqual(new Type[] { typeof(Real), typeof(Integer) }))
+            if (argTypes.SequenceEqual(new Type[] { typeof(Real), typeof(Integer) })
+                || argTypes.SequenceEqual(new Type[] { typeof(Real), typeof(Rational) }))
             {
                 return Op((Real)lhs, new Real(rhs));
             }
@@ -48,49 +49,25 @@ namespace Calculon.Types
             {
                 return Op((Real)lhs, (Real)rhs);
             }
-            if (argTypes.SequenceEqual(new Type[] { typeof(Real), typeof(Rational) }))
-            {
-                return Op((Real)lhs, new Real(rhs));
-            }
             if (argTypes.SequenceEqual(new Type[] { typeof(Rational), typeof(Integer) }))
             {
                 return Op((Rational)lhs, new Rational((Integer)rhs));
-            }
-            if (argTypes.SequenceEqual(new Type[] { typeof(Rational), typeof(Real) }))
-            {
-                return Op(new Real(lhs), (Real)rhs);
             }
             if (argTypes.SequenceEqual(new Type[] { typeof(Rational), typeof(Rational) }))
             {
                 return Op((Rational)lhs, (Rational)rhs);
             }
-            if (argTypes.SequenceEqual(new Type[] { typeof(RealConstant), typeof(Integer)}))
-            {
-                return Op(new Real(lhs), new Real(rhs));
-            }
-            if (argTypes.SequenceEqual(new Type[] { typeof(RealConstant), typeof(Real)}))
-            {
-                return Op(new Real(lhs), (Real)rhs);
-            }
-            if (argTypes.SequenceEqual(new Type[] { typeof(RealConstant), typeof(Rational)}))
-            {
-                return Op(new Real(lhs), new Real(rhs));
-            }
-            if (argTypes.SequenceEqual(new Type[] { typeof(RealConstant), typeof(RealConstant)}))
-            {
-                return Op(new Real(lhs), new Real(rhs));
-            }
-            if (argTypes.SequenceEqual(new Type[] { typeof(Integer), typeof(RealConstant)}))
+            if (argTypes.SequenceEqual(new Type[] { typeof(RealConstant), typeof(Integer)})
+                || argTypes.SequenceEqual(new Type[] { typeof(RealConstant), typeof(Rational) })
+                || argTypes.SequenceEqual(new Type[] { typeof(RealConstant), typeof(RealConstant) })
+                || argTypes.SequenceEqual(new Type[] { typeof(Integer), typeof(RealConstant) })
+                || argTypes.SequenceEqual(new Type[] { typeof(Rational), typeof(RealConstant) }))
             {
                 return Op(new Real(lhs), new Real(rhs));
             }
             if (argTypes.SequenceEqual(new Type[] { typeof(Real), typeof(RealConstant)}))
             {
                 return Op((Real) lhs, new Real(rhs));
-            }
-            if (argTypes.SequenceEqual(new Type[] { typeof(Rational), typeof(RealConstant)}))
-            {
-                return Op(new Real(lhs), new Real(rhs));
             }
             throw new ArgumentException("Unhandled argument types " + argTypes.ToString());
         }
