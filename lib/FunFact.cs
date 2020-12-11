@@ -107,7 +107,20 @@ namespace Calculon.Types
                 cs.stack.Push(retVal);
             }
             return new EvalReturn(Response.Ok, retVal.Display, retVal.GetType());
-        } 
+        }
+        public static Type[][] TwoArgComboGenerator(params Type[] list)
+        {
+            Type[][] retVal = new Type[list.Length * list.Length][];
+            for (int i = 0; i < list.Length; i++)
+            {
+                for (int j = 0; j < list.Length; j++)
+                {
+                    retVal[(list.Length * i) + j] = new Type[] { list[i], list[j] };
+                }
+            }
+
+            return retVal;
+        }
     }
 
     // Externalizes the "state" of the FUnction Factory, i.e. the selected function
@@ -124,7 +137,7 @@ namespace Calculon.Types
             {
                 return new EvalReturn(Response.Error, "Function " + Display + " not found.", this.GetType());
             }
-            return FunctionFactory.Instance.Execute(Display, ref cs); 
+            return FunctionFactory.Instance.Execute(Display, ref cs);
         }
     }
 
