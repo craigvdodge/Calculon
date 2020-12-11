@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Text;
 using System.Globalization;
 using System.Collections.Generic;
@@ -6,174 +7,127 @@ using System.Collections.Generic;
 // For readablity, breaking the ICalculonTypes files based on roles.
 // These are Arithmetic operators
 namespace Calculon.Types
-{ 
-    public interface IArithOpBase
+{
+    public abstract class ArithBase : IFunctionCog
     {
-        Integer DoOp(Integer lhs, Integer rhs);
-        Real DoOp(Real lhs, Real rhs);
-        Rational DoOp(Rational lhs, Rational rhs);
-    }
-    // Moved all Arithmetic ops to a factory-type model
-    // This lets us simplify the peg files
-    public class ArithOp: ICalculonType, IArithOpBase
-    {
-        public ArithOp(Op Operation)
+        public abstract string FunctionName { get; }
+        public int NumArgs { get { return 2; } }
+        public Type[][] AllowedTypes
         {
-            switch(Operation)
+            get
             {
-                case Op.Add : op = (IArithOpBase) new AddOp(); break;
-                case Op.Sub : op = (IArithOpBase) new SubOp(); break;
-                case Op.Mult: op = (IArithOpBase) new MultOp(); break;
-                case Op.Div: op = (IArithOpBase) new DivOp(); break;
-                case Op.Mod: op = (IArithOpBase) new ModOp(); break;
+                return FunctionFactory.TwoArgComboGenerator(typeof(Integer), typeof(Real), typeof(Rational), typeof(RealConstant));
             }
         }
-        public enum Op {Add, Sub, Mult, Div, Mod}
 
-        #region IArithOpBase
-        public Integer DoOp(Integer lhs, Integer rhs) {return op.DoOp(lhs, rhs); }
-        public Real DoOp(Real lhs, Real rhs) {return op.DoOp(lhs, rhs); }
-        public Rational DoOp(Rational lhs, Rational rhs) {return op.DoOp(lhs, rhs); }
-        #endregion
-        public EvalReturn Eval(ref ControllerState cs)
+        public ICalculonType Execute(ref ControllerState cs)
         {
-            if (cs.stack.Count < 2)
-            {
-                return new EvalReturn(Response.Error, 
-                    "ERROR: + Argument Count: Need two elements to operate on.", this.GetType());
-            }
-            
             ICalculonType rhs = cs.stack.Pop();
             ICalculonType lhs = cs.stack.Pop();
+            Type[] argTypes = new Type[] { lhs.GetType(), rhs.GetType() };
 
-            string typecheck = this.TypeCheck(lhs, rhs);
-            if (typecheck != string.Empty)
+            //TODO: some of these clauses can be grouped together
+
+            if (argTypes.SequenceEqual(new Type[] { typeof(Integer), typeof(Integer) }))
             {
-                // restore the stack and return error
-                cs.stack.Push(lhs);
-                cs.stack.Push(rhs);
-                return new EvalReturn(Response.Error, typecheck, this.GetType());
+                return Op((Integer)lhs, (Integer)rhs);
             }
-
-            if (lhs.GetType() == typeof(Integer) && rhs.GetType() == typeof(Integer))
+            if (argTypes.SequenceEqual(new Type[] { typeof(Integer), typeof(Real) }))
             {
-                Integer retval = op.DoOp((Integer) lhs, (Integer) rhs );
-                // Only checking if lhs is not base 10 so when the user does 
-                // something like add 1 w/o explicit base, does what they expect
-                if (((Integer) lhs).DisplayBase != Integer.Base.Dec)
-                {
-                    retval.DisplayBase = ((Integer) lhs).DisplayBase;
-                }
-                cs.stack.Push(retval);
-                return new EvalReturn(Response.Ok, retval);
+                return Op(new Real(lhs), (Real)rhs);
             }
-
-            if (lhs.GetType() == typeof(Rational) || rhs.GetType() == typeof(Rational))
-            {   
-                Rational newLhs;
-                if (lhs.GetType() == typeof(Integer))
-                {
-                    newLhs = new Rational((Integer) lhs);
-                }
-                else
-                {
-                    newLhs = (Rational) lhs;
-                }
-                Rational newRhs;
-                if (rhs.GetType() == typeof(Integer))
-                {
-                    newRhs = new Rational((Integer) rhs);
-                }
-                else
-                {
-                    newRhs = (Rational) rhs;
-                }
-                Rational retVal = op.DoOp(newLhs, newRhs);
-                cs.stack.Push(retVal);
-                return new EvalReturn(Response.Ok, retVal);
-            }
-            
-            if (lhs.GetType() == typeof(Real) || rhs.GetType() == typeof(Real)
-                || lhs.GetType() == typeof(RealConstant) || rhs.GetType() == typeof(RealConstant))
+            if (argTypes.SequenceEqual(new Type[] { typeof(Integer), typeof(Rational) }))
             {
-                // We're making copies so the Real ctor will handle any needed conversion
-                Real newLhs = new Real(lhs);
-                Real newRhs = new Real(rhs);
-                Real retVal = op.DoOp(newLhs, newRhs);
-                cs.stack.Push(retVal);
-                return new EvalReturn(Response.Ok, retVal);
+                return Op(new Rational((Integer)lhs), (Rational)rhs);
             }
-
-            return new EvalReturn(Response.Error, "ERROR: Calculon bug. You shouldn't see this!", this.GetType());
+            if (argTypes.SequenceEqual(new Type[] { typeof(Real), typeof(Integer) }))
+            {
+                return Op((Real)lhs, new Real(rhs));
+            }
+            if (argTypes.SequenceEqual(new Type[] { typeof(Real), typeof(Real) }))
+            {
+                return Op((Real)lhs, (Real)rhs);
+            }
+            if (argTypes.SequenceEqual(new Type[] { typeof(Real), typeof(Rational) }))
+            {
+                return Op((Real)lhs, new Real(rhs));
+            }
+            if (argTypes.SequenceEqual(new Type[] { typeof(Rational), typeof(Integer) }))
+            {
+                return Op((Rational)lhs, new Rational((Integer)rhs));
+            }
+            if (argTypes.SequenceEqual(new Type[] { typeof(Rational), typeof(Real) }))
+            {
+                return Op(new Real(lhs), (Real)rhs);
+            }
+            if (argTypes.SequenceEqual(new Type[] { typeof(Rational), typeof(Rational) }))
+            {
+                return Op((Rational)lhs, (Rational)rhs);
+            }
+            if (argTypes.SequenceEqual(new Type[] { typeof(RealConstant), typeof(Integer)}))
+            {
+                return Op(new Real(lhs), new Real(rhs));
+            }
+            if (argTypes.SequenceEqual(new Type[] { typeof(RealConstant), typeof(Real)}))
+            {
+                return Op(new Real(lhs), (Real)rhs);
+            }
+            if (argTypes.SequenceEqual(new Type[] { typeof(RealConstant), typeof(Rational)}))
+            {
+                return Op(new Real(lhs), new Real(rhs));
+            }
+            if (argTypes.SequenceEqual(new Type[] { typeof(RealConstant), typeof(RealConstant)}))
+            {
+                return Op(new Real(lhs), new Real(rhs));
+            }
+            if (argTypes.SequenceEqual(new Type[] { typeof(Integer), typeof(RealConstant)}))
+            {
+                return Op(new Real(lhs), new Real(rhs));
+            }
+            if (argTypes.SequenceEqual(new Type[] { typeof(Real), typeof(RealConstant)}))
+            {
+                return Op((Real) lhs, new Real(rhs));
+            }
+            if (argTypes.SequenceEqual(new Type[] { typeof(Rational), typeof(RealConstant)}))
+            {
+                return Op(new Real(lhs), new Real(rhs));
+            }
+            throw new ArgumentException("Unhandled argument types " + argTypes.ToString());
         }
 
-        // Return empty string on pass, error msg on fail
-        private string TypeCheck(ICalculonType lhs, ICalculonType rhs)
+        internal Integer.Base BaseRules(Integer lhs, Integer rhs)
         {
-            System.Type lhsType = lhs.GetType();
-            if (lhsType != typeof(Integer)
-                && lhsType != typeof(Real)
-                && lhsType != typeof(RealConstant)
-                && lhsType != typeof(Rational)
-                ) // add more checks as more types supported
+            Integer.Base b = Integer.Base.Dec;
+            if (lhs.DisplayBase != Integer.Base.Dec)
             {
-                return "ERROR: " + lhs.Display + " unsupported type " + lhsType.ToString();
+                b = lhs.DisplayBase;
             }
-
-            System.Type rhsType = rhs.GetType();
-            if (rhsType != typeof(Integer)
-                && rhsType != typeof(Real)
-                && rhsType != typeof(RealConstant)
-                && rhsType != typeof(Rational)
-                ) // add more checks as more types supported
+            if (rhs.DisplayBase != Integer.Base.Dec)
             {
-                return "ERROR: " + rhs.Display + " unsupported type " + rhsType.ToString();
+                b = rhs.DisplayBase;
             }
-
-            // add any checks of the two types together here
-
-            // Rational only supports other Rationals and Integer
-            if ( ((lhsType == typeof(Rational)) && 
-                    (rhsType != typeof(Rational) && rhsType != typeof(Integer)))
-                 || ((rhsType == typeof(Rational)) &&
-                    (lhsType != typeof(Rational) && lhsType != typeof(Integer))))
-            {
-                return "ERROR: Rational numbers only support Rational and Integers";
-            }
-            
-            return string.Empty;
+            return b;
         }
-
-        public string Display 
-        { 
-            get
-            { 
-                Type OpType = op.GetType();
-                // not a switch b/c C# no likey case typeof()
-                if (OpType == typeof(AddOp)) { return "+"; }
-                else if (OpType == typeof(SubOp)) { return "-"; }
-                else if (OpType == typeof(MultOp)) { return "*"; }
-                else if (OpType == typeof(DivOp)) { return "/"; }
-                else if (OpType == typeof(ModOp)) { return "mod"; }
-                else { throw new Exception("Unknown Operator"); }
-            }
-        }
-        private IArithOpBase op;
+        internal abstract Integer Op(Integer lhs, Integer rhs);
+        internal abstract Real Op(Real lhs, Real rhs);
+        internal abstract Rational Op(Rational lhs, Rational rhs);
     }
-    
-    internal class AddOp: IArithOpBase
+
+    public class Add : ArithBase
     {
-        public Integer DoOp(Integer lhs, Integer rhs)
+        public override string FunctionName { get { return "add"; } }
+        internal override Integer Op(Integer lhs, Integer rhs)
         {
-            return new Integer(lhs.data + rhs.data);
+            Integer.Base b = BaseRules(lhs, rhs);
+            return new Integer(lhs.data + rhs.data, b);
         }
 
-        public Real DoOp(Real lhs, Real rhs)
+        internal override Real Op(Real lhs, Real rhs)
         {
             return new Real(lhs.data + rhs.data);
         }
 
-        public Rational DoOp(Rational lhs, Rational rhs)
+        internal override Rational Op(Rational lhs, Rational rhs)
         {
             Int64 newDenom = LeastCommonMultiple.LCM(lhs.denominator, rhs.denominator);
             Int64 newLhsNum = lhs.numerator * (newDenom / lhs.denominator);
@@ -183,19 +137,22 @@ namespace Calculon.Types
         }
     }
 
-    internal class SubOp: IArithOpBase
+    public class Sub : ArithBase
     {
-        public Integer DoOp(Integer lhs, Integer rhs)
+        public override string FunctionName { get { return "sub"; } }
+
+        internal override Integer Op(Integer lhs, Integer rhs)
         {
-            return new Integer(lhs.data - rhs.data);
+            Integer.Base b = BaseRules(lhs, rhs);
+            return new Integer(lhs.data - rhs.data, b);
         }
 
-        public Real DoOp(Real lhs, Real rhs)
+        internal override Real Op(Real lhs, Real rhs)
         {
             return new Real(lhs.data - rhs.data);
         }
 
-        public Rational DoOp(Rational lhs, Rational rhs)
+        internal override Rational Op(Rational lhs, Rational rhs)
         {
             Int64 newDenom = LeastCommonMultiple.LCM(lhs.denominator, rhs.denominator);
             Int64 newLhsNum = lhs.numerator * (newDenom / lhs.denominator);
@@ -205,65 +162,75 @@ namespace Calculon.Types
         }
     }
 
-    internal class MultOp: IArithOpBase
+    public class Mult : ArithBase
     {
-        public Integer DoOp(Integer lhs, Integer rhs)
+        public override string FunctionName { get { return "mult"; } }
+
+        internal override Integer Op(Integer lhs, Integer rhs)
         {
-            return new Integer(lhs.data * rhs.data);
+            Integer.Base b = BaseRules(lhs, rhs);
+            return new Integer(lhs.data * rhs.data, b);
         }
 
-        public Real DoOp(Real lhs, Real rhs)
+        internal override Real Op(Real lhs, Real rhs)
         {
             return new Real(lhs.data * rhs.data);
         }
 
-        public Rational DoOp(Rational lhs, Rational rhs)
+        internal override Rational Op(Rational lhs, Rational rhs)
         {
             return new Rational((lhs.numerator * rhs.numerator), (lhs.denominator * rhs.denominator));
         }
     }
 
-    internal class DivOp: IArithOpBase
+    public class Div : ArithBase
     {
-        public Integer DoOp(Integer lhs, Integer rhs)
+        public override string FunctionName { get { return "div"; } }
+
+        internal override Integer Op(Integer lhs, Integer rhs)
         {
-            return new Integer(lhs.data / rhs.data);
+            Integer.Base b = BaseRules(lhs, rhs);
+            return new Integer(lhs.data / rhs.data, b);
         }
 
-        public Real DoOp(Real lhs, Real rhs)
+        internal override Real Op(Real lhs, Real rhs)
         {
             return new Real(lhs.data / rhs.data);
         }
 
-        public Rational DoOp(Rational lhs, Rational rhs)
+        internal override Rational Op(Rational lhs, Rational rhs)
         {
-           return new Rational((lhs.numerator * rhs.denominator), (lhs.denominator * rhs.numerator));
+            return new Rational((lhs.numerator * rhs.denominator), (lhs.denominator * rhs.numerator));
         }
     }
 
-    internal class ModOp: IArithOpBase
+    public class Mod : ArithBase
     {
-        public Integer DoOp(Integer lhs, Integer rhs)
+        public override string FunctionName { get { return "mod"; } }
+
+        internal override Integer Op(Integer lhs, Integer rhs)
         {
-            return new Integer(lhs.data % rhs.data);
+            Integer.Base b = BaseRules(lhs, rhs);
+            return new Integer(lhs.data % rhs.data, b);
         }
 
-        public Real DoOp(Real lhs, Real rhs)
+        internal override Real Op(Real lhs, Real rhs)
         {
             return new Real(lhs.data % rhs.data);
         }
 
         // a mod b = a - b*(floor(a/b))
-        public Rational DoOp(Rational lhs, Rational rhs)
+        internal override Rational Op(Rational lhs, Rational rhs)
         {
-            ArithOp div = new ArithOp(ArithOp.Op.Div);
-            Rational AonB = div.DoOp(lhs, rhs);
-            double intermediateDiv = (double) AonB;
-            Integer floorOfDiv = new Integer((Int64) Math.Floor(intermediateDiv));
-            ArithOp mult = new ArithOp(ArithOp.Op.Mult);
-            Rational newRhs = mult.DoOp(rhs, new Rational(floorOfDiv));
-            ArithOp sub = new ArithOp(ArithOp.Op.Sub);
-            return sub.DoOp(lhs, newRhs);
+            Div div = new Div();
+            Rational AonB = div.Op(lhs, rhs);
+            double intermediateDiv = (double)AonB;
+            Integer floorOfDiv = new Integer((Int64)Math.Floor(intermediateDiv));
+            Mult mult = new Mult();
+            Rational newRhs = mult.Op(rhs, new Rational(floorOfDiv));
+            Sub sub = new Sub();
+
+            return sub.Op(lhs, newRhs);
         }
     }
 }

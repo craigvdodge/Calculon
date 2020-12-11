@@ -6,22 +6,18 @@
 item <ICalculonType>
     = literal
     / number
-    / op
+    / function
 
 literal <Literal>
     = value:("\"" [A-Za-z0-9_]+ "\"") { new Literal(value) }
 
-op <ICalculonType>
-    = arithop
+function <FunctionInstance>
+    = ("+") { FunctionFactory.Instance["add"] }
+    / ("-") { FunctionFactory.Instance["sub"] }
+    / ("*") { FunctionFactory.Instance["mult"] }
+    / ("/") { FunctionFactory.Instance["div"] }
     / ("!") { FunctionFactory.Instance["fact"] }
     / value:([A-Za-z0-9_]+) {FunctionFactory.Instance[util.Concat(value)]}
-
-arithop <ArithOp>
-    = ("+") { new ArithOp(ArithOp.Op.Add) }
-    / ("-") { new ArithOp(ArithOp.Op.Sub) }
-    / ("*") { new ArithOp(ArithOp.Op.Mult) }
-    / ("/") { new ArithOp(ArithOp.Op.Div) }
-    / ("mod"i) { new ArithOp(ArithOp.Op.Mod) }
 
 number <ICalculonType>
     = decimal
