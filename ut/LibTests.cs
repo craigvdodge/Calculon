@@ -99,6 +99,7 @@ namespace ut
 
         // This code gets written over and over but it just
         // needs different names
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "xUnit1013:Public method should be marked as test", Justification = "<Pending>")]
         public void BasicTest(string test, string expectedOut, int maxChar = -1)
         {
             // What Calculon returns is a string, without data type
