@@ -97,6 +97,15 @@ namespace ut
             BasicTest(test, expected);
         }
 
+        [Theory]
+        [InlineData("3.0 epow ln", "3")]
+        [InlineData("10.0 5.0 pow log", "5")]
+        [InlineData("e 3.0 pow ln", "3")]
+        public void PowerTest(string test, string expected)
+        {
+            BasicTest(test, expected);
+        }
+
         // This code gets written over and over but it just
         // needs different names
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "xUnit1013:Public method should be marked as test", Justification = "<Pending>")]
