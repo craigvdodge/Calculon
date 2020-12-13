@@ -1,4 +1,6 @@
 using System;
+using System.Numerics;
+using System.Linq;
 
 // For readablity, breaking the ICalculonTypes files based on roles.
 // These are functions that operate on integers
@@ -29,7 +31,7 @@ namespace Calculon.Types
         }
 
         // TODO: Reimpement more efficently
-        private Int64 factHelper(Int64 input) 
+        private BigInteger factHelper(BigInteger input) 
         {
             if (input < 0)
             {
@@ -63,10 +65,21 @@ namespace Calculon.Types
 
         public ICalculonType Execute(ref ControllerState cs)
         {
-            Int64 b = ((Integer)cs.stack.Pop()).data;
-            Int64 a = ((Integer) cs.stack.Pop()).data;
+            BigInteger b = ((Integer)cs.stack.Pop()).data;
+            BigInteger a = ((Integer) cs.stack.Pop()).data;
             Integer result = new Integer(GreatestCommonFactor.GCF(a, b));
             return result;
+        }
+
+        static internal BigInteger GCF(BigInteger a, BigInteger b)
+        {
+            while (b != 0)
+            {
+                BigInteger temp = b;
+                b = a % b;
+                a = temp;
+            }
+            return a;
         }
 
         static internal Int64 GCF(Int64 a, Int64 b)
@@ -97,10 +110,15 @@ namespace Calculon.Types
 
         public ICalculonType Execute(ref ControllerState cs)
         {
-            Int64 b = ((Integer)cs.stack.Pop()).data;
-            Int64 a = ((Integer)cs.stack.Pop()).data;
+            BigInteger b = ((Integer)cs.stack.Pop()).data;
+            BigInteger a = ((Integer)cs.stack.Pop()).data;
             Integer result = new Integer(LeastCommonMultiple.LCM(a, b));
             return result;
+        }
+
+        static internal BigInteger LCM(BigInteger a, BigInteger b)
+        {
+            return (a / GreatestCommonFactor.GCF(a, b)) * b;
         }
 
         static internal Int64 LCM(Int64 a, Int64 b)

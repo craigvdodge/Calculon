@@ -52,8 +52,8 @@ namespace ut
         [InlineData("1.1 2 *", "2.2", 3)]
         [InlineData("pi -2.0 *", "-6.28", 5)]
         [InlineData("8 4 /", "2")]
-        [InlineData("ah 1 +", "Bh")]
-        [InlineData("7o 2o *", "16o")]
+        [InlineData("ah 1 +", "0Bh")]
+        [InlineData("7o 2o *", "016o")]
         [InlineData("101b 10b + todec", "7")]
         [InlineData("8 8 mod", "0")]
         [InlineData("2.1 2 mod", "0.1", 3)]
@@ -72,9 +72,9 @@ namespace ut
         }
 
         [Theory]
-        [InlineData("10 toHex", "Ah")]
-        [InlineData("9 ToOct", "11o")]
-        [InlineData("3 tobin", "11b")]
+        [InlineData("10 toHex", "0Ah")]
+        [InlineData("9 ToOct", "011o")]
+        [InlineData("3 tobin", "011b")]
         [InlineData("todec", "todec requires 1 argument(s)")]
         [InlineData("1.5 toHex", "Unsupported types (Calculon.Types.Real )")]
         public void BaseConversionTest(string test, string expectedOut)

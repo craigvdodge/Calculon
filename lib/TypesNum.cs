@@ -2,6 +2,8 @@ using System;
 using System.Text;
 using System.Globalization;
 using System.Collections.Generic;
+using System.Numerics;
+using System.Linq;
 
 // For readablity, breaking the ICalculonTypes files based on roles.
 // These are number types.
@@ -61,18 +63,13 @@ namespace Calculon.Types
 
     public class Integer: ICalculonType
     {
-        public Integer(string s)
+        public Integer(string s, Integer.Base b = Base.Dec)
         {
-            data = Convert.ToInt64(s, (int) Base.Dec);
-            displayBase = Base.Dec;
-        }
-        public Integer(string s, Integer.Base b)
-        {
-            data = Convert.ToInt64(s, (int) b);
+            data = ParseBigInteger(s, (int)b);
             displayBase = b;
         }
 
-        public Integer(Int64 i, Base b = Base.Dec) => (data, displayBase) = (i, b);
+        public Integer(BigInteger i, Base b = Base.Dec) => (data, displayBase) = (i, b);
 
         public EvalReturn Eval(ref ControllerState cs)
         {
@@ -84,23 +81,140 @@ namespace Calculon.Types
 
         private Integer.Base displayBase;
 
+        #region bigInteger base parsing and formatting
+        // see https://stackoverflow.com/questions/14040483/biginteger-parse-octal-string/14040916
+        // and https://stackoverflow.com/questions/14048476/biginteger-to-hex-decimal-octal-binary-strings
+        private const string digits = "0123456789ABCDEF";
+        private readonly Dictionary<char, int> values
+           = digits.ToDictionary(c => c, c => digits.IndexOf(c));
+        private BigInteger ParseBigInteger(string value, int baseOfValue)
+        {
+            //Calculon is case-insensitive, but this method isn't. Make case match digits.
+            string casefix = value.ToUpper();
+            bool negative = false;
+            if (casefix[0] == '-')
+            {
+                negative = true;
+                casefix = casefix.Substring(1);
+            }
+            BigInteger retVal = casefix.Aggregate(
+                new BigInteger(),
+                (current, digit) => current * baseOfValue + values[digit]);
+
+            if (negative)
+            {
+                retVal = BigInteger.Negate(retVal);
+            }
+
+            return retVal;
+        }
+
+        private string ToBinaryString(BigInteger bigint)
+        {
+            byte[] bytes = bigint.ToByteArray();
+            int idx = bytes.Length - 1;
+
+            // Create a StringBuilder having appropriate capacity.
+            StringBuilder base2 = new StringBuilder(bytes.Length * 8);
+
+            // Convert first byte to binary.
+            string binary = Convert.ToString(bytes[idx], 2);
+
+            // Ensure leading zero exists if value is positive.
+            if (binary[0] != '0' && bigint.Sign == 1)
+            {
+                base2.Append('0');
+            }
+
+            // Append binary string to StringBuilder.
+            base2.Append(binary);
+
+            // Convert remaining bytes adding leading zeros.
+            for (idx--; idx >= 0; idx--)
+            {
+                base2.Append(Convert.ToString(bytes[idx], 2).PadLeft(8, '0'));
+            }
+
+            return base2.ToString();
+        }
+
+        private string ToOctalString(BigInteger bigint)
+        {
+            byte[] bytes = bigint.ToByteArray();
+            int idx = bytes.Length - 1;
+
+            // Create a StringBuilder having appropriate capacity.
+            StringBuilder base8 = new StringBuilder(((bytes.Length / 3) + 1) * 8);
+
+            // Calculate how many bytes are extra when byte array is split
+            // into three-byte (24-bit) chunks.
+            int extra = bytes.Length % 3;
+
+            // If no bytes are extra, use three bytes for first chunk.
+            if (extra == 0)
+            {
+                extra = 3;
+            }
+
+            // Convert first chunk (24-bits) to integer value.
+            int int24 = 0;
+            for (; extra != 0; extra--)
+            {
+                int24 <<= 8;
+                int24 += bytes[idx--];
+            }
+
+            // Convert 24-bit integer to octal without adding leading zeros.
+            string octal = Convert.ToString(int24, 8);
+
+            // Ensure leading zero exists if value is positive.
+            if (octal[0] != '0' && bigint.Sign == 1)
+            {
+                base8.Append('0');
+            }
+
+            // Append first converted chunk to StringBuilder.
+            base8.Append(octal);
+
+            // Convert remaining 24-bit chunks, adding leading zeros.
+            for (; idx >= 0; idx -= 3)
+            {
+                int24 = (bytes[idx] << 16) + (bytes[idx - 1] << 8) + bytes[idx - 2];
+                base8.Append(Convert.ToString(int24, 8).PadLeft(8, '0'));
+            }
+
+            return base8.ToString();
+        }
+        #endregion
         public Base DisplayBase
         {
             get { return displayBase; }
             set { displayBase = value; }
         }
 
-        internal Int64 data;
+        internal BigInteger data;
         public string Display
         {
-            get 
-            { 
-                string val = Convert.ToString(data, (int) displayBase).ToUpper();
+            get
+            {
+                string val = string.Empty;
                 switch (this.displayBase)
                 {
-                    case Base.Hex : val += "h"; break;
-                    case Base.Bin : val += "b"; break;
-                    case Base.Oct : val += "o"; break;
+                    case Base.Dec : 
+                        val = data.ToString();
+                        break;
+                    case Base.Hex :
+                        val = data.ToString("X");
+                        val += "h";
+                        break;
+                    case Base.Bin :
+                        val = ToBinaryString(data);
+                        val += "b";
+                        break;
+                    case Base.Oct :
+                        val = ToOctalString(data);
+                        val += "o";
+                        break;
                 }
                 return val; 
             }
@@ -126,7 +240,8 @@ namespace Calculon.Types
 
         public Rational(Integer i)
         {
-            numerator = i.data;
+            // NOTE: Granted this looses precision. Deemed acceptable.
+            numerator = (Int64) i.data;
             denominator = 1;
         }
 
