@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Numerics;
 using System.Collections.Generic;
 
 namespace Calculon.Types
@@ -12,9 +13,20 @@ namespace Calculon.Types
             return new Real(Math.Pow(lhs.data, rhs.data));
         }
 
+        public static Integer Pow(this Integer lhs, Integer rhs)
+        {
+            // We can only handle powers withing the range of 32 bit integers.
+            return new Integer(BigInteger.Pow(lhs.data, (int) rhs.data));
+        }
+
         public static Real EPow(this Real num)
         {
             return new Real(Math.Exp(num.data));
+        }
+
+        public static Real EPow(this Integer num)
+        {
+            return new Real(Math.Exp((double)num.data));
         }
 
         public static Real Log(this Real num)
@@ -22,9 +34,19 @@ namespace Calculon.Types
             return new Real(Math.Log10(num.data));
         }
 
+        public static Real Log(this Integer num)
+        {
+            return new Real(Math.Log10((double) num.data));
+        }
+
         public static Real Ln(this Real num)
         {
             return new Real(Math.Log(num.data));
+        }
+
+        public static Real Ln(this Integer num)
+        {
+            return new Real(Math.Log((double) num.data));
         }
     }
     #endregion
@@ -39,7 +61,7 @@ namespace Calculon.Types
         {
             get
             {
-                return FunctionFactory.TwoArgComboGenerator(typeof(Real), typeof(RealConstant));
+                return FunctionFactory.TwoArgComboGenerator(typeof(Real), typeof(RealConstant), typeof(Integer));
             }
         }
 
@@ -50,11 +72,20 @@ namespace Calculon.Types
             Type[] argTypes = new Type[] { lhs.GetType(), rhs.GetType() };
             if (argTypes.SequenceEqual(new Type[] { typeof(Real), typeof(Real) })
                 || argTypes.SequenceEqual(new Type[] { typeof(Real), typeof(RealConstant) })
-                || argTypes.SequenceEqual(new Type[] { typeof(RealConstant), typeof(Real) })) 
+                || argTypes.SequenceEqual(new Type[] { typeof(RealConstant), typeof(Real) })
+                || argTypes.SequenceEqual(new Type[] { typeof(Real), typeof(Integer)})
+                || argTypes.SequenceEqual(new Type[] { typeof(RealConstant), typeof(Integer) })
+                || argTypes.SequenceEqual(new Type[] { typeof(Integer), typeof(Real) })
+                || argTypes.SequenceEqual(new Type[] { typeof(Integer), typeof(RealConstant) })
+                ) 
             {
                 Real left = new Real(lhs);
                 Real right = new Real(rhs);
                 return left.Pow(right);
+            }
+            if(argTypes.SequenceEqual(new Type[] { typeof(Integer), typeof(Integer) }))
+            {
+                return ((Integer)lhs).Pow((Integer)rhs);
             }
             throw new ArgumentException("Unhandled argument types " + argTypes.ToString());
         }
@@ -70,9 +101,10 @@ namespace Calculon.Types
         {
             get
             {
-                Type[][] retVal = new Type[2][];
+                Type[][] retVal = new Type[3][];
                 retVal[0] = new Type[] { typeof(Real) };
                 retVal[1] = new Type[] { typeof(RealConstant) };
+                retVal[2] = new Type[] { typeof(Integer) };
                 return retVal;
             }
         }
@@ -83,6 +115,10 @@ namespace Calculon.Types
             if (input.GetType() == typeof(Real) || input.GetType() == typeof(RealConstant))
             {
                 return ((Real)input).EPow();
+            }
+            if (input.GetType() == typeof(Integer))
+            {
+                return ((Integer)input).EPow();
             }
 
             throw new NotImplementedException();
@@ -102,9 +138,10 @@ namespace Calculon.Types
         {
             get
             {
-                Type[][] retVal = new Type[2][];
+                Type[][] retVal = new Type[3][];
                 retVal[0] = new Type[] { typeof(Real) };
                 retVal[1] = new Type[] { typeof(RealConstant) };
+                retVal[2] = new Type[] { typeof(Integer) };
                 return retVal;
             }
         }
@@ -115,6 +152,10 @@ namespace Calculon.Types
             if (input.GetType() == typeof(Real) || input.GetType() == typeof(RealConstant))
             {
                 return ((Real)input).Log();
+            }
+            if (input.GetType() == typeof(Integer))
+            {
+                return ((Integer)input).Log();
             }
             throw new NotImplementedException();
         }
@@ -129,9 +170,10 @@ namespace Calculon.Types
         {
             get
             {
-                Type[][] retVal = new Type[2][];
+                Type[][] retVal = new Type[3][];
                 retVal[0] = new Type[] { typeof(Real) };
                 retVal[1] = new Type[] { typeof(RealConstant) };
+                retVal[2] = new Type[] { typeof(Integer) };
                 return retVal;
             }
         }
@@ -142,6 +184,10 @@ namespace Calculon.Types
             if (input.GetType() == typeof(Real) || input.GetType() == typeof(RealConstant))
             {
                 return ((Real)input).Ln();
+            }
+            if (input.GetType() == typeof(Integer))
+            {
+                return ((Integer)input).Ln();
             }
             throw new NotImplementedException();
         }
