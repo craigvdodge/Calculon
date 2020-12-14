@@ -8,6 +8,33 @@ using System.Collections.Generic;
 // These are Arithmetic operators
 namespace Calculon.Types
 {
+    public static class ArithOpExtensions
+    { 
+        public static Integer Add(this Integer lhs, Integer rhs)
+        {
+            Integer.Base b = ArithBase.BaseRules(lhs, rhs);
+            return new Integer(lhs.data + rhs.data, b);
+        }
+
+        public static Integer Subtract(this Integer lhs, Integer rhs)
+        {
+            Integer.Base b = ArithBase.BaseRules(lhs, rhs);
+            return new Integer(lhs.data - rhs.data, b);
+        }
+
+        public static Integer Multiply(this Integer lhs, Integer rhs)
+        {
+            Integer.Base b = ArithBase.BaseRules(lhs, rhs);
+            return new Integer(lhs.data * rhs.data, b);
+        }
+
+        public static Integer Divide(this Integer lhs, Integer rhs)
+        {
+            Integer.Base b = ArithBase.BaseRules(lhs, rhs);
+            return new Integer(lhs.data / rhs.data, b);
+        }
+    }
+
     public abstract class ArithBase : IFunctionCog
     {
         public abstract string FunctionName { get; }
@@ -72,7 +99,7 @@ namespace Calculon.Types
             throw new ArgumentException("Unhandled argument types " + argTypes.ToString());
         }
 
-        internal Integer.Base BaseRules(Integer lhs, Integer rhs)
+        internal static Integer.Base BaseRules(Integer lhs, Integer rhs)
         {
             Integer.Base b = Integer.Base.Dec;
             if (lhs.DisplayBase != Integer.Base.Dec)
@@ -95,8 +122,7 @@ namespace Calculon.Types
         public override string FunctionName { get { return "add"; } }
         internal override Integer Op(Integer lhs, Integer rhs)
         {
-            Integer.Base b = BaseRules(lhs, rhs);
-            return new Integer(lhs.data + rhs.data, b);
+            return lhs.Add(rhs);
         }
 
         internal override Real Op(Real lhs, Real rhs)
@@ -106,7 +132,7 @@ namespace Calculon.Types
 
         internal override Rational Op(Rational lhs, Rational rhs)
         {
-            Int64 newDenom = LeastCommonMultiple.LCM(lhs.denominator, rhs.denominator);
+            Int64 newDenom = lhs.denominator.LCM(rhs.denominator);
             Int64 newLhsNum = lhs.numerator * (newDenom / lhs.denominator);
             Int64 newRhsNum = rhs.numerator * (newDenom / rhs.denominator);
 
@@ -120,8 +146,7 @@ namespace Calculon.Types
 
         internal override Integer Op(Integer lhs, Integer rhs)
         {
-            Integer.Base b = BaseRules(lhs, rhs);
-            return new Integer(lhs.data - rhs.data, b);
+            return lhs.Subtract(rhs);
         }
 
         internal override Real Op(Real lhs, Real rhs)
@@ -131,7 +156,7 @@ namespace Calculon.Types
 
         internal override Rational Op(Rational lhs, Rational rhs)
         {
-            Int64 newDenom = LeastCommonMultiple.LCM(lhs.denominator, rhs.denominator);
+            Int64 newDenom = lhs.denominator.LCM(rhs.denominator);
             Int64 newLhsNum = lhs.numerator * (newDenom / lhs.denominator);
             Int64 newRhsNum = rhs.numerator * (newDenom / rhs.denominator);
 
@@ -145,8 +170,7 @@ namespace Calculon.Types
 
         internal override Integer Op(Integer lhs, Integer rhs)
         {
-            Integer.Base b = BaseRules(lhs, rhs);
-            return new Integer(lhs.data * rhs.data, b);
+            return lhs.Multiply(rhs);
         }
 
         internal override Real Op(Real lhs, Real rhs)
@@ -166,8 +190,7 @@ namespace Calculon.Types
 
         internal override Integer Op(Integer lhs, Integer rhs)
         {
-            Integer.Base b = BaseRules(lhs, rhs);
-            return new Integer(lhs.data / rhs.data, b);
+            return lhs.Divide(rhs);
         }
 
         internal override Real Op(Real lhs, Real rhs)

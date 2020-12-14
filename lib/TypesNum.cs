@@ -252,7 +252,7 @@ namespace Calculon.Types
 
         public void Reduce()
         {
-            Int64 gcf = GreatestCommonFactor.GCF(numerator, denominator);
+            Int64 gcf = numerator.GCF(denominator);
             if (gcf > 1)
             {
                 numerator = numerator / gcf;

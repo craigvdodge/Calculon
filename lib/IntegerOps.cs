@@ -6,83 +6,41 @@ using System.Linq;
 // These are functions that operate on integers
 namespace Calculon.Types
 {
-    // BUGBUG: has an overflow wrap-around bug
-    public class Factorial : IFunctionCog
+    public static class IntOpExt
     {
-        public Factorial()
-        {
-            allowedTypes = new Type[1][];
-            allowedTypes[0] = new Type[1];
-            allowedTypes[0][0] = typeof(Integer);
-        }
-
-        public string FunctionName { get { return "fact"; } }
-
-        public int NumArgs { get { return 1; } }
-
-        private Type[][] allowedTypes;
-        public Type[][] AllowedTypes { get { return allowedTypes; } }
-
-        public ICalculonType Execute(ref ControllerState cs)
-        {
-            Integer input = (Integer) cs.stack.Pop();
-            Integer result = new Integer(factHelper(input.data));
-            return result;         
-        }
-
         // TODO: Reimpement more efficently
-        private BigInteger factHelper(BigInteger input) 
+        public static Integer Factorial(this Integer num)
         {
-            if (input < 0)
+            if (num.data < 0)
             {
                 throw new ArgumentException("ERROR: Factorial needs positive integers");
             }
-
-            if (input == 0)
+            if (num.data == 0)
             {
-                return 1;
+                return new Integer(1, num.DisplayBase);
             }
             else
             {
-                return input * factHelper(input - 1);
+                Integer last = num.Subtract(new Integer(1, num.DisplayBase)).Factorial();
+                return num.Multiply(last);
             }
         }
-    }
 
-    public class GreatestCommonFactor : IFunctionCog
-    {
-        public GreatestCommonFactor()
+        public static Integer GCF(this Integer lhs, Integer rhs)
         {
-            allowedTypes = new Type[1][];
-            allowedTypes[0] = new Type[] { typeof(Integer), typeof(Integer) };
-        }
-        public string FunctionName { get { return "gcf"; } }
-
-        public int NumArgs { get { return 2; } }
-
-        private Type[][] allowedTypes;
-        public Type[][] AllowedTypes { get { return allowedTypes; } }
-
-        public ICalculonType Execute(ref ControllerState cs)
-        {
-            BigInteger b = ((Integer)cs.stack.Pop()).data;
-            BigInteger a = ((Integer) cs.stack.Pop()).data;
-            Integer result = new Integer(GreatestCommonFactor.GCF(a, b));
-            return result;
-        }
-
-        static internal BigInteger GCF(BigInteger a, BigInteger b)
-        {
+            BigInteger a = lhs.data;
+            BigInteger b = rhs.data;
             while (b != 0)
             {
                 BigInteger temp = b;
                 b = a % b;
                 a = temp;
             }
-            return a;
+
+            return new Integer(a, lhs.DisplayBase);
         }
 
-        static internal Int64 GCF(Int64 a, Int64 b)
+        public static Int64 GCF(this Int64 a, Int64 b)
         {
             while (b != 0)
             {
@@ -92,38 +50,86 @@ namespace Calculon.Types
             }
             return a;
         }
+
+        public static Integer LCM(this Integer a, Integer b)
+        {
+            return a.Divide(a.GCF(b)).Multiply(b);
+        }
+
+        static internal Int64 LCM(this Int64 a, Int64 b)
+        {
+            return (a / a.GCF(b)) * b;
+        }
+    }
+
+    public class Factorial : IFunctionCog
+    {
+        public string FunctionName { get { return "fact"; } }
+
+        public int NumArgs { get { return 1; } }
+
+        public Type[][] AllowedTypes 
+        { 
+            get 
+            {
+                Type[][] retVal = new Type[1][];
+                retVal[0] = new Type[] { typeof(Integer) };
+                return retVal;
+            }
+        }
+
+        public ICalculonType Execute(ref ControllerState cs)
+        {
+            Integer input = (Integer) cs.stack.Pop();
+            return input.Factorial();
+        }
+    }
+
+    public class GreatestCommonFactor : IFunctionCog
+    {
+        public string FunctionName { get { return "gcf"; } }
+
+        public int NumArgs { get { return 2; } }
+
+        public Type[][] AllowedTypes 
+        { 
+            get 
+            {
+                Type[][] retVal = new Type[1][];
+                retVal[0] = new Type[] { typeof(Integer), typeof(Integer) };
+                return retVal;
+            } 
+        }
+
+        public ICalculonType Execute(ref ControllerState cs)
+        {
+            Integer b = ((Integer)cs.stack.Pop());
+            Integer a = ((Integer) cs.stack.Pop());
+            return a.GCF(b);
+        }
     }
 
     public class LeastCommonMultiple : IFunctionCog
     {
-        public LeastCommonMultiple()
-        {
-            allowedTypes = new Type[1][];
-            allowedTypes[0] = new Type[] { typeof(Integer), typeof(Integer) };
-        }
         public string FunctionName { get { return "lcm"; } }
 
         public int NumArgs { get { return 2; } }
 
-        private Type[][] allowedTypes;
-        public Type[][] AllowedTypes { get { return allowedTypes; } }
+        public Type[][] AllowedTypes 
+        { 
+            get 
+            {
+                Type[][] retVal = new Type[1][];
+                retVal[0] = new Type[] { typeof(Integer), typeof(Integer) };
+                return retVal; 
+            } 
+        }
 
         public ICalculonType Execute(ref ControllerState cs)
         {
-            BigInteger b = ((Integer)cs.stack.Pop()).data;
-            BigInteger a = ((Integer)cs.stack.Pop()).data;
-            Integer result = new Integer(LeastCommonMultiple.LCM(a, b));
-            return result;
-        }
-
-        static internal BigInteger LCM(BigInteger a, BigInteger b)
-        {
-            return (a / GreatestCommonFactor.GCF(a, b)) * b;
-        }
-
-        static internal Int64 LCM(Int64 a, Int64 b)
-        {
-            return (a / GreatestCommonFactor.GCF(a, b)) * b;
+            Integer b = (Integer)cs.stack.Pop();
+            Integer a = (Integer)cs.stack.Pop();
+            return a.LCM(b);
         }
     }
 }
