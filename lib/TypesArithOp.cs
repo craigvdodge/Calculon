@@ -16,10 +16,38 @@ namespace Calculon.Types
             return new Integer(lhs.data + rhs.data, b);
         }
 
+        public static Real Add(this Real lhs, Real rhs)
+        {
+            return new Real(lhs.data + rhs.data);
+        }
+
+        public static Rational Add(this Rational lhs, Rational rhs)
+        {
+            Int64 newDenom = lhs.denominator.LCM(rhs.denominator);
+            Int64 newLhsNum = lhs.numerator * (newDenom / lhs.denominator);
+            Int64 newRhsNum = rhs.numerator * (newDenom / rhs.denominator);
+
+            return new Rational((newLhsNum + newRhsNum), newDenom);
+        }
+
         public static Integer Subtract(this Integer lhs, Integer rhs)
         {
             Integer.Base b = ArithBase.BaseRules(lhs, rhs);
             return new Integer(lhs.data - rhs.data, b);
+        }
+
+        public static Real Subtract(this Real lhs, Real rhs)
+        {
+            return new Real(lhs.data - rhs.data);
+        }
+
+        public static Rational Subtract(this Rational lhs, Rational rhs)
+        {
+            Int64 newDenom = lhs.denominator.LCM(rhs.denominator);
+            Int64 newLhsNum = lhs.numerator * (newDenom / lhs.denominator);
+            Int64 newRhsNum = rhs.numerator * (newDenom / rhs.denominator);
+
+            return new Rational((newLhsNum - newRhsNum), newDenom);
         }
 
         public static Integer Multiply(this Integer lhs, Integer rhs)
@@ -28,10 +56,55 @@ namespace Calculon.Types
             return new Integer(lhs.data * rhs.data, b);
         }
 
+        public static Real Multiply(this Real lhs, Real rhs)
+        {
+            return new Real(lhs.data * rhs.data);
+        }
+
+        public static Rational Mutliply(this Rational lhs, Rational rhs)
+        {
+            return new Rational((lhs.numerator * rhs.numerator), (lhs.denominator * rhs.denominator));
+        }
+
         public static Integer Divide(this Integer lhs, Integer rhs)
         {
             Integer.Base b = ArithBase.BaseRules(lhs, rhs);
             return new Integer(lhs.data / rhs.data, b);
+        }
+
+        public static Real Divide(this Real lhs, Real rhs)
+        {
+            return new Real(lhs.data / rhs.data);
+        }
+
+        public static Rational Divide(this Rational lhs, Rational rhs)
+        {
+            return new Rational((lhs.numerator * rhs.denominator), (lhs.denominator * rhs.numerator));
+        }
+
+        public static Integer Mod(this Integer lhs, Integer rhs)
+        {
+            Integer.Base b = ArithBase.BaseRules(lhs, rhs);
+            return new Integer(lhs.data % rhs.data, b);
+        }
+
+        public static Real Mod(this Real lhs, Real rhs)
+        {
+            return new Real(lhs.data % rhs.data);
+        }
+
+        public static Rational Mod(this Rational lhs, Rational rhs)
+        {
+            // a mod b = a - b*(floor(a/b))
+            Div div = new Div();
+            Rational AonB = div.Op(lhs, rhs);
+            double intermediateDiv = (double)AonB;
+            Integer floorOfDiv = new Integer((Int64)Math.Floor(intermediateDiv));
+            Mult mult = new Mult();
+            Rational newRhs = mult.Op(rhs, new Rational(floorOfDiv));
+            Sub sub = new Sub();
+
+            return sub.Op(lhs, newRhs);
         }
     }
 
@@ -127,16 +200,12 @@ namespace Calculon.Types
 
         internal override Real Op(Real lhs, Real rhs)
         {
-            return new Real(lhs.data + rhs.data);
+            return lhs.Add(rhs);
         }
 
         internal override Rational Op(Rational lhs, Rational rhs)
         {
-            Int64 newDenom = lhs.denominator.LCM(rhs.denominator);
-            Int64 newLhsNum = lhs.numerator * (newDenom / lhs.denominator);
-            Int64 newRhsNum = rhs.numerator * (newDenom / rhs.denominator);
-
-            return new Rational((newLhsNum + newRhsNum), newDenom);
+            return lhs.Add(rhs);
         }
     }
 
@@ -151,16 +220,12 @@ namespace Calculon.Types
 
         internal override Real Op(Real lhs, Real rhs)
         {
-            return new Real(lhs.data - rhs.data);
+            return lhs.Subtract(rhs);
         }
 
         internal override Rational Op(Rational lhs, Rational rhs)
         {
-            Int64 newDenom = lhs.denominator.LCM(rhs.denominator);
-            Int64 newLhsNum = lhs.numerator * (newDenom / lhs.denominator);
-            Int64 newRhsNum = rhs.numerator * (newDenom / rhs.denominator);
-
-            return new Rational((newLhsNum - newRhsNum), newDenom);
+            return lhs.Subtract(rhs);
         }
     }
 
@@ -175,12 +240,12 @@ namespace Calculon.Types
 
         internal override Real Op(Real lhs, Real rhs)
         {
-            return new Real(lhs.data * rhs.data);
+            return lhs.Multiply(rhs);
         }
 
         internal override Rational Op(Rational lhs, Rational rhs)
         {
-            return new Rational((lhs.numerator * rhs.numerator), (lhs.denominator * rhs.denominator));
+            return lhs.Mutliply(rhs);
         }
     }
 
@@ -195,12 +260,12 @@ namespace Calculon.Types
 
         internal override Real Op(Real lhs, Real rhs)
         {
-            return new Real(lhs.data / rhs.data);
+            return lhs.Divide(rhs);
         }
 
         internal override Rational Op(Rational lhs, Rational rhs)
         {
-            return new Rational((lhs.numerator * rhs.denominator), (lhs.denominator * rhs.numerator));
+            return lhs.Divide(rhs);
         }
     }
 
@@ -210,27 +275,17 @@ namespace Calculon.Types
 
         internal override Integer Op(Integer lhs, Integer rhs)
         {
-            Integer.Base b = BaseRules(lhs, rhs);
-            return new Integer(lhs.data % rhs.data, b);
+            return lhs.Mod(rhs);
         }
 
         internal override Real Op(Real lhs, Real rhs)
         {
-            return new Real(lhs.data % rhs.data);
+            return lhs.Mod(rhs);
         }
 
-        // a mod b = a - b*(floor(a/b))
         internal override Rational Op(Rational lhs, Rational rhs)
         {
-            Div div = new Div();
-            Rational AonB = div.Op(lhs, rhs);
-            double intermediateDiv = (double)AonB;
-            Integer floorOfDiv = new Integer((Int64)Math.Floor(intermediateDiv));
-            Mult mult = new Mult();
-            Rational newRhs = mult.Op(rhs, new Rational(floorOfDiv));
-            Sub sub = new Sub();
-
-            return sub.Op(lhs, newRhs);
+            return lhs.Mod(rhs);
         }
     }
 }
