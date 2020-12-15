@@ -8,5 +8,9 @@
   <ItemGroup>
     <ProjectReference Include="..\lib\calculonlib.csproj" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Spectre.Console" Version="0.34.0" />
+  </ItemGroup>
 
 </Project>

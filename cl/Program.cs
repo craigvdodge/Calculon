@@ -1,6 +1,6 @@
 ﻿using System;
 using Calculon;
-using Calculon.Types;
+using Spectre.Console;
 
 namespace cl
 {
@@ -16,9 +16,9 @@ namespace cl
             else{
                 while (calc.Running)
                 {
-                    Console.Write("calculon>");
-                    EvalReturn eval = calc.Eval(Console.ReadLine());
-                    Console.WriteLine(eval.Msg);
+                    string input = AnsiConsole.Ask<string>("[green]calculon[/]");
+                    EvalReturn eval = calc.Eval(input);
+                    AnsiConsole.Markup(eval.Msg + "\n");
                 }
             }
             
