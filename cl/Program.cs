@@ -18,7 +18,14 @@ namespace cl
                 {
                     string input = AnsiConsole.Ask<string>("[green]calculon[/]");
                     EvalReturn eval = calc.Eval(input);
-                    AnsiConsole.Markup(eval.Msg + "\n");
+                    if (eval.Response == Response.Error)
+                    {
+                        AnsiConsole.Markup("[red]" + eval.Msg + "\n[/]");
+                    }
+                    else
+                    {
+                        AnsiConsole.Markup(eval.Msg + "\n");
+                    }
                 }
             }
             
