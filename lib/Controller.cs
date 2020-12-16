@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
+using Calculon.Types;
 
 namespace Calculon
 {
@@ -8,6 +10,21 @@ namespace Calculon
         public Controller() 
         {
             state = new ControllerState();
+        }
+
+        public string[] StackView
+        {
+            get
+            {
+                string[] view = new string[state.stack.Count];
+                for (int i=0; i<state.stack.Count; i++)
+                {
+                    view[i] = state.stack.ElementAt(i).Display;
+                }
+
+                return view;
+            }
+
         }
         
         public EvalReturn Eval(string input)

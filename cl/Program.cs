@@ -16,19 +16,44 @@ namespace cl
             else{
                 while (calc.Running)
                 {
+                    AnsiConsole.Render(DrawStack(calc.StackView));
                     string input = AnsiConsole.Ask<string>("[green]calculon[/]");
                     EvalReturn eval = calc.Eval(input);
                     if (eval.Response == Response.Error)
                     {
-                        AnsiConsole.Markup("[red]" + eval.Msg + "\n[/]");
-                    }
-                    else
-                    {
-                        AnsiConsole.Markup(eval.Msg + "\n");
+                        AnsiConsole.MarkupLine("[red]" + eval.Msg + "[/]");
                     }
                 }
             }
-            
+        }
+
+        private static readonly int MaxStackView = 9;
+        public static Table DrawStack(string[] stackView)
+        {
+            Table sview = new Table();
+
+            sview.AddColumn(new TableColumn("id"));
+            sview.AddColumn(new TableColumn("val"));
+
+            int maxView = Math.Min(stackView.Length, MaxStackView);
+            if (stackView.Length > MaxStackView)
+            {
+                sview.AddRow("-", "(more)");
+            }
+
+            for (int i= maxView; i>0; i--)
+            {
+                sview.AddRow((i-1).ToString(), stackView[i-1]);
+            }
+
+            sview.Border = TableBorder.Square;
+            sview.Columns[0].Width(2);
+            sview.Columns[0].Alignment = Justify.Right;
+            sview.Columns[1].Width(78);
+            sview.Columns[1].Alignment = Justify.Left;
+            sview.HideHeaders();
+
+            return sview;
         }
     }
 }
