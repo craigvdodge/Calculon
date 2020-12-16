@@ -79,7 +79,7 @@ namespace Calculon.Types
                 bool allowed = false;
                 foreach(Type[] t in cog.AllowedTypes)
                 {
-                    if (t.SequenceEqual(argTypes))
+                    if (t.SequenceEqual(argTypes) || t.Contains(typeof(AnyType)))
                     {
                         allowed = true;
                         break;

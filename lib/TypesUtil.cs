@@ -65,6 +65,84 @@ namespace Calculon.Types
         public override string FunctionName { get { return "quit"; } }
     }
 
+    /// <summary>
+    /// Use to bypass type-checking on utilty functions that 
+    /// can take literally anything.
+    /// </summary>
+    public class AnyType : ICalculonType
+    {
+        public string Display { get { return string.Empty; } }
+
+        public EvalReturn Eval(ref ControllerState cs)
+        {
+            return new EvalReturn(Response.Ok, string.Empty, this.GetType()) ;
+        }
+    }
+
+    public class Drop : IFunctionCog
+    {
+        public string FunctionName { get { return "drop"; } }
+
+        public int NumArgs { get { return 1; } }
+
+        public Type[][] AllowedTypes
+        {
+            get
+            {
+                Type[][] retVal = new Type[1][];
+                retVal[0] = new Type[] { typeof(AnyType) };
+                return retVal;
+            }
+        }
+
+        public ICalculonType Execute(ref ControllerState cs)
+        {
+            cs.stack.Pop();
+            return new EmptyType();
+        }
+    }
+
+    public class Swap : IFunctionCog
+    {
+        public string FunctionName { get { return "swap"; } }
+
+        public int NumArgs { get { return 2; } }
+
+        public Type[][] AllowedTypes
+        {
+            get
+            {
+                Type[][] retVal = new Type[1][];
+                retVal[0] = new Type[] { typeof(AnyType), typeof(AnyType) };
+                return retVal;
+            }
+        }
+
+        public ICalculonType Execute(ref ControllerState cs)
+        {
+            ICalculonType zero = cs.stack.Pop();
+            ICalculonType one = cs.stack.Pop();
+            cs.stack.Push(zero);
+            cs.stack.Push(one);
+            return new EmptyType();
+        }
+    }
+
+    public class Clear : IFunctionCog
+    {
+        public string FunctionName { get { return "clear";  } }
+
+        public int NumArgs { get { return 0; } }
+
+        public Type[][] AllowedTypes { get { return null; } }
+
+        public ICalculonType Execute(ref ControllerState cs)
+        {
+            cs.stack.Clear();
+            return new EmptyType();
+        }
+    }
+
     public class util
     {
         // There's some way to get Pegasus to return the value as a nice
