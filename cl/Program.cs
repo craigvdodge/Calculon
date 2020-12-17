@@ -16,12 +16,19 @@ namespace cl
             else{
                 while (calc.Running)
                 {
-                    AnsiConsole.Render(DrawStack(calc.StackView));
-                    string input = AnsiConsole.Ask<string>("[green]calculon[/]");
-                    EvalReturn eval = calc.Eval(input);
-                    if (eval.Response == Response.Error)
+                    try
                     {
-                        AnsiConsole.MarkupLine("[red]" + eval.Msg + "[/]");
+                        AnsiConsole.Render(DrawStack(calc.StackView));
+                        string input = AnsiConsole.Ask<string>("[green]calculon[/]");
+                        EvalReturn eval = calc.Eval(input);
+                        if (eval.Response == Response.Error)
+                        {
+                            AnsiConsole.MarkupLine("[red]" + eval.Msg + "[/]");
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        AnsiConsole.WriteException(e);
                     }
                 }
             }
