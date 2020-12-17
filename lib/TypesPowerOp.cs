@@ -112,9 +112,13 @@ namespace Calculon.Types
         public ICalculonType Execute(ref ControllerState cs)
         {
             ICalculonType input = cs.stack.Pop();
-            if (input.GetType() == typeof(Real) || input.GetType() == typeof(RealConstant))
+            if (input.GetType() == typeof(Real))
             {
                 return ((Real)input).EPow();
+            }
+            if (input.GetType() == typeof(RealConstant))
+            {
+                return ((RealConstant)input).ToReal().EPow();
             }
             if (input.GetType() == typeof(Integer))
             {
@@ -149,9 +153,13 @@ namespace Calculon.Types
         public ICalculonType Execute(ref ControllerState cs)
         {
             ICalculonType input = cs.stack.Pop();
-            if (input.GetType() == typeof(Real) || input.GetType() == typeof(RealConstant))
+            if (input.GetType() == typeof(Real))
             {
                 return ((Real)input).Log();
+            }
+            if (input.GetType() == typeof(RealConstant))
+            {
+                return ((RealConstant)input).ToReal().Log();
             }
             if (input.GetType() == typeof(Integer))
             {
@@ -181,9 +189,13 @@ namespace Calculon.Types
         public ICalculonType Execute(ref ControllerState cs)
         {
             ICalculonType input = cs.stack.Pop();
-            if (input.GetType() == typeof(Real) || input.GetType() == typeof(RealConstant))
+            if (input.GetType() == typeof(Real))
             {
                 return ((Real)input).Ln();
+            }
+            if (input.GetType() == typeof(RealConstant))
+            {
+                return ((RealConstant)input).ToReal().Ln();
             }
             if (input.GetType() == typeof(Integer))
             {
