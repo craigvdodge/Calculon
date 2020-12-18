@@ -40,11 +40,11 @@ namespace Calculon.Types
             return new Integer(a, lhs.DisplayBase);
         }
 
-        public static Int64 GCF(this Int64 a, Int64 b)
+        public static BigInteger GCF(this BigInteger a, BigInteger b)
         {
             while (b != 0)
             {
-                Int64 temp = b;
+                BigInteger temp = b;
                 b = a % b;
                 a = temp;
             }
@@ -56,10 +56,11 @@ namespace Calculon.Types
             return a.Divide(a.GCF(b)).Multiply(b);
         }
 
-        static internal Int64 LCM(this Int64 a, Int64 b)
+        static internal BigInteger LCM(this BigInteger a, BigInteger b)
         {
             return (a / a.GCF(b)) * b;
         }
+
     }
 
     public class Factorial : IFunctionCog

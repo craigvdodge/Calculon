@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Text;
+using System.Numerics;
 using System.Globalization;
 using System.Collections.Generic;
 
@@ -23,9 +24,9 @@ namespace Calculon.Types
 
         public static Rational Add(this Rational lhs, Rational rhs)
         {
-            Int64 newDenom = lhs.denominator.LCM(rhs.denominator);
-            Int64 newLhsNum = lhs.numerator * (newDenom / lhs.denominator);
-            Int64 newRhsNum = rhs.numerator * (newDenom / rhs.denominator);
+            BigInteger newDenom = lhs.denominator.LCM(rhs.denominator);
+            BigInteger newLhsNum = lhs.numerator * (newDenom / lhs.denominator);
+            BigInteger newRhsNum = rhs.numerator * (newDenom / rhs.denominator);
 
             return new Rational((newLhsNum + newRhsNum), newDenom);
         }
@@ -43,9 +44,9 @@ namespace Calculon.Types
 
         public static Rational Subtract(this Rational lhs, Rational rhs)
         {
-            Int64 newDenom = lhs.denominator.LCM(rhs.denominator);
-            Int64 newLhsNum = lhs.numerator * (newDenom / lhs.denominator);
-            Int64 newRhsNum = rhs.numerator * (newDenom / rhs.denominator);
+            BigInteger newDenom = lhs.denominator.LCM(rhs.denominator);
+            BigInteger newLhsNum = lhs.numerator * (newDenom / lhs.denominator);
+            BigInteger newRhsNum = rhs.numerator * (newDenom / rhs.denominator);
 
             return new Rational((newLhsNum - newRhsNum), newDenom);
         }
@@ -99,7 +100,7 @@ namespace Calculon.Types
             Div div = new Div();
             Rational AonB = div.Op(lhs, rhs);
             double intermediateDiv = (double)AonB;
-            Integer floorOfDiv = new Integer((Int64)Math.Floor(intermediateDiv));
+            Integer floorOfDiv = new Integer((BigInteger)Math.Floor(intermediateDiv));
             Mult mult = new Mult();
             Rational newRhs = mult.Op(rhs, new Rational(floorOfDiv));
             Sub sub = new Sub();

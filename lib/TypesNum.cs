@@ -233,6 +233,13 @@ namespace Calculon.Types
 
         public Rational(Int64 num, Int64 denom)
         {
+            numerator = (BigInteger) num;
+            denominator = (BigInteger) denom;
+            this.Reduce();
+        }
+
+        public Rational(BigInteger num, BigInteger denom)
+        {
             numerator = num;
             denominator = denom;
             this.Reduce();
@@ -240,19 +247,18 @@ namespace Calculon.Types
 
         public Rational(Integer i)
         {
-            // NOTE: Granted this looses precision. Deemed acceptable.
-            numerator = (Int64) i.data;
+            numerator = (BigInteger) i.data;
             denominator = 1;
         }
 
-        internal Int64 numerator;
-        internal Int64 denominator;
+        internal BigInteger numerator;
+        internal BigInteger denominator;
 
         public static explicit operator double(Rational r) => (double) (r.numerator / r.denominator);
 
         public void Reduce()
         {
-            Int64 gcf = numerator.GCF(denominator);
+            BigInteger gcf = numerator.GCF(denominator);
             if (gcf > 1)
             {
                 numerator = numerator / gcf;
