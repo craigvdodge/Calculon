@@ -7,6 +7,21 @@ namespace ut
 {
     public class LibTest
     {
+        #region Number Class Tests
+        [Fact]
+        public void NumberCtors()
+        {
+            Number oneHalf = new Number(1, 2);
+            Assert.Equal(1, oneHalf.Numerator);
+            Assert.Equal(2, oneHalf.Denominator);
+            Number answer = new Number(42);
+            Assert.Equal(42, answer.Numerator);
+            Assert.Equal(1, answer.Denominator);
+
+        }
+
+        #endregion
+
         [Theory]
         [InlineData("8675309", typeof(Integer))]
         [InlineData("-45", typeof(Integer))]
