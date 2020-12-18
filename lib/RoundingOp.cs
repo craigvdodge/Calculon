@@ -1,5 +1,7 @@
 using System;
 using System.Text;
+using System.Linq;
+using System.Numerics;
 using System.Globalization;
 using System.Collections.Generic;
 
@@ -29,7 +31,7 @@ namespace Calculon.Types
             //Note underlying .net function is double->double
             //But I'm writing my on calculator (with blackjack and hookers)
             //and returning Integer makes more sense to me
-            return new Integer((Int64) Math.Round(arg.data));
+            return new Integer((BigInteger) Math.Round(arg.data));
         }
     }
 
@@ -53,7 +55,7 @@ namespace Calculon.Types
         {
             Real arg = (Real)cs.stack.Pop();
             //see comment on Round
-            return new Integer((Int64)Math.Floor(arg.data));
+            return new Integer((BigInteger)Math.Floor(arg.data));
         }
     }
 
@@ -77,7 +79,7 @@ namespace Calculon.Types
         {
             Real arg = (Real)cs.stack.Pop();
             //see comment on Round
-            return new Integer((Int64)Math.Ceiling(arg.data));
+            return new Integer((BigInteger)Math.Ceiling(arg.data));
         }
     }
 

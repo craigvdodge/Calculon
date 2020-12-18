@@ -226,15 +226,8 @@ namespace Calculon.Types
         public Rational(string s)
         {
             string[] parts = s.Split('/');
-            numerator = Int64.Parse(parts[0]);
-            denominator = Int64.Parse(parts[1]);
-            this.Reduce();
-        }
-
-        public Rational(Int64 num, Int64 denom)
-        {
-            numerator = (BigInteger) num;
-            denominator = (BigInteger) denom;
+            numerator = BigInteger.Parse(parts[0]);
+            denominator = BigInteger.Parse(parts[1]);
             this.Reduce();
         }
 
