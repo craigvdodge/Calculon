@@ -3,18 +3,55 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Numerics;
-using System.Threading.Tasks;
 
 
 namespace Calculon.Types
 {
     public class Number
     {
-        public Number(BigInteger Num, BigInteger Denom) =>
-            (Numerator, Denominator) = (Num, Denom);
+        #region ctors
+        public Number(BigInteger Num, BigInteger Denom)
+        {
+            if (Denom == 0)
+            {
+                throw new DivideByZeroException();
+            }
+            Numerator = Num;
+            Denominator = Denom;
+            Reduce();
+            View = ViewType.Rational;
+        }   
+        public Number(BigInteger WholeNum)
+        {
+            Numerator = WholeNum;
+            Denominator = BigInteger.One;
+            View = ViewType.Integer;
+        }
 
-        public Number(BigInteger WholeNum) => (Numerator, Denominator) = (WholeNum, 1);
+        #endregion
+        #region Helpers
+        public void Reduce()
+        {
+            if (Numerator == BigInteger.Zero)
+            { 
+                Denominator = BigInteger.One;
+            }
+
+            BigInteger gcd = BigInteger.GreatestCommonDivisor(Numerator, Denominator);
+            if (gcd > 1)
+            {
+                Numerator = Numerator / gcd;
+                Denominator = Denominator / gcd;
+            }
+        }
+
+        #endregion
+
+        #region Data
+        public enum ViewType { Integer, Rational, Real}
+        public ViewType View { get; set; }
         public BigInteger Numerator { get; set; }
         public BigInteger Denominator { get; set; }
+        #endregion
     }
 }

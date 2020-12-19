@@ -2,6 +2,7 @@ using System;
 using Xunit;
 using Calculon;
 using Calculon.Types;
+using System.Numerics;
 
 namespace ut
 {
@@ -11,13 +12,14 @@ namespace ut
         [Fact]
         public void NumberCtors()
         {
-            Number oneHalf = new Number(1, 2);
+            Number oneHalf = new Number(16, 32);
             Assert.Equal(1, oneHalf.Numerator);
             Assert.Equal(2, oneHalf.Denominator);
-            Number answer = new Number(42);
+            Assert.Equal(Number.ViewType.Rational, oneHalf.View);
+            Number answer = new Number((BigInteger) 42);
             Assert.Equal(42, answer.Numerator);
             Assert.Equal(1, answer.Denominator);
-
+            Assert.Equal(Number.ViewType.Integer, answer.View);
         }
 
         #endregion
