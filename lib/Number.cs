@@ -21,18 +21,20 @@ namespace Calculon.Types
             Denominator = Denom;
             Reduce();
             View = ViewType.Rational;
+            DisplayBase = Base.Dec;
         }   
         public Number(BigInteger WholeNum)
         {
             Numerator = WholeNum;
             Denominator = BigInteger.One;
             View = ViewType.Integer;
+            DisplayBase = Base.Dec;
         }
 
         #endregion
         public static Number Parse(string s)
         {
-            Regex rational = new Regex(@"[\+-]?\d+\/\d+$");
+            Regex rational = new Regex(@"^[\+-]?\d+\/\d+$");
             if (rational.IsMatch(s))
             {
                 bool isNegative = false;
@@ -56,6 +58,21 @@ namespace Calculon.Types
             throw new NotImplementedException();
         }
 
+        public override string ToString()
+        {
+            StringBuilder output = new StringBuilder();
+            switch (this.View)
+            {
+                case ViewType.Rational:
+                    output.Append(Numerator.ToString());
+                    output.Append('/');
+                    output.Append(Denominator.ToString());
+                    return output.ToString();
+                //TODO: Integer and Real
+                default: throw new NotImplementedException();
+            }    
+        }
+
         #region Helpers
         public void Reduce()
         {
@@ -77,6 +94,8 @@ namespace Calculon.Types
         #region Data
         public enum ViewType { Integer, Rational, Real}
         public ViewType View { get; set; }
+        public enum Base { Dec = 10, Hex = 16, Oct = 8, Bin = 2 };
+        public Base DisplayBase { get; set; }
         public BigInteger Numerator { get; set; }
         public BigInteger Denominator { get; set; }
         #endregion

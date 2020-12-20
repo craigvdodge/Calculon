@@ -31,6 +31,7 @@ namespace ut
             Assert.Equal(-3, result.Numerator);
             Assert.Equal(4, result.Denominator);
             Assert.Equal(Number.ViewType.Rational, result.View);
+            Assert.Equal("-3/4", result.ToString());
         }
 
         #endregion
