@@ -31,6 +31,16 @@ namespace Calculon.Types
             DisplayBase = Base.Dec;
         }
 
+        public Number(string s) : this(Number.Parse(s)) { }
+
+        public Number(Number number)
+        {
+            this.Numerator = number.Numerator;
+            this.Denominator = number.Denominator;
+            this.DisplayBase = number.DisplayBase;
+            this.View = number.View;
+        }
+
         #endregion
         public static Number Parse(string s)
         {
@@ -51,6 +61,7 @@ namespace Calculon.Types
                     num = BigInteger.Negate(num);
                 }
                 BigInteger denom = BigInteger.Parse(parts[1]);
+                if (denom == BigInteger.Zero) { throw new DivideByZeroException(); }
 
                 return new Number(num, denom);
             } //TODO: Integer, Reals
