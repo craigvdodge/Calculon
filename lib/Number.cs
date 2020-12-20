@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Numerics;
 
 
@@ -29,6 +30,32 @@ namespace Calculon.Types
         }
 
         #endregion
+        public static Number Parse(string s)
+        {
+            Regex rational = new Regex(@"[\+-]?\d+\/\d+$");
+            if (rational.IsMatch(s))
+            {
+                bool isNegative = false;
+                if (Regex.IsMatch(s, @"^[\-]"))
+                {
+                    isNegative = true;
+                }
+                // strip leading sign from processing
+                s = Regex.Replace(s, @"^[\+-]+", string.Empty);
+                string[] parts = s.Split('/');
+                BigInteger num = BigInteger.Parse(parts[0]);
+                if (isNegative)
+                {
+                    num = BigInteger.Negate(num);
+                }
+                BigInteger denom = BigInteger.Parse(parts[1]);
+
+                return new Number(num, denom);
+            } //TODO: Integer, Reals
+
+            throw new NotImplementedException();
+        }
+
         #region Helpers
         public void Reduce()
         {
