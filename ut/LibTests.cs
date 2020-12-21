@@ -22,16 +22,20 @@ namespace ut
             Assert.Equal(Number.ViewType.Integer, answer.View);
         }
 
-        // This could be a theory but for some reason xunit won't run a Theory
-        // with BigInteger InlineData? No errors, just fuck you, not run.
-        [Fact]
-        public void NumberParsing()
+        [Theory]
+        [InlineData("-3/4", -3, 4, Number.ViewType.Rational, Number.Base.Dec)]
+        [InlineData("+FH", 15, 1, Number.ViewType.Integer, Number.Base.Hex)]
+        [InlineData("42", 42, 1, Number.ViewType.Integer, Number.Base.Dec)]
+        [InlineData("77o", 63, 1, Number.ViewType.Integer, Number.Base.Oct)]
+        [InlineData("-1000b", -8, 1, Number.ViewType.Integer, Number.Base.Bin)]
+        public void NumberStringParsing(
+            string input, int num, int denom, Number.ViewType view, Number.Base b)
         {
-            Number result = Number.Parse("-3/4");
-            Assert.Equal(-3, result.Numerator);
-            Assert.Equal(4, result.Denominator);
-            Assert.Equal(Number.ViewType.Rational, result.View);
-            Assert.Equal("-3/4", result.ToString());
+            Number n = new Number(input);
+            Assert.Equal(num, (int) n.Numerator);
+            Assert.Equal(denom, (int)n.Denominator);
+            Assert.Equal(view, n.View);
+            Assert.Equal(b, n.DisplayBase);
         }
 
         #endregion
