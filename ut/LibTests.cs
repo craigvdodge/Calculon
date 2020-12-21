@@ -22,6 +22,22 @@ namespace ut
             Assert.Equal(Number.ViewType.Integer, answer.View);
         }
 
+        [Fact]
+        public void NumberToStringTest()
+        {
+            Number answer = new Number(42);
+            Assert.Equal("42", answer.ToString());
+            answer.DisplayBase = Number.Base.Bin;
+            Assert.Equal("0101010b", answer.ToString());
+            answer.DisplayBase = Number.Base.Hex;
+            Assert.Equal("2Ah", answer.ToString());
+            answer.DisplayBase = Number.Base.Oct;
+            Assert.Equal("052o", answer.ToString());
+            answer.DisplayBase = Number.Base.Dec;
+            answer.View = Number.ViewType.Rational;
+            Assert.Equal("42/1", answer.ToString());
+        }
+
         [Theory]
         [InlineData("-3/4", -3, 4, Number.ViewType.Rational, Number.Base.Dec)]
         [InlineData("+FH", 15, 1, Number.ViewType.Integer, Number.Base.Hex)]
