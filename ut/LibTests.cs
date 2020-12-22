@@ -63,12 +63,12 @@ namespace ut
         #endregion
 
         [Theory]
-        [InlineData("8675309", typeof(Integer))]
-        [InlineData("-45", typeof(Integer))]
-        [InlineData("-2.8", typeof(Real))]
-        [InlineData("3.14159", typeof(Real))]
-        [InlineData("3/4", typeof(Rational))]
-        [InlineData("-5/8", typeof(Rational))]
+        [InlineData("8675309", typeof(Number))]
+        [InlineData("-45", typeof(Number))]
+        [InlineData("-2.8", typeof(Number))]
+        [InlineData("3.14159", typeof(Number))]
+        [InlineData("3/4", typeof(Number))]
+        [InlineData("-5/8", typeof(Number))]
         [InlineData(@"""Plan_9_From_Outer_Space""", typeof(Literal))]
         [InlineData("pi", typeof(RealConstant))]
         [InlineData("e", typeof(RealConstant))]

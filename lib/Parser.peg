@@ -25,19 +25,19 @@ number <ICalculonType>
     / integer
     / realconstant
 
-decimal <Real>
-    = value:("-"*[0-9]+ ("." [0-9]+)) { new Real(value) }
+decimal <Number>
+    = value:("-"*[0-9]+ ("." [0-9]+)) { new Number(value) }
 
-rational <Rational>
-    = value:("-"*[0-9]+ ("/" [1-9]+)) { new Rational(value) }
+rational <Number>
+    = value:("-"*[0-9]+ ("/" [1-9]+)) { new Number(value) }
 
 // # note order is vitally important below.
-integer <Integer>
-    = value:("-"*[0-9A-Fa-f]+"h"i) { new Integer(value.TrimEnd(value[value.Length - 1]), Integer.Base.Hex) }
-    / value:("-"*[0-9]+"d"i) { new Integer(value.TrimEnd(value[value.Length - 1]), Integer.Base.Dec) }
-    / value:("-"*[0-7]+"o"i) { new Integer(value.TrimEnd(value[value.Length - 1]), Integer.Base.Oct) }
-    / value:("-"*[0-1]+"b"i) { new Integer(value.TrimEnd(value[value.Length - 1]), Integer.Base.Bin) }
-    / value:("-"*[0-9]+) { new Integer(value) }
+integer <Number>
+    = value:("-"*[0-9A-Fa-f]+"h"i) { new Number(value) }
+    / value:("-"*[0-9]+"d"i) { new Number(value) }
+    / value:("-"*[0-7]+"o"i) { new Number(value) }
+    / value:("-"*[0-1]+"b"i) { new Number(value) }
+    / value:("-"*[0-9]+) { new Number(value) }
 
 realconstant <RealConstant>
     = ("pi"i<1>!([A-Za-z0-9_]+)) { new RealConstant(RealConstant.Constant.pi) }

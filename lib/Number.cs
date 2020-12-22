@@ -8,7 +8,7 @@ using System.Numerics;
 
 namespace Calculon.Types
 {
-    public class Number
+    public class Number : ICalculonType
     {
         #region ctors
         public Number(BigInteger Num, BigInteger Denom)
@@ -163,9 +163,9 @@ namespace Calculon.Types
                     // If it's a whole number, we can quit here.
                     if (result==0){ return output.ToString(); }
                     BigInteger decimals = (Numerator * BigInteger.Pow(10, Precision)) / Denominator;
+                    // if decimals is < 0 loop below exits prematurely.
+                    decimals = BigInteger.Abs(decimals);
                     if (decimals == 0) { return output.ToString(); }
-                    // Not nice and round, put in decimal point
-                    output.Append('.');
 
                     // calculate the other side of the decimal point
                     int p = Precision;
@@ -175,7 +175,12 @@ namespace Calculon.Types
                         rhs.Append(decimals % 10);
                         decimals /= 10;
                     }
-                    output.Append(new string(rhs.ToString().Reverse().ToArray()).TrimEnd(new char[] { '0' }));
+                    string rightOfDec = new string(rhs.ToString().Reverse().ToArray()).TrimEnd(new char[] { '0' });
+                    if (rightOfDec != string.Empty)
+                    {
+                        output.Append('.');
+                        output.Append(rightOfDec);
+                    }
 
                     return output.ToString();
                 default: throw new Exception("Unknown type of Number");
@@ -357,6 +362,14 @@ namespace Calculon.Types
         // Always has been *click*
         public BigInteger Numerator { get; set; }
         public BigInteger Denominator { get; set; }
+        #endregion
+        #region ICalculonType
+        public string Display { get { return ToString(); } }
+        public EvalReturn Eval(ref ControllerState cs)
+        {
+            cs.stack.Push(this);
+            return new EvalReturn(Response.Ok, this);
+        }
         #endregion
     }
 }

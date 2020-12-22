@@ -10,95 +10,118 @@ using System.Collections.Generic;
 namespace Calculon.Types
 {
     public static class ArithOpExtensions
-    { 
-        public static Integer Add(this Integer lhs, Integer rhs)
+    {
+        internal static Number.Base BaseRules(Number.Base lhs, Number.Base rhs)
         {
-            Integer.Base b = ArithBase.BaseRules(lhs, rhs);
-            return new Integer(lhs.data + rhs.data, b);
+            Number.Base output = Number.Base.Dec;
+            if (lhs != Number.Base.Dec)
+            {
+                output = lhs;
+            }
+            if (rhs != Number.Base.Dec)
+            {
+                output = rhs;
+            }
+            return output;
         }
-
-        public static Real Add(this Real lhs, Real rhs)
-        {
-            return new Real(lhs.data + rhs.data);
-        }
-
-        public static Rational Add(this Rational lhs, Rational rhs)
-        {
-            BigInteger newDenom = lhs.denominator.LCM(rhs.denominator);
-            BigInteger newLhsNum = lhs.numerator * (newDenom / lhs.denominator);
-            BigInteger newRhsNum = rhs.numerator * (newDenom / rhs.denominator);
-
-            return new Rational((newLhsNum + newRhsNum), newDenom);
-        }
-
+        #region DEPRICATION STATION
+        // These are around just long enough to get this to compile
+        // Once references go to zero, delete.
         public static Integer Subtract(this Integer lhs, Integer rhs)
         {
             Integer.Base b = ArithBase.BaseRules(lhs, rhs);
             return new Integer(lhs.data - rhs.data, b);
         }
-
-        public static Real Subtract(this Real lhs, Real rhs)
-        {
-            return new Real(lhs.data - rhs.data);
-        }
-
-        public static Rational Subtract(this Rational lhs, Rational rhs)
-        {
-            BigInteger newDenom = lhs.denominator.LCM(rhs.denominator);
-            BigInteger newLhsNum = lhs.numerator * (newDenom / lhs.denominator);
-            BigInteger newRhsNum = rhs.numerator * (newDenom / rhs.denominator);
-
-            return new Rational((newLhsNum - newRhsNum), newDenom);
-        }
-
         public static Integer Multiply(this Integer lhs, Integer rhs)
         {
             Integer.Base b = ArithBase.BaseRules(lhs, rhs);
             return new Integer(lhs.data * rhs.data, b);
         }
-
-        public static Real Multiply(this Real lhs, Real rhs)
-        {
-            return new Real(lhs.data * rhs.data);
-        }
-
-        public static Rational Mutliply(this Rational lhs, Rational rhs)
-        {
-            return new Rational((lhs.numerator * rhs.numerator), (lhs.denominator * rhs.denominator));
-        }
-
         public static Integer Divide(this Integer lhs, Integer rhs)
         {
             Integer.Base b = ArithBase.BaseRules(lhs, rhs);
             return new Integer(lhs.data / rhs.data, b);
         }
+        #endregion
 
-        public static Real Divide(this Real lhs, Real rhs)
+        private static Number.ViewType ViewDecider(Number.ViewType lhs, Number.ViewType rhs)
         {
-            return new Real(lhs.data / rhs.data);
+            Number.ViewType output = Number.ViewType.Rational;
+
+            if (lhs == Number.ViewType.Integer && rhs == Number.ViewType.Integer)
+            {
+                output = Number.ViewType.Integer;
+            }
+            if (lhs == Number.ViewType.Rational || rhs == Number.ViewType.Rational)
+            {
+                output = Number.ViewType.Rational;
+            }
+            if (lhs == Number.ViewType.Real || rhs == Number.ViewType.Real)
+            {
+                output = Number.ViewType.Real;
+            }
+            return output;
+        }
+        public static Number Add(this Number lhs, Number rhs)
+        {
+            BigInteger newDenom = lhs.Denominator.LCM(rhs.Denominator);
+            BigInteger newLhsNum = lhs.Numerator * (newDenom / lhs.Denominator);
+            BigInteger newRhsNum = rhs.Numerator * (newDenom / rhs.Denominator);
+
+            Number output = new Number(newLhsNum + newRhsNum, newDenom);
+            output.View = ViewDecider(lhs.View, rhs.View);
+            if (output.View == Number.ViewType.Integer)
+            {
+                output.DisplayBase = BaseRules(lhs.DisplayBase, rhs.DisplayBase);
+            }
+            return output;
         }
 
-        public static Rational Divide(this Rational lhs, Rational rhs)
+        public static Number Subtract(this Number lhs, Number rhs)
         {
-            return new Rational((lhs.numerator * rhs.denominator), (lhs.denominator * rhs.numerator));
+            BigInteger newDenom = lhs.Denominator.LCM(rhs.Denominator);
+            BigInteger newLhsNum = lhs.Numerator * (newDenom / lhs.Denominator);
+            BigInteger newRhsNum = rhs.Numerator * (newDenom / rhs.Denominator);
+
+            Number output = new Number(newLhsNum - newRhsNum, newDenom);
+            output.View = ViewDecider(lhs.View, rhs.View);
+            if (output.View == Number.ViewType.Integer)
+            {
+                output.DisplayBase = BaseRules(lhs.DisplayBase, rhs.DisplayBase);
+            }
+            return output;
         }
 
-        public static Integer Mod(this Integer lhs, Integer rhs)
+        public static Number Multiply(this Number lhs, Number rhs)
         {
-            Integer.Base b = ArithBase.BaseRules(lhs, rhs);
-            return new Integer(lhs.data % rhs.data, b);
+            Number output = 
+                new Number(lhs.Numerator * rhs.Numerator, lhs.Denominator * rhs.Denominator);
+            output.View = ViewDecider(lhs.View, rhs.View);
+            if (output.View == Number.ViewType.Integer)
+            {
+                output.DisplayBase = BaseRules(lhs.DisplayBase, rhs.DisplayBase);
+            }
+            return output;
         }
 
-        public static Real Mod(this Real lhs, Real rhs)
+        public static Number Divide(this Number lhs, Number rhs)
         {
-            return new Real(lhs.data % rhs.data);
+            Number output = 
+                new Number(lhs.Numerator * rhs.Denominator, lhs.Denominator * rhs.Numerator);
+            output.View = ViewDecider(lhs.View, rhs.View);
+            if (output.View == Number.ViewType.Integer)
+            {
+                output.DisplayBase = BaseRules(lhs.DisplayBase, rhs.DisplayBase);
+            }
+            return output;
         }
 
-        public static Rational Mod(this Rational lhs, Rational rhs)
+        /*
+        public static Number Mod(this Number lhs, Number rhs)
         {
             // a mod b = a - b*(floor(a/b))
             Div div = new Div();
-            Rational AonB = div.Op(lhs, rhs);
+            Number AonB = div.Op(lhs, rhs);
             double intermediateDiv = (double)AonB;
             Integer floorOfDiv = new Integer((BigInteger)Math.Floor(intermediateDiv));
             Mult mult = new Mult();
@@ -107,6 +130,8 @@ namespace Calculon.Types
 
             return sub.Op(lhs, newRhs);
         }
+        */
+        
     }
 
     public abstract class ArithBase : IFunctionCog
@@ -117,7 +142,9 @@ namespace Calculon.Types
         {
             get
             {
-                return FunctionFactory.TwoArgComboGenerator(typeof(Integer), typeof(Real), typeof(Rational), typeof(RealConstant));
+                Type[][] retVal = new Type[1][];
+                retVal[0] = new Type[] { typeof(Number), typeof(Number) };
+                return retVal;
             }
         }
 
@@ -127,52 +154,16 @@ namespace Calculon.Types
             ICalculonType lhs = cs.stack.Pop();
             Type[] argTypes = new Type[] { lhs.GetType(), rhs.GetType() };
 
-            if (argTypes.SequenceEqual(new Type[] { typeof(Integer), typeof(Integer) }))
+            if (argTypes.SequenceEqual(new Type[] { typeof(Number), typeof(Number) }))
             {
-                return Op((Integer)lhs, (Integer)rhs);
-            }
-            if (argTypes.SequenceEqual(new Type[] { typeof(Integer), typeof(Real) })
-                || argTypes.SequenceEqual(new Type[] { typeof(Rational), typeof(Real) })
-                || argTypes.SequenceEqual(new Type[] { typeof(RealConstant), typeof(Real) }))
-            {
-                return Op(new Real(lhs), (Real)rhs);
-            }
-            if (argTypes.SequenceEqual(new Type[] { typeof(Integer), typeof(Rational) }))
-            {
-                return Op(new Rational((Integer)lhs), (Rational)rhs);
-            }
-            if (argTypes.SequenceEqual(new Type[] { typeof(Real), typeof(Integer) })
-                || argTypes.SequenceEqual(new Type[] { typeof(Real), typeof(Rational) }))
-            {
-                return Op((Real)lhs, new Real(rhs));
-            }
-            if (argTypes.SequenceEqual(new Type[] { typeof(Real), typeof(Real) }))
-            {
-                return Op((Real)lhs, (Real)rhs);
-            }
-            if (argTypes.SequenceEqual(new Type[] { typeof(Rational), typeof(Integer) }))
-            {
-                return Op((Rational)lhs, new Rational((Integer)rhs));
-            }
-            if (argTypes.SequenceEqual(new Type[] { typeof(Rational), typeof(Rational) }))
-            {
-                return Op((Rational)lhs, (Rational)rhs);
-            }
-            if (argTypes.SequenceEqual(new Type[] { typeof(RealConstant), typeof(Integer)})
-                || argTypes.SequenceEqual(new Type[] { typeof(RealConstant), typeof(Rational) })
-                || argTypes.SequenceEqual(new Type[] { typeof(RealConstant), typeof(RealConstant) })
-                || argTypes.SequenceEqual(new Type[] { typeof(Integer), typeof(RealConstant) })
-                || argTypes.SequenceEqual(new Type[] { typeof(Rational), typeof(RealConstant) }))
-            {
-                return Op(new Real(lhs), new Real(rhs));
-            }
-            if (argTypes.SequenceEqual(new Type[] { typeof(Real), typeof(RealConstant)}))
-            {
-                return Op((Real) lhs, new Real(rhs));
+                return Op((Number)lhs, (Number)rhs);
             }
             throw new ArgumentException("Unhandled argument types " + argTypes.ToString());
         }
 
+        internal abstract Number Op(Number lhs, Number rhs);
+
+        //DEPRECATED
         internal static Integer.Base BaseRules(Integer lhs, Integer rhs)
         {
             Integer.Base b = Integer.Base.Dec;
@@ -186,25 +177,12 @@ namespace Calculon.Types
             }
             return b;
         }
-        internal abstract Integer Op(Integer lhs, Integer rhs);
-        internal abstract Real Op(Real lhs, Real rhs);
-        internal abstract Rational Op(Rational lhs, Rational rhs);
     }
 
     public class Add : ArithBase
     {
         public override string FunctionName { get { return "add"; } }
-        internal override Integer Op(Integer lhs, Integer rhs)
-        {
-            return lhs.Add(rhs);
-        }
-
-        internal override Real Op(Real lhs, Real rhs)
-        {
-            return lhs.Add(rhs);
-        }
-
-        internal override Rational Op(Rational lhs, Rational rhs)
+        internal override Number Op(Number lhs, Number rhs)
         {
             return lhs.Add(rhs);
         }
@@ -213,18 +191,7 @@ namespace Calculon.Types
     public class Sub : ArithBase
     {
         public override string FunctionName { get { return "sub"; } }
-
-        internal override Integer Op(Integer lhs, Integer rhs)
-        {
-            return lhs.Subtract(rhs);
-        }
-
-        internal override Real Op(Real lhs, Real rhs)
-        {
-            return lhs.Subtract(rhs);
-        }
-
-        internal override Rational Op(Rational lhs, Rational rhs)
+        internal override Number Op(Number lhs, Number rhs)
         {
             return lhs.Subtract(rhs);
         }
@@ -233,43 +200,22 @@ namespace Calculon.Types
     public class Mult : ArithBase
     {
         public override string FunctionName { get { return "mult"; } }
-
-        internal override Integer Op(Integer lhs, Integer rhs)
+        internal override Number Op(Number lhs, Number rhs)
         {
             return lhs.Multiply(rhs);
-        }
-
-        internal override Real Op(Real lhs, Real rhs)
-        {
-            return lhs.Multiply(rhs);
-        }
-
-        internal override Rational Op(Rational lhs, Rational rhs)
-        {
-            return lhs.Mutliply(rhs);
         }
     }
 
     public class Div : ArithBase
     {
         public override string FunctionName { get { return "div"; } }
-
-        internal override Integer Op(Integer lhs, Integer rhs)
-        {
-            return lhs.Divide(rhs);
-        }
-
-        internal override Real Op(Real lhs, Real rhs)
-        {
-            return lhs.Divide(rhs);
-        }
-
-        internal override Rational Op(Rational lhs, Rational rhs)
+        internal override Number Op(Number lhs, Number rhs)
         {
             return lhs.Divide(rhs);
         }
     }
 
+    /*
     public class Mod : ArithBase
     {
         public override string FunctionName { get { return "mod"; } }
@@ -289,4 +235,5 @@ namespace Calculon.Types
             return lhs.Mod(rhs);
         }
     }
+    */
 }
