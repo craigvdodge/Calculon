@@ -22,6 +22,7 @@ namespace Calculon.Types
             Reduce();
             View = ViewType.Rational;
             DisplayBase = Base.Dec;
+            Precision = BigInteger.MinusOne;
         }   
         public Number(BigInteger WholeNum)
         {
@@ -29,6 +30,7 @@ namespace Calculon.Types
             Denominator = BigInteger.One;
             View = ViewType.Integer;
             DisplayBase = Base.Dec;
+            Precision = BigInteger.MinusOne;
         }
 
         public Number(string s) : this(Number.Parse(s)) { }
@@ -39,11 +41,14 @@ namespace Calculon.Types
             this.Denominator = number.Denominator;
             this.DisplayBase = number.DisplayBase;
             this.View = number.View;
+            this.Precision = number.Precision;
         }
 
         #endregion
+        #region To and from strings
         public static Number Parse(string s)
         {
+            s = s.Trim();
             if (Number.RationalMatch.IsMatch(s))
             {
                 bool isNegative = false;
@@ -106,9 +111,18 @@ namespace Calculon.Types
                 output.DisplayBase = Base.Bin;
                 return output;
             }
-            //TODO: Reals
-
-            throw new NotImplementedException();
+            if (Number.RealMatch.IsMatch(s))
+            {
+                int decimalPoint = s.IndexOf('.');
+                s = s.Replace(".", string.Empty);
+                BigInteger num = BigInteger.Parse(s);
+                BigInteger denom = BigInteger.Pow(10, s.Length - decimalPoint);
+                Number output = new Number(num, denom);
+                //num and denom are reduced as part of rational ctor
+                output.View = ViewType.Real;
+                return output;
+            }
+            throw new ArgumentException("Unrecognized input: " + s, s);
         }
 
         public override string ToString()
@@ -145,7 +159,7 @@ namespace Calculon.Types
                 default: throw new NotImplementedException();
             }    
         }
-
+        #endregion
         #region Helpers
         public void Reduce()
         {
@@ -160,6 +174,13 @@ namespace Calculon.Types
                 Numerator = Numerator / gcd;
                 Denominator = Denominator / gcd;
             }
+        }
+
+        public static bool IsNumber(string s)
+        {
+            return RationalMatch.IsMatch(s) || HexIntegerMatch.IsMatch(s)
+                || DecIntegerMatch.IsMatch(s) || OctIntegerMatch.IsMatch(s)
+                || BinIntegerMatch.IsMatch(s) || RealMatch.IsMatch(s);
         }
 
         // see https://stackoverflow.com/questions/14040483/biginteger-parse-octal-string/14040916
@@ -266,7 +287,6 @@ namespace Calculon.Types
         }
 
         #endregion
-
         #region parsing regexes
         private static readonly Regex RationalMatch = 
             new Regex(@"^[\+-]?\d+\/\d+$", RegexOptions.Compiled);
@@ -278,13 +298,23 @@ namespace Calculon.Types
             new Regex(@"^[\+-]?[0-7]+[oO]$", RegexOptions.Compiled);
         private static readonly Regex BinIntegerMatch =
             new Regex(@"^[\+-]?[0-1]+[bB]$", RegexOptions.Compiled);
-
+        private static readonly Regex RealMatch =
+            new Regex(@"^[\+-]?\d*\.\d+$", RegexOptions.Compiled);
         #endregion
         #region Data
+        // This will eventually be set some ofther way
+        // as a global config of the whole Calculon interpreter.
+        public static BigInteger GlobalPrecision = 70;
+        // Local precision override. -1 is use global
+        public BigInteger Precision { get; set; }
+        //TODO: sanity checking on setters
+        // e.g. don't set to Integer if denominator is not 1.
         public enum ViewType { Integer, Rational, Real}
         public ViewType View { get; set; }
         public enum Base { Dec = 10, Hex = 16, Oct = 8, Bin = 2 };
         public Base DisplayBase { get; set; }
+        // Wait, it's all just fractions?
+        // Always has been *click*
         public BigInteger Numerator { get; set; }
         public BigInteger Denominator { get; set; }
         #endregion

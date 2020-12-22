@@ -20,6 +20,7 @@ namespace ut
             Assert.Equal(42, answer.Numerator);
             Assert.Equal(1, answer.Denominator);
             Assert.Equal(Number.ViewType.Integer, answer.View);
+            Assert.Throws<ArgumentException>(() => Number.Parse("blarg"));
         }
 
         [Fact]
@@ -44,6 +45,7 @@ namespace ut
         [InlineData("42", 42, 1, Number.ViewType.Integer, Number.Base.Dec)]
         [InlineData("77o", 63, 1, Number.ViewType.Integer, Number.Base.Oct)]
         [InlineData("-1000b", -8, 1, Number.ViewType.Integer, Number.Base.Bin)]
+        [InlineData(".75", 3, 4, Number.ViewType.Real, Number.Base.Dec)]
         public void NumberStringParsing(
             string input, int num, int denom, Number.ViewType view, Number.Base b)
         {
