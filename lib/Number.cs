@@ -22,7 +22,7 @@ namespace Calculon.Types
             Reduce();
             View = ViewType.Rational;
             DisplayBase = Base.Dec;
-            Precision = BigInteger.MinusOne;
+            precision = -1;
         }   
         public Number(BigInteger WholeNum)
         {
@@ -30,7 +30,7 @@ namespace Calculon.Types
             Denominator = BigInteger.One;
             View = ViewType.Integer;
             DisplayBase = Base.Dec;
-            Precision = BigInteger.MinusOne;
+            precision = -1;
         }
 
         public Number(string s) : this(Number.Parse(s)) { }
@@ -41,7 +41,7 @@ namespace Calculon.Types
             this.Denominator = number.Denominator;
             this.DisplayBase = number.DisplayBase;
             this.View = number.View;
-            this.Precision = number.Precision;
+            this.precision = number.precision;
         }
 
         #endregion
@@ -128,6 +128,7 @@ namespace Calculon.Types
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
+            Reduce();
             switch (this.View)
             {
                 case ViewType.Rational:
@@ -154,9 +155,30 @@ namespace Calculon.Types
                             output.Append("o");
                             break;
                     }
-                    //TODO: Real
-                    return output.ToString();  
-                default: throw new NotImplementedException();
+                    return output.ToString(); 
+                case ViewType.Real:
+                    BigInteger remainder;
+                    BigInteger result = BigInteger.DivRem(Numerator, Denominator, out remainder);
+                    output.Append(result.ToString());
+                    // If it's a whole number, we can quit here.
+                    if (result==0){ return output.ToString(); }
+                    BigInteger decimals = (Numerator * BigInteger.Pow(10, Precision)) / Denominator;
+                    if (decimals == 0) { return output.ToString(); }
+                    // Not nice and round, put in decimal point
+                    output.Append('.');
+
+                    // calculate the other side of the decimal point
+                    int p = Precision;
+                    StringBuilder rhs = new StringBuilder();
+                    while (p-- > 0 && decimals > 0)
+                    {
+                        rhs.Append(decimals % 10);
+                        decimals /= 10;
+                    }
+                    output.Append(new string(rhs.ToString().Reverse().ToArray()).TrimEnd(new char[] { '0' }));
+
+                    return output.ToString();
+                default: throw new Exception("Unknown type of Number");
             }    
         }
         #endregion
@@ -304,9 +326,27 @@ namespace Calculon.Types
         #region Data
         // This will eventually be set some ofther way
         // as a global config of the whole Calculon interpreter.
-        public static BigInteger GlobalPrecision = 70;
-        // Local precision override. -1 is use global
-        public BigInteger Precision { get; set; }
+        public static int GlobalPrecision
+        {
+            get
+            {
+                return 70;
+            }
+        }
+        // Local precision override. zero or less is use global
+        private int precision;
+        // Currently limited to about 2 billion decimal points. Sorry.
+        public int Precision 
+        {
+            get
+            {
+                return (precision <= 0) ? GlobalPrecision : precision;
+            }
+            set
+            {
+                precision = value;
+            }
+        }
         //TODO: sanity checking on setters
         // e.g. don't set to Integer if denominator is not 1.
         public enum ViewType { Integer, Rational, Real}

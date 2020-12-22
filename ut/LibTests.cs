@@ -37,6 +37,10 @@ namespace ut
             answer.DisplayBase = Number.Base.Dec;
             answer.View = Number.ViewType.Rational;
             Assert.Equal("42/1", answer.ToString());
+            Number piish = new Number(22,7);
+            piish.View = Number.ViewType.Real;
+            piish.Precision = 14;
+            Assert.Equal("3.14285714285714", piish.ToString());
         }
 
         [Theory]
