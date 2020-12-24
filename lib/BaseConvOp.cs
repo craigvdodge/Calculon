@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 
 // For readablity, breaking the ICalculonTypes files based on roles.
-// These are integer base conversion operations
+// These are base conversion operations
 namespace Calculon.Types
 {
     public abstract class BaseConvBase : IFunctionCog
     {
         public virtual string FunctionName { get; }
-        public virtual Integer.Base NewBase { get; }
+        public virtual Number.Base NewBase { get; }
 
         public int NumArgs { get { return 1; } }
 
@@ -17,14 +17,14 @@ namespace Calculon.Types
             get
             {
                 Type[][] retVal = new Type[1][];
-                retVal[0] = new Type[] { typeof(Integer) };
+                retVal[0] = new Type[] { typeof(Number) };
                 return retVal;
             }
         }
 
         public ICalculonType Execute(ref ControllerState cs)
         {
-            Integer i = (Integer)cs.stack.Pop();
+            Number i = (Number)cs.stack.Pop();
             i.DisplayBase = NewBase;
             return i;
         }
@@ -33,25 +33,25 @@ namespace Calculon.Types
     public class ToDec : BaseConvBase
     {
         public override string FunctionName { get { return "todec"; } }
-        public override Integer.Base NewBase { get { return Integer.Base.Dec; } }
+        public override Number.Base NewBase { get { return Number.Base.Dec; } }
     }
 
     public class ToBin : BaseConvBase
     {
         public override string FunctionName { get { return "tobin"; } }
-        public override Integer.Base NewBase { get { return Integer.Base.Bin; } }
+        public override Number.Base NewBase { get { return Number.Base.Bin; } }
     }
 
     public class ToHex : BaseConvBase
     {
         public override string FunctionName { get { return "tohex"; } }
-        public override Integer.Base NewBase { get { return Integer.Base.Hex; } }
+        public override Number.Base NewBase { get { return Number.Base.Hex; } }
     }
 
     public class ToOct : BaseConvBase
     {
         public override string FunctionName { get { return "tooct"; } }
-        public override Integer.Base NewBase { get { return Integer.Base.Oct; } }
+        public override Number.Base NewBase { get { return Number.Base.Oct; } }
     }
 
 }
