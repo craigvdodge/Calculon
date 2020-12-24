@@ -204,7 +204,7 @@ namespace Calculon.Types
         }
 
         public bool IsWholeNumber { get { return (Denominator == BigInteger.One); } }
-        public bool IsNegatice { get { return Numerator.Sign < 0; } }
+        public bool IsNegative { get { return Numerator.Sign < 0; } }
 
         public static bool IsNumber(string s)
         {

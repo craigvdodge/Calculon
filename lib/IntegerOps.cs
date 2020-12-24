@@ -11,7 +11,7 @@ namespace Calculon.Types
         // Better algorithims exist but it becomes a rabbit hole fast. This'll do for now.
         public static Number Factorial(this Number num)
         {
-            if (num.IsNegatice || ! num.IsWholeNumber)
+            if (num.IsNegative || ! num.IsWholeNumber)
             {
                 throw new ArgumentException("Factorial requires positive integers");
             }
@@ -27,8 +27,8 @@ namespace Calculon.Types
 
         public static Number GCF(this Number lhs, Number rhs)
         {
-            if ((lhs.IsNegatice || !lhs.IsWholeNumber) ||
-                (rhs.IsNegatice || !rhs.IsWholeNumber))
+            if ((lhs.IsNegative || !lhs.IsWholeNumber) ||
+                (rhs.IsNegative || !rhs.IsWholeNumber))
             {
                 throw new ArgumentException("GCF requires positive integers");
             }
@@ -52,8 +52,8 @@ namespace Calculon.Types
 
         public static Number LCM(this Number lhs, Number rhs)
         {
-            if ((lhs.IsNegatice || !lhs.IsWholeNumber) ||
-                (rhs.IsNegatice || !rhs.IsWholeNumber))
+            if ((lhs.IsNegative || !lhs.IsWholeNumber) ||
+                (rhs.IsNegative || !rhs.IsWholeNumber))
             {
                 throw new ArgumentException("LCM requires positive integers");
             }
@@ -95,7 +95,7 @@ namespace Calculon.Types
         public string PreExecCheck(ref ControllerState cs)
         {
             Number test = ((Number)cs.stack.Peek());
-            if (test.IsNegatice || ! test.IsWholeNumber)
+            if (test.IsNegative || ! test.IsWholeNumber)
             {
                 return "Factorial requires positive integers";
             }
@@ -130,8 +130,8 @@ namespace Calculon.Types
         {
             Number zero = (Number) cs.stack.ElementAt(0);
             Number one = (Number)cs.stack.ElementAt(1);
-            if (zero.IsNegatice || ! zero.IsWholeNumber || 
-                one.IsNegatice || ! one.IsWholeNumber)
+            if (zero.IsNegative || ! zero.IsWholeNumber || 
+                one.IsNegative || ! one.IsWholeNumber)
             {
                 return "GCF requires positive integers";
             }
@@ -167,8 +167,8 @@ namespace Calculon.Types
         {
             Number zero = (Number)cs.stack.ElementAt(0);
             Number one = (Number)cs.stack.ElementAt(1);
-            if (zero.IsNegatice || !zero.IsWholeNumber ||
-                one.IsNegatice || !one.IsWholeNumber)
+            if (zero.IsNegative || !zero.IsWholeNumber ||
+                one.IsNegative || !one.IsWholeNumber)
             {
                 return "LCM requires positive integers";
             }
