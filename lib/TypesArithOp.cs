@@ -115,22 +115,25 @@ namespace Calculon.Types
             }
             return output;
         }
-
-        /*
         public static Number Mod(this Number lhs, Number rhs)
         {
             // a mod b = a - b*(floor(a/b))
-            Div div = new Div();
-            Number AonB = div.Op(lhs, rhs);
-            double intermediateDiv = (double)AonB;
-            Integer floorOfDiv = new Integer((BigInteger)Math.Floor(intermediateDiv));
-            Mult mult = new Mult();
-            Rational newRhs = mult.Op(rhs, new Rational(floorOfDiv));
-            Sub sub = new Sub();
+            Number AonB = lhs.Divide(rhs);
+            AonB.View = Number.ViewType.Real;
+            //TODO: replace use of double when Number.Floor() is written
+            double intermediateDiv = double.Parse(AonB.ToString());
+            Number floorOfDiv = new Number((BigInteger)Math.Floor(intermediateDiv));
+            Number newRhs = rhs.Multiply(floorOfDiv);
+            Number output = lhs.Subtract(newRhs);
+            
+            output.View = ViewDecider(lhs.View, rhs.View);
+            if (output.View == Number.ViewType.Integer)
+            {
+                output.DisplayBase = BaseRules(lhs.DisplayBase, rhs.DisplayBase);
+            }
 
-            return sub.Op(lhs, newRhs);
+            return output;
         }
-        */
         
     }
 
@@ -215,25 +218,13 @@ namespace Calculon.Types
         }
     }
 
-    /*
     public class Mod : ArithBase
     {
         public override string FunctionName { get { return "mod"; } }
 
-        internal override Integer Op(Integer lhs, Integer rhs)
-        {
-            return lhs.Mod(rhs);
-        }
-
-        internal override Real Op(Real lhs, Real rhs)
-        {
-            return lhs.Mod(rhs);
-        }
-
-        internal override Rational Op(Rational lhs, Rational rhs)
+        internal override Number Op(Number lhs, Number rhs)
         {
             return lhs.Mod(rhs);
         }
     }
-    */
 }

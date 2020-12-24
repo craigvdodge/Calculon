@@ -161,7 +161,7 @@ namespace Calculon.Types
                     BigInteger result = BigInteger.DivRem(Numerator, Denominator, out remainder);
                     output.Append(result.ToString());
                     // If it's a whole number, we can quit here.
-                    if (result==0){ return output.ToString(); }
+                    if (remainder== 0){ return output.ToString(); }
                     BigInteger decimals = (Numerator * BigInteger.Pow(10, Precision)) / Denominator;
                     // if decimals is < 0 loop below exits prematurely.
                     decimals = BigInteger.Abs(decimals);
