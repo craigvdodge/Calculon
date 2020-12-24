@@ -65,6 +65,11 @@ namespace Calculon.Types
             }
         }
 
+        public string PreExecCheck(ref ControllerState cs)
+        {
+            return string.Empty;
+        }
+
         public ICalculonType Execute(ref ControllerState cs)
         {
             ICalculonType rhs = cs.stack.Pop();
@@ -127,6 +132,11 @@ namespace Calculon.Types
 
             throw new NotImplementedException();
         }
+
+        public string PreExecCheck(ref ControllerState cs)
+        {
+            return string.Empty;
+        }
     }
 
     /// <summary>
@@ -167,6 +177,11 @@ namespace Calculon.Types
             }
             throw new NotImplementedException();
         }
+
+        public string PreExecCheck(ref ControllerState cs)
+        {
+            return string.Empty;
+        }
     }
 
     public class Ln : IFunctionCog
@@ -202,6 +217,11 @@ namespace Calculon.Types
                 return ((Integer)input).Ln();
             }
             throw new NotImplementedException();
+        }
+
+        public string PreExecCheck(ref ControllerState cs)
+        {
+            return string.Empty;
         }
     }
 }

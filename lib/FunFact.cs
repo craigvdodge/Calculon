@@ -100,6 +100,13 @@ namespace Calculon.Types
                         typeof(FunctionInstance));
                 }
             }
+            // Cogs can do any arbitrary additional checks before execution
+            // if everything's ok, return empty string. If not, return error msg.
+            string precheck = cog.PreExecCheck(ref cs);
+            if (precheck != string.Empty)
+            {
+                return new EvalReturn(Response.Error, precheck, typeof(ErrorType));
+            }
             // call cog Execute
             ICalculonType retVal = cog.Execute(ref cs);
             if (retVal.GetType() != typeof(EmptyType))
@@ -149,6 +156,7 @@ namespace Calculon.Types
         string FunctionName { get; }
         int NumArgs {get;}
         Type[][] AllowedTypes {get;}
+        string PreExecCheck(ref ControllerState cs);
         ICalculonType Execute(ref ControllerState cs);
     }
 

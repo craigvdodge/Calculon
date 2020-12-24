@@ -131,7 +131,7 @@ namespace ut
         [InlineData("9 ToOct", "011o")]
         [InlineData("3 tobin", "011b")]
         [InlineData("todec", "todec requires 1 argument(s)")]
-        [InlineData("1.5 toHex", "Unsupported types (Calculon.Types.Real )")]
+        [InlineData("1.5 toHex", "Base Conversions only supported for Whole Integers.")]
         public void BaseConversionTest(string test, string expectedOut)
         {
             BasicTest(test, expectedOut);

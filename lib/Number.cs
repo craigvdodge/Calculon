@@ -203,6 +203,8 @@ namespace Calculon.Types
             }
         }
 
+        public bool IsWholeNumber { get { return (Denominator == BigInteger.One); } }
+
         public static bool IsNumber(string s)
         {
             return RationalMatch.IsMatch(s) || HexIntegerMatch.IsMatch(s)

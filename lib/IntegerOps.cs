@@ -84,6 +84,11 @@ namespace Calculon.Types
             Integer input = (Integer) cs.stack.Pop();
             return input.Factorial();
         }
+
+        public string PreExecCheck(ref ControllerState cs)
+        {
+            return string.Empty;
+        }
     }
 
     public class GreatestCommonFactor : IFunctionCog
@@ -108,6 +113,11 @@ namespace Calculon.Types
             Integer a = ((Integer) cs.stack.Pop());
             return a.GCF(b);
         }
+
+        public string PreExecCheck(ref ControllerState cs)
+        {
+            return string.Empty;
+        }
     }
 
     public class LeastCommonMultiple : IFunctionCog
@@ -131,6 +141,11 @@ namespace Calculon.Types
             Integer b = (Integer)cs.stack.Pop();
             Integer a = (Integer)cs.stack.Pop();
             return a.LCM(b);
+        }
+
+        public string PreExecCheck(ref ControllerState cs)
+        {
+            return string.Empty;
         }
     }
 }

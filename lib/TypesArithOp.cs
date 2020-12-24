@@ -180,6 +180,11 @@ namespace Calculon.Types
             }
             return b;
         }
+
+        public string PreExecCheck(ref ControllerState cs)
+        {
+            return string.Empty;
+        }
     }
 
     public class Add : ArithBase

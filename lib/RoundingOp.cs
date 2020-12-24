@@ -25,6 +25,11 @@ namespace Calculon.Types
             }
         }
 
+        public string PreExecCheck(ref ControllerState cs)
+        {
+            return string.Empty;
+        }
+
         public ICalculonType Execute(ref ControllerState cs)
         {
             Real arg = (Real) cs.stack.Pop();
@@ -57,6 +62,11 @@ namespace Calculon.Types
             //see comment on Round
             return new Integer((BigInteger)Math.Floor(arg.data));
         }
+
+        public string PreExecCheck(ref ControllerState cs)
+        {
+            return string.Empty;
+        }
     }
 
     public class Ceiling : IFunctionCog
@@ -80,6 +90,11 @@ namespace Calculon.Types
             Real arg = (Real)cs.stack.Pop();
             //see comment on Round
             return new Integer((BigInteger)Math.Ceiling(arg.data));
+        }
+
+        public string PreExecCheck(ref ControllerState cs)
+        {
+            return string.Empty;
         }
     }
 
@@ -106,6 +121,11 @@ namespace Calculon.Types
             // We're rounding to decimal palces so still should be Real
             double newData = Math.Round(arg.data, (Int32)places.data);
             return new Real(newData);
+        }
+
+        public string PreExecCheck(ref ControllerState cs)
+        {
+            return string.Empty;
         }
     }
 }

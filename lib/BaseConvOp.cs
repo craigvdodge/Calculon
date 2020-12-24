@@ -22,6 +22,15 @@ namespace Calculon.Types
             }
         }
 
+        public string PreExecCheck(ref ControllerState cs)
+        {
+            if (!((Number) cs.stack.Peek()).IsWholeNumber)
+            {
+                return "Base Conversions only supported for Whole Integers.";
+            }
+            return string.Empty;
+        }
+
         public ICalculonType Execute(ref ControllerState cs)
         {
             Number i = (Number)cs.stack.Pop();

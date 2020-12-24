@@ -53,6 +53,11 @@ namespace Calculon.Types
             }
         }
 
+        public string PreExecCheck(ref ControllerState cs)
+        {
+            return string.Empty;
+        }
+
         public ICalculonType Execute(ref ControllerState cs)
         {
             cs.running = false;
@@ -84,6 +89,11 @@ namespace Calculon.Types
         public string FunctionName { get { return "drop"; } }
 
         public int NumArgs { get { return 1; } }
+
+        public string PreExecCheck(ref ControllerState cs)
+        {
+            return string.Empty;
+        }
 
         public Type[][] AllowedTypes
         {
@@ -118,6 +128,11 @@ namespace Calculon.Types
             }
         }
 
+        public string PreExecCheck(ref ControllerState cs)
+        {
+            return string.Empty;
+        }
+
         public ICalculonType Execute(ref ControllerState cs)
         {
             ICalculonType zero = cs.stack.Pop();
@@ -135,6 +150,11 @@ namespace Calculon.Types
         public int NumArgs { get { return 0; } }
 
         public Type[][] AllowedTypes { get { return null; } }
+
+        public string PreExecCheck(ref ControllerState cs)
+        {
+            return string.Empty;
+        }
 
         public ICalculonType Execute(ref ControllerState cs)
         {
