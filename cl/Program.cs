@@ -14,12 +14,14 @@ namespace cl
                 Console.Out.WriteLine(calc.Eval(Console.In.ReadLine()).Msg);
             }
             else{
+                AnsiConsole.Console.Clear(true);
                 while (calc.Running)
                 {
                     try
                     {
                         AnsiConsole.Render(DrawStack(calc.StackView));
                         string input = AnsiConsole.Ask<string>("[green]calculon[/]");
+                        AnsiConsole.Console.Clear(true);
                         EvalReturn eval = calc.Eval(input);
                         if (eval.Response == Response.Error)
                         {
