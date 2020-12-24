@@ -11,7 +11,7 @@ namespace Calculon.Types
         // Better algorithims exist but it becomes a rabbit hole fast. This'll do for now.
         public static Number Factorial(this Number num)
         {
-            if (num.Numerator.Sign < 0 && num.Denominator != 1)
+            if (num.IsNegatice || ! num.IsWholeNumber)
             {
                 throw new ArgumentException("Factorial requires positive integers");
             }
@@ -25,18 +25,18 @@ namespace Calculon.Types
             return new Number(result);
         }
 
-        public static Integer GCF(this Integer lhs, Integer rhs)
+        public static Number GCF(this Number lhs, Number rhs)
         {
-            BigInteger a = lhs.data;
-            BigInteger b = rhs.data;
-            while (b != 0)
+            if ((lhs.IsNegatice || !lhs.IsWholeNumber) ||
+                (rhs.IsNegatice || !rhs.IsWholeNumber))
             {
-                BigInteger temp = b;
-                b = a % b;
-                a = temp;
+                throw new ArgumentException("GCF requires positive integers");
             }
 
-            return new Integer(a, lhs.DisplayBase);
+            Number output = new Number(lhs.Numerator.GCF(rhs.Numerator));
+            output.DisplayBase = ArithOpExtensions.BaseRules(lhs.DisplayBase, rhs.DisplayBase);
+
+            return output;
         }
 
         public static BigInteger GCF(this BigInteger a, BigInteger b)
@@ -50,12 +50,20 @@ namespace Calculon.Types
             return a;
         }
 
-        public static Integer LCM(this Integer a, Integer b)
+        public static Number LCM(this Number lhs, Number rhs)
         {
-            return a.Divide(a.GCF(b)).Multiply(b);
+            if ((lhs.IsNegatice || !lhs.IsWholeNumber) ||
+                (rhs.IsNegatice || !rhs.IsWholeNumber))
+            {
+                throw new ArgumentException("LCM requires positive integers");
+            }
+            Number output = new Number(lhs.Numerator.LCM(rhs.Numerator));
+            output.DisplayBase = ArithOpExtensions.BaseRules(lhs.DisplayBase, rhs.DisplayBase);
+
+            return output;
         }
 
-        static internal BigInteger LCM(this BigInteger a, BigInteger b)
+        public static BigInteger LCM(this BigInteger a, BigInteger b)
         {
             return (a / a.GCF(b)) * b;
         }
@@ -87,7 +95,7 @@ namespace Calculon.Types
         public string PreExecCheck(ref ControllerState cs)
         {
             Number test = ((Number)cs.stack.Peek());
-            if (test.Numerator.Sign < BigInteger.Zero || test.Denominator != BigInteger.One)
+            if (test.IsNegatice || ! test.IsWholeNumber)
             {
                 return "Factorial requires positive integers";
             }
@@ -106,20 +114,28 @@ namespace Calculon.Types
             get 
             {
                 Type[][] retVal = new Type[1][];
-                retVal[0] = new Type[] { typeof(Integer), typeof(Integer) };
+                retVal[0] = new Type[] { typeof(Number), typeof(Number) };
                 return retVal;
             } 
         }
 
         public ICalculonType Execute(ref ControllerState cs)
         {
-            Integer b = ((Integer)cs.stack.Pop());
-            Integer a = ((Integer) cs.stack.Pop());
+            Number b = ((Number)cs.stack.Pop());
+            Number a = ((Number) cs.stack.Pop());
             return a.GCF(b);
         }
 
         public string PreExecCheck(ref ControllerState cs)
         {
+            Number zero = (Number) cs.stack.ElementAt(0);
+            Number one = (Number)cs.stack.ElementAt(1);
+            if (zero.IsNegatice || ! zero.IsWholeNumber || 
+                one.IsNegatice || ! one.IsWholeNumber)
+            {
+                return "GCF requires positive integers";
+            }
+
             return string.Empty;
         }
     }
@@ -135,20 +151,28 @@ namespace Calculon.Types
             get 
             {
                 Type[][] retVal = new Type[1][];
-                retVal[0] = new Type[] { typeof(Integer), typeof(Integer) };
+                retVal[0] = new Type[] { typeof(Number), typeof(Number) };
                 return retVal; 
             } 
         }
 
         public ICalculonType Execute(ref ControllerState cs)
         {
-            Integer b = (Integer)cs.stack.Pop();
-            Integer a = (Integer)cs.stack.Pop();
+            Number b = (Number)cs.stack.Pop();
+            Number a = (Number)cs.stack.Pop();
             return a.LCM(b);
         }
 
         public string PreExecCheck(ref ControllerState cs)
         {
+            Number zero = (Number)cs.stack.ElementAt(0);
+            Number one = (Number)cs.stack.ElementAt(1);
+            if (zero.IsNegatice || !zero.IsWholeNumber ||
+                one.IsNegatice || !one.IsWholeNumber)
+            {
+                return "LCM requires positive integers";
+            }
+
             return string.Empty;
         }
     }
