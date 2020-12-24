@@ -8,22 +8,21 @@ namespace Calculon.Types
 {
     public static class IntOpExt
     {
-        // TODO: Reimpement more efficently
-        public static Integer Factorial(this Integer num)
+        // Better algorithims exist but it becomes a rabbit hole fast. This'll do for now.
+        public static Number Factorial(this Number num)
         {
-            if (num.data < 0)
+            if (num.Numerator.Sign < 0 && num.Denominator != 1)
             {
-                throw new ArgumentException("ERROR: Factorial needs positive integers");
+                throw new ArgumentException("Factorial requires positive integers");
             }
-            if (num.data == 0)
+
+            BigInteger result = BigInteger.One;
+            for (BigInteger i=BigInteger.One; i <= num.Numerator; i++)
             {
-                return new Integer(1, num.DisplayBase);
+                result = result * i;
             }
-            else
-            {
-                Integer last = num.Subtract(new Integer(1, num.DisplayBase)).Factorial();
-                return num.Multiply(last);
-            }
+
+            return new Number(result);
         }
 
         public static Integer GCF(this Integer lhs, Integer rhs)
@@ -74,19 +73,24 @@ namespace Calculon.Types
             get 
             {
                 Type[][] retVal = new Type[1][];
-                retVal[0] = new Type[] { typeof(Integer) };
+                retVal[0] = new Type[] { typeof(Number) };
                 return retVal;
             }
         }
 
         public ICalculonType Execute(ref ControllerState cs)
         {
-            Integer input = (Integer) cs.stack.Pop();
+            Number input = (Number) cs.stack.Pop();
             return input.Factorial();
         }
 
         public string PreExecCheck(ref ControllerState cs)
         {
+            Number test = ((Number)cs.stack.Peek());
+            if (test.Numerator.Sign < BigInteger.Zero || test.Denominator != BigInteger.One)
+            {
+                return "Factorial requires positive integers";
+            }
             return string.Empty;
         }
     }
