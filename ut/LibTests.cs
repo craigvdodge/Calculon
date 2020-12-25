@@ -139,13 +139,13 @@ namespace ut
 
         [Theory]
         [InlineData("3.14159 round", "3")]
-        [InlineData("3.14159 2 roundto", "3.14")]
+        [InlineData("3.14159 3 roundto", "3.142")]
         [InlineData("3.6 floor", "3")]
         [InlineData("3.2 ceiling", "4")]
         [InlineData("2 floor", "Unsupported types (Calculon.Types.Integer )")]
         [InlineData("ceiling", "ceiling requires 1 argument(s)")]
         [InlineData("roundTo", "roundto requires 2 argument(s)")]
-        [InlineData("1.1 1.2 roundto", "Unsupported types (Calculon.Types.Real Calculon.Types.Real )")]
+        [InlineData("1.1 1.2 roundto", "RoundTo requires a nonnegative whole number to roundto.")]
         [InlineData("round", "round requires 1 argument(s)")]
         public void RoundingOpsTests(string test, string expected)
         {

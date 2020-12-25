@@ -157,29 +157,39 @@ namespace Calculon.Types
                     }
                     return output.ToString(); 
                 case ViewType.Real:
+                    int precision = Precision + 1; // b/c we round the end
                     BigInteger remainder;
                     BigInteger result = BigInteger.DivRem(Numerator, Denominator, out remainder);
                     output.Append(result.ToString());
                     // If it's a whole number, we can quit here.
                     if (remainder== 0){ return output.ToString(); }
-                    BigInteger decimals = (Numerator * BigInteger.Pow(10, Precision)) / Denominator;
+                    BigInteger decimals = (Numerator * BigInteger.Pow(10, precision)) / Denominator;
                     // if decimals is < 0 loop below exits prematurely.
                     decimals = BigInteger.Abs(decimals);
                     if (decimals == 0) { return output.ToString(); }
 
                     // calculate the other side of the decimal point
-                    int p = Precision;
+                    int p = precision;
                     StringBuilder rhs = new StringBuilder();
                     while (p-- > 0 && decimals > 0)
                     {
                         rhs.Append(decimals % 10);
                         decimals /= 10;
                     }
-                    string rightOfDec = new string(rhs.ToString().Reverse().ToArray()).TrimEnd(new char[] { '0' });
+                    string rightOfDec = new string(rhs.ToString().Reverse().ToArray());
                     if (rightOfDec != string.Empty)
                     {
+                        // Round the last digit
+                        int last = int.Parse(rightOfDec.Substring(rightOfDec.Length - 1));
+                        rightOfDec = rightOfDec.Substring(0, rightOfDec.Length - 1);
+                        if (last >= 5)
+                        {
+                            int toRound = int.Parse(rightOfDec.Substring(rightOfDec.Length - 1));
+                            toRound++;
+                            rightOfDec = rightOfDec.Substring(0, rightOfDec.Length - 1) + toRound.ToString();
+                        }
                         output.Append('.');
-                        output.Append(rightOfDec);
+                        output.Append(rightOfDec.TrimEnd(new char[] { '0' }));
                     }
 
                     return output.ToString();

@@ -109,22 +109,34 @@ namespace Calculon.Types
             get
             {
                 Type[][] retVal = new Type[1][];
-                retVal[0] = new Type[] { typeof(Integer), typeof(Real) };
+                retVal[0] = new Type[] { typeof(Number), typeof(Number) };
                 return retVal;
             }
         }
 
         public ICalculonType Execute(ref ControllerState cs)
         {
-            Integer places = (Integer) cs.stack.Pop();
-            Real arg = (Real)cs.stack.Pop();
-            // We're rounding to decimal palces so still should be Real
-            double newData = Math.Round(arg.data, (Int32)places.data);
-            return new Real(newData);
+            Number rawPlaces = (Number)cs.stack.Pop();
+            int places = int.Parse(rawPlaces.ToString());
+            Number arg = (Number) cs.stack.Pop();
+            arg.Precision = places;
+
+            return arg;
         }
 
         public string PreExecCheck(ref ControllerState cs)
         {
+            Number test = (Number) cs.stack.Peek();
+            if (test.IsNegative || !test.IsWholeNumber)
+            {
+                return "RoundTo requires a nonnegative whole number to roundto.";
+            }
+            // Decimal places current limited to max int - 1
+            int maximum = int.MaxValue - 1;
+            if (test.Numerator > (BigInteger) maximum)
+            {
+                return "Calculon limited to " + maximum.ToString() + " digits to the right of the decimal point.";
+            }
             return string.Empty;
         }
     }
