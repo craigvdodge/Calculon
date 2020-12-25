@@ -70,7 +70,7 @@ namespace ut
         [InlineData("3/4", typeof(Number))]
         [InlineData("-5/8", typeof(Number))]
         [InlineData(@"""Plan_9_From_Outer_Space""", typeof(Literal))]
-        [InlineData("pi", typeof(RealConstant))]
+        [InlineData("pi", typeof(Constant))]
         [InlineData("e", typeof(RealConstant))]
         [InlineData("@@@", typeof(ErrorType), Response.Error, "PARSE ERROR: @@@")]
         public void BasicPushParsingTest(

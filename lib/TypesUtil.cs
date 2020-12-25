@@ -163,6 +163,35 @@ namespace Calculon.Types
         }
     }
 
+    public class Eval : IFunctionCog
+    {
+        public string FunctionName { get { return "eval"; } }
+
+        public int NumArgs { get { return 1; } }
+
+        public Type[][] AllowedTypes
+        {
+            get
+            {
+                Type[][] retVal = new Type[1][];
+                retVal[0] = new Type[] { typeof(Constant) };
+                return retVal;
+            }
+        }
+
+        public ICalculonType Execute(ref ControllerState cs)
+        {
+            Constant c = (Constant) cs.stack.Pop();
+            Number n = c.GetNumber(Number.GlobalPrecision);
+            return n;
+        }
+
+        public string PreExecCheck(ref ControllerState cs)
+        {
+            return string.Empty;
+        }
+    }
+
     public class util
     {
         // There's some way to get Pegasus to return the value as a nice

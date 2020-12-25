@@ -4,6 +4,52 @@ using System;
 // These are constants
 namespace Calculon.Types
 {
+    public class Constant : ICalculonType
+    {
+        public Constant(string Name, Func<int, Number> fun) => (name, function) = (Name, fun);
+        public string Display { get { return name; } }
+        private string name;
+        private Func<int, Number> function;
+
+        public Number GetNumber(int precision)
+        {
+            return function(precision);
+        }
+
+        public EvalReturn Eval(ref ControllerState cs)
+        {
+            cs.stack.Push(this);
+            return new EvalReturn(Response.Ok, this);
+        }
+    }
+
+    public class Pi : IFunctionCog
+    {
+        // TODO: This is just a stub. Need a real algorithim.
+        public static Number Compute(int precision)
+        {
+            Number notRight = new Number(22, 7);
+            notRight.View = Number.ViewType.Real;
+            return notRight;
+        }
+        public string FunctionName { get { return "pi"; } }
+
+        public int NumArgs { get { return 0; } }
+
+        public Type[][] AllowedTypes { get { return null; } }
+
+        public ICalculonType Execute(ref ControllerState cs)
+        {
+            Constant pi = new Constant("pi", Pi.Compute);
+            return pi;
+        }
+
+        public string PreExecCheck(ref ControllerState cs)
+        {
+            return string.Empty;
+        }
+    }
+
     // This are for constants that are typically Reals (decimals)
     public class RealConstant: ICalculonType
     {

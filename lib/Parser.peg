@@ -40,7 +40,5 @@ integer <Number>
     / value:("-"*[0-9]+) { new Number(value) }
 
 realconstant <RealConstant>
-    = ("pi"i<1>!([A-Za-z0-9_]+)) { new RealConstant(RealConstant.Constant.pi) }
-    / ("e"i<1>!([A-Za-z0-9_]+)) { new RealConstant(RealConstant.Constant.e) }
-    / ("tau"i<1>!([A-Za-z0-9_]+)) { new RealConstant(RealConstant.Constant.tau) }
+    = ("e"i<1>!([A-Za-z0-9_]+)) { new RealConstant(RealConstant.Constant.e) }
     
