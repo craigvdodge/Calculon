@@ -9,6 +9,50 @@ using System.Collections.Generic;
 // These are Rounding operators
 namespace Calculon.Types
 {
+    public static class RoundingOpsExt
+    {
+        public static Number Floor(this Number num)
+        {
+            if (num.IsWholeNumber) { return num; } // you're already a whole num
+            if (num.IsNegative)
+            {
+                num.Numerator += num.Denominator;
+            }
+            num.Numerator -= BigInteger.Remainder(num.Numerator, num.Denominator);
+            num.Reduce();
+            return num;
+        }
+
+        public static Number Ceiling(this Number num)
+        {
+            if (num.IsWholeNumber) { return num; } // you're already a whole num
+            if (!num.IsNegative)
+            {
+                num.Numerator += num.Denominator;
+            }
+            num.Numerator -= BigInteger.Remainder(num.Numerator, num.Denominator);
+            num.Reduce();
+            return num;
+        }
+
+        public static Number Round(this Number num)
+        {
+            int originalPrecision = num.Precision;
+            num.Precision = 1;
+            string NumAsString = num.ToString();
+            num.Precision = originalPrecision;
+            // Now look only at the first digit to the right
+            int test = int.Parse(NumAsString.Split('.')[1]);
+            if (test < 5)
+            {
+                return num.Floor();
+            }
+            else
+            {
+                return num.Ceiling();
+            }
+        }
+    }
     public class Round : IFunctionCog
     {
         public string FunctionName { get { return "round"; } }
@@ -20,7 +64,7 @@ namespace Calculon.Types
             get
             {
                 Type[][] retVal = new Type[1][];
-                retVal[0] = new Type[] { typeof(Real) };
+                retVal[0] = new Type[] { typeof(Number) };
                 return retVal;
             }
         }
@@ -32,11 +76,9 @@ namespace Calculon.Types
 
         public ICalculonType Execute(ref ControllerState cs)
         {
-            Real arg = (Real) cs.stack.Pop();
-            //Note underlying .net function is double->double
-            //But I'm writing my on calculator (with blackjack and hookers)
-            //and returning Integer makes more sense to me
-            return new Integer((BigInteger) Math.Round(arg.data));
+            Number arg = (Number) cs.stack.Pop();
+            arg = arg.Round();
+            return arg;
         }
     }
 
@@ -51,16 +93,16 @@ namespace Calculon.Types
             get
             {
                 Type[][] retVal = new Type[1][];
-                retVal[0] = new Type[] { typeof(Real) };
+                retVal[0] = new Type[] { typeof(Number) };
                 return retVal;
             }
         }
 
         public ICalculonType Execute(ref ControllerState cs)
         {
-            Real arg = (Real)cs.stack.Pop();
-            //see comment on Round
-            return new Integer((BigInteger)Math.Floor(arg.data));
+            Number arg = (Number) cs.stack.Pop();
+            arg = arg.Floor();
+            return arg;
         }
 
         public string PreExecCheck(ref ControllerState cs)
@@ -80,16 +122,16 @@ namespace Calculon.Types
             get
             {
                 Type[][] retVal = new Type[1][];
-                retVal[0] = new Type[] { typeof(Real) };
+                retVal[0] = new Type[] { typeof(Number) };
                 return retVal;
             }
         }
 
         public ICalculonType Execute(ref ControllerState cs)
         {
-            Real arg = (Real)cs.stack.Pop();
-            //see comment on Round
-            return new Integer((BigInteger)Math.Ceiling(arg.data));
+            Number arg = (Number) cs.stack.Pop();
+            arg = arg.Ceiling();
+            return arg;
         }
 
         public string PreExecCheck(ref ControllerState cs)
