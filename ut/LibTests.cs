@@ -72,7 +72,6 @@ namespace ut
         [InlineData(@"""Plan_9_From_Outer_Space""", typeof(Literal))]
         [InlineData("pi", typeof(RealConstant))]
         [InlineData("e", typeof(RealConstant))]
-        [InlineData("tau", typeof(RealConstant))]
         [InlineData("@@@", typeof(ErrorType), Response.Error, "PARSE ERROR: @@@")]
         public void BasicPushParsingTest(
             string testStr,
@@ -142,7 +141,7 @@ namespace ut
         [InlineData("3.14159 3 roundto", "3.142")]
         [InlineData("3.6 floor", "3")]
         [InlineData("3.2 ceiling", "4")]
-        [InlineData("2 floor", "Unsupported types (Calculon.Types.Integer )")]
+        [InlineData("2 floor", "2")]
         [InlineData("ceiling", "ceiling requires 1 argument(s)")]
         [InlineData("roundTo", "roundto requires 2 argument(s)")]
         [InlineData("1.1 1.2 roundto", "RoundTo requires a nonnegative whole number to roundto.")]
