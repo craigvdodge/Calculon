@@ -23,7 +23,6 @@ number <ICalculonType>
     = decimal
     / rational
     / integer
-    / realconstant
 
 decimal <Number>
     = value:("-"*[0-9]+ ("." [0-9]+)) { new Number(value) }
@@ -39,6 +38,4 @@ integer <Number>
     / value:("-"*[0-1]+"b"i) { new Number(value) }
     / value:("-"*[0-9]+) { new Number(value) }
 
-realconstant <RealConstant>
-    = ("e"i<1>!([A-Za-z0-9_]+)) { new RealConstant(RealConstant.Constant.e) }
     

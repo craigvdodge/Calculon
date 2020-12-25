@@ -50,6 +50,32 @@ namespace Calculon.Types
         }
     }
 
+    public class E : IFunctionCog
+    {
+        // This is a stub. Replace with real algo
+        public static Number Compute(int precision)
+        {
+            Number hack = new Number("2.7182818284590451");
+            return hack;
+        }
+        public string FunctionName { get { return "e"; } }
+
+        public int NumArgs { get { return 0; } }
+
+        public Type[][] AllowedTypes { get { return null; } }
+
+        public ICalculonType Execute(ref ControllerState cs)
+        {
+            Constant e = new Constant("e", E.Compute);
+            return e;
+        }
+
+        public string PreExecCheck(ref ControllerState cs)
+        {
+            return string.Empty;
+        }
+    }
+
     // This are for constants that are typically Reals (decimals)
     public class RealConstant: ICalculonType
     {
