@@ -16,13 +16,17 @@ namespace Calculon.Types
                 throw new ArgumentException("Factorial requires positive integers");
             }
 
+            return new Number(num.Numerator.Factorial());
+        }
+
+        public static BigInteger Factorial(this BigInteger num)
+        {
             BigInteger result = BigInteger.One;
-            for (BigInteger i=BigInteger.One; i <= num.Numerator; i++)
+            for (BigInteger i = BigInteger.One; i <= num; i++)
             {
                 result = result * i;
             }
-
-            return new Number(result);
+            return result;
         }
 
         public static Number GCF(this Number lhs, Number rhs)
