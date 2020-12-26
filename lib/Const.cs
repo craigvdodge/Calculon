@@ -1,4 +1,5 @@
 using System;
+using System.Numerics;
 
 // For readablity, breaking the ICalculonTypes files based on roles.
 // These are constants
@@ -52,11 +53,34 @@ namespace Calculon.Types
 
     public class E : IFunctionCog
     {
-        // This is a stub. Replace with real algo
+        // Algorithim taken from Harlen Brothers
+        // "Improving the Convergance of Newton's Series Approximation for e"
+        // The College Mathematics Journal vol 35, no. 1.
+        // Confirmed to 10000 decimal places
         public static Number Compute(int precision)
         {
-            Number hack = new Number("2.7182818284590451");
-            return hack;
+            BigInteger k = BigInteger.Zero;
+            int dp = 0;
+            Number result = new Number(BigInteger.Zero);
+            result.View = Number.ViewType.Real;
+            do
+            {
+                Number next = new Number((2 * k + 2), (2 * k + 1).Factorial());
+                result = result.Add(next);
+                dp = E.DecimalPlace(k);
+                k++;
+             } while (dp < precision);
+            
+            return result;
+        }
+
+        private static int DecimalPlace(BigInteger k)
+        {
+            BigInteger numerator = (2 * k + 1).Factorial();
+            BigInteger denominator = 2 * k + 2;
+            BigInteger temp = numerator / denominator;
+            double foo = BigInteger.Log(temp, 10);
+            return (int) Math.Floor(foo);
         }
         public string FunctionName { get { return "e"; } }
 
