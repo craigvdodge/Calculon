@@ -44,6 +44,13 @@ namespace Calculon.Types
             return output;
         }
 
+        public static Number Inverse(this Number num)
+        {
+            Number output = new Number(num.Denominator, num.Numerator);
+            output.View = num.View;
+            return output;
+        }
+
         public static Real Pow(this Real lhs, Real rhs)
         {
             return new Real(Math.Pow(lhs.data, rhs.data));
@@ -116,6 +123,34 @@ namespace Calculon.Types
             {
                 return "Square roots of negative numbers not supported.";
             }
+            return string.Empty;
+        }
+    }
+
+    public class Inverse : IFunctionCog
+    {
+        public string FunctionName { get { return "inverse"; } }
+
+        public int NumArgs { get { return 1; } }
+
+        public Type[][] AllowedTypes
+        {
+            get
+            {
+                Type[][] retVal = new Type[1][];
+                retVal[0] = new Type[] { typeof(Number) };
+                return retVal;
+            }
+        }
+
+        public ICalculonType Execute(ref ControllerState cs)
+        {
+            Number n = (Number) cs.stack.Pop();
+            return n.Inverse();
+        }
+
+        public string PreExecCheck(ref ControllerState cs)
+        {
             return string.Empty;
         }
     }

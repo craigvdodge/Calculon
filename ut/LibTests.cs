@@ -120,6 +120,8 @@ namespace ut
         [InlineData("5 !", "120")]
         [InlineData("2 4 lcm", "4")]
         [InlineData("2 4 gcf", "2")]
+        [InlineData("2.0 inverse", "0.5")]
+        [InlineData("2 sqrt", "1.4142135623730950488016887242096980785696718753769480731766797379907325")]
         public void ArithOpTest(string test, string expectedOut, int maxChar = -1)
         {
             BasicTest(test, expectedOut, maxChar);
