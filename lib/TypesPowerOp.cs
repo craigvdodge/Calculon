@@ -8,6 +8,42 @@ namespace Calculon.Types
     #region Extension methods
     public static class PowerExtensions
     {
+        // Uses Bakhshali algorithim
+        public static Number Sqrt(this Number num)
+        {
+            int precision = Number.GlobalPrecision;
+            Number a = new Number(BigInteger.Zero);
+            Number b = new Number(BigInteger.Zero);
+            if (num.Precision > 0)
+            {
+                precision = num.Precision;
+            }
+            // inital seed is double, so we should start w/15 dp precision
+            Number S = InitSqrtSeed(num);
+            int curPre = 15;
+            while (curPre < precision)
+            {
+                a = num.Subtract((S.Multiply(S))).Divide(S.Multiply(new Number(2)));
+                b = a.Multiply(a).Divide((S.Add(a)).Multiply(new Number(2)));
+                S = S.Add(a).Subtract(b);
+
+                curPre = curPre * 4; // converges quartically
+            }
+
+            return S;
+        }
+
+        // Initial seed for square root
+        // Next math tutorial I read that tells me to "just" start
+        // with an "approximate value" gets a punch in the mouth.
+        private static Number InitSqrtSeed(Number num)
+        {
+            double approx = Math.Pow(10, BigInteger.Log10(num.Numerator) / 2)
+                 / Math.Pow(10, BigInteger.Log10(num.Denominator) / 2);
+            Number output = new Number(approx.ToString());
+            return output;
+        }
+
         public static Real Pow(this Real lhs, Real rhs)
         {
             return new Real(Math.Pow(lhs.data, rhs.data));
@@ -50,6 +86,39 @@ namespace Calculon.Types
         }
     }
     #endregion
+
+    public class Sqrt : IFunctionCog
+    {
+        public string FunctionName { get { return "sqrt"; } }
+
+        public int NumArgs { get { return 1; } }
+
+        public Type[][] AllowedTypes
+        {
+            get
+            {
+                Type[][] retVal = new Type[1][];
+                retVal[0] = new Type[] { typeof(Number) };
+                return retVal;
+            }
+        }
+
+        public ICalculonType Execute(ref ControllerState cs)
+        {
+            Number num = (Number) cs.stack.Pop();
+            return num.Sqrt();
+        }
+
+        public string PreExecCheck(ref ControllerState cs)
+        {
+            Number num = (Number) cs.stack.Peek();
+            if (num.IsNegative)
+            {
+                return "Square roots of negative numbers not supported.";
+            }
+            return string.Empty;
+        }
+    }
 
     public class Pow : IFunctionCog
     {
