@@ -26,12 +26,39 @@ namespace Calculon.Types
 
     public class Pi : IFunctionCog
     {
-        // TODO: This is just a stub. Need a real algorithim.
+        // Chudnovsky algorithm
+        // verfied to 10k places
         public static Number Compute(int precision)
         {
-            Number notRight = new Number(22, 7);
-            notRight.View = Number.ViewType.Real;
-            return notRight;
+            Number C = new Number(10005);
+            C.View = Number.ViewType.Real;
+            C.Precision = precision;
+            C = (C.Sqrt()).Multiply(new Number(426880));
+            int maxQ = precision / 14;
+            Number M, Mnum, Mdenom = new Number(BigInteger.Zero);
+            Number L = new Number(BigInteger.Zero);
+            Number L1 = new Number(new BigInteger(545140134));
+            Number L2 = new Number(new BigInteger(13591409));
+            Number X = new Number(BigInteger.Zero);
+            Number qFact = new Number(BigInteger.Zero);
+            Number sum = new Number(BigInteger.Zero); 
+            Number term = new Number(BigInteger.Zero);
+            BigInteger Xbase = new BigInteger(-262537412640768000);
+
+            for (int q=0; q<=maxQ; q++)
+            {
+                Number Q = new Number(new BigInteger(q));
+                qFact = Q.Factorial();
+                Mnum = (Q.Multiply(new Number(6)).Factorial());
+                Mdenom = Q.Multiply(new Number(3)).Factorial();
+                Mdenom = Mdenom.Multiply(qFact).Multiply(qFact).Multiply(qFact);
+                M = Mnum.Divide(Mdenom);
+                L = L1.Multiply(Q).Add(L2);
+                X = new Number(BigInteger.Pow(Xbase, q));
+                term = (M.Multiply(L)).Divide(X);
+                sum = sum.Add(term);
+            }
+            return C.Multiply(sum.Inverse());
         }
         public string FunctionName { get { return "pi"; } }
 
