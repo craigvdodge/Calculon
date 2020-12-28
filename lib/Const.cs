@@ -14,6 +14,10 @@ namespace Calculon.Types
 
         public Number GetNumber(int precision)
         {
+            if (precision <= 0)
+            {
+                precision = Number.GlobalPrecision;
+            }
             return function(precision);
         }
 

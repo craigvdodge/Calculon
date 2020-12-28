@@ -145,9 +145,7 @@ namespace Calculon.Types
         {
             get
             {
-                Type[][] retVal = new Type[1][];
-                retVal[0] = new Type[] { typeof(Number), typeof(Number) };
-                return retVal;
+                return FunctionFactory.TwoArgComboGenerator(typeof(Number), typeof(Constant));
             }
         }
 
@@ -160,6 +158,24 @@ namespace Calculon.Types
             if (argTypes.SequenceEqual(new Type[] { typeof(Number), typeof(Number) }))
             {
                 return Op((Number)lhs, (Number)rhs);
+            }
+            if (argTypes.SequenceEqual(new Type[] { typeof(Constant), typeof(Number)}))
+            {
+                Number newRhs = (Number) rhs;
+                Number newLhs = ((Constant)lhs).GetNumber(newRhs.Precision);
+                return Op(newLhs, newRhs);
+            }
+            if (argTypes.SequenceEqual(new Type[] { typeof(Number), typeof(Constant) }))
+            {
+                Number newLhs = (Number) lhs;
+                Number newRhs = ((Constant)rhs).GetNumber(newLhs.Precision);
+                return Op(newLhs, newRhs);
+            }
+            if (argTypes.SequenceEqual(new Type[] { typeof(Constant), typeof(Constant) }))
+            {
+                Number newLhs = ((Constant)lhs).GetNumber(Number.GlobalPrecision);
+                Number newRhs = ((Constant)rhs).GetNumber(Number.GlobalPrecision);
+                return Op(newLhs, newRhs);
             }
             throw new ArgumentException("Unhandled argument types " + argTypes.ToString());
         }
