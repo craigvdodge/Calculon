@@ -33,6 +33,8 @@ namespace Calculon.Types
             precision = -1;
         }
 
+        public Number(int Wholenum) : this(new BigInteger(Wholenum)) { }
+
         public Number(string s) : this(Number.Parse(s)) { }
 
         public Number(Number number)
