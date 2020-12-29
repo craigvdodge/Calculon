@@ -51,6 +51,68 @@ namespace Calculon.Types
             return output;
         }
 
+        public static Number Abs(this Number num)
+        {
+            Number output = new Number(BigInteger.Abs(num.Numerator), num.Denominator);
+            output.View = num.View;
+            output.DisplayBase = num.DisplayBase;
+            return output;
+        }
+
+        public static Number Pow(this Number num, Number exp)
+        {
+            if (exp.Equals(0))
+            {
+                return new Number(BigInteger.One);
+            }
+            if (exp.Equals(1))
+            {
+                return num;
+            }
+
+            if (exp.LessThan(0))
+            {
+                Number output = num.Pow(exp.Abs()).Inverse();
+                if (num.View == Number.ViewType.Integer
+                    || num.View == Number.ViewType.Rational)
+                {
+                    output.View = Number.ViewType.Rational;
+                }
+                else
+                {
+                    output.View = Number.ViewType.Real;
+                }
+                return output;
+            }
+
+            if (!exp.IsWholeNumber)
+            {
+                // TODO: find nth root to pass along
+                throw new NotImplementedException();
+            }
+
+            // regular ol x^n here
+            // Exponentiation by squaring
+            Number two = new Number(2);
+            Number one = new Number(1);
+            Number y = new Number(1);
+            while (exp.GreaterThan(1))
+            {
+                if (exp.Mod(two).IsEqual(0)) // is even
+                {
+                    num = num.Multiply(num);
+                    exp = exp.Divide(two);
+                }
+                else
+                {
+                    y = num.Multiply(y);
+                    num = num.Multiply(num);
+                    exp = (exp.Subtract(one)).Divide(two);
+                }
+            }
+            return num.Multiply(y);
+        }
+
         public static Real Pow(this Real lhs, Real rhs)
         {
             return new Real(Math.Pow(lhs.data, rhs.data));
@@ -165,7 +227,7 @@ namespace Calculon.Types
         {
             get
             {
-                return FunctionFactory.TwoArgComboGenerator(typeof(Real), typeof(RealConstant), typeof(Integer));
+                return FunctionFactory.TwoArgComboGenerator(typeof(Number), typeof(Constant));
             }
         }
 
@@ -179,22 +241,27 @@ namespace Calculon.Types
             ICalculonType rhs = cs.stack.Pop();
             ICalculonType lhs = cs.stack.Pop();
             Type[] argTypes = new Type[] { lhs.GetType(), rhs.GetType() };
-            if (argTypes.SequenceEqual(new Type[] { typeof(Real), typeof(Real) })
-                || argTypes.SequenceEqual(new Type[] { typeof(Real), typeof(RealConstant) })
-                || argTypes.SequenceEqual(new Type[] { typeof(RealConstant), typeof(Real) })
-                || argTypes.SequenceEqual(new Type[] { typeof(Real), typeof(Integer)})
-                || argTypes.SequenceEqual(new Type[] { typeof(RealConstant), typeof(Integer) })
-                || argTypes.SequenceEqual(new Type[] { typeof(Integer), typeof(Real) })
-                || argTypes.SequenceEqual(new Type[] { typeof(Integer), typeof(RealConstant) })
-                ) 
+            if (argTypes.SequenceEqual(new Type[] { typeof(Number), typeof(Number)}))
             {
-                Real left = new Real(lhs);
-                Real right = new Real(rhs);
-                return left.Pow(right);
+                return ((Number) lhs).Pow((Number) rhs);
             }
-            if(argTypes.SequenceEqual(new Type[] { typeof(Integer), typeof(Integer) }))
+            if (argTypes.SequenceEqual(new Type[] { typeof(Constant), typeof(Number) }))
             {
-                return ((Integer)lhs).Pow((Integer)rhs);
+                Number newRhs = (Number)rhs;
+                Number newLhs = ((Constant)lhs).GetNumber(newRhs.Precision);
+                return newLhs.Pow(newRhs);
+            }
+            if (argTypes.SequenceEqual(new Type[] { typeof(Number), typeof(Constant) }))
+            {
+                Number newLhs = (Number)lhs;
+                Number newRhs = ((Constant)rhs).GetNumber(newLhs.Precision);
+                return newLhs.Pow(newRhs);
+            }
+            if (argTypes.SequenceEqual(new Type[] { typeof(Constant), typeof(Constant) }))
+            {
+                Number newLhs = ((Constant)lhs).GetNumber(Number.GlobalPrecision);
+                Number newRhs = ((Constant)rhs).GetNumber(Number.GlobalPrecision);
+                return newLhs.Pow(newRhs);
             }
             throw new ArgumentException("Unhandled argument types " + argTypes.ToString());
         }
