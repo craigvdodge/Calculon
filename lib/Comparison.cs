@@ -5,15 +5,15 @@ namespace Calculon.Types
 {
     public static class ComparisonExtensions
     {
-        public static bool Equals(this Number lhs, Number rhs)
+        public static bool IsEqual(this Number lhs, Number rhs)
         {
             return (lhs.Numerator == rhs.Numerator && lhs.Denominator == rhs.Denominator);
         }
 
-        public static bool Equals(this Number lhs, int rhs)
+        public static bool IsEqual(this Number lhs, int rhs)
         {
             Number newRhs = new Number(new BigInteger(rhs));
-            return Equals(lhs, newRhs);
+            return IsEqual(lhs, newRhs);
         }
 
         public static bool LessThan(this Number lhs, Number rhs)
