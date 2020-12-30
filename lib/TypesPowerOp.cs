@@ -91,26 +91,33 @@ namespace Calculon.Types
                 throw new NotImplementedException();
             }
 
-            // regular ol x^n here
-            // Exponentiation by squaring
-            Number two = new Number(2);
-            Number one = new Number(1);
-            Number y = new Number(1);
-            while (exp.GreaterThan(1))
+            // for whole number only
+            return new Number(num.Numerator.Pow(exp.Numerator));
+        }
+
+        // Exponentiation by squaring
+        public static BigInteger Pow(this BigInteger value, BigInteger exponent)
+        {
+            BigInteger two = new BigInteger(2);
+            BigInteger y = BigInteger.One;
+            BigInteger remainder;
+
+            while (exponent > BigInteger.One)
             {
-                if (exp.Mod(two).IsEqual(0)) // is even
+                BigInteger.DivRem(exponent, two, out remainder);
+                if (remainder == 0)
                 {
-                    num = num.Multiply(num);
-                    exp = exp.Divide(two);
+                    value = value * value;
+                    exponent = exponent / two;
                 }
                 else
                 {
-                    y = num.Multiply(y);
-                    num = num.Multiply(num);
-                    exp = (exp.Subtract(one)).Divide(two);
+                    y = value * y;
+                    value = value * value;
+                    exponent = (exponent - BigInteger.One) / two;
                 }
             }
-            return num.Multiply(y);
+            return value * y;
         }
 
         public static Real Pow(this Real lhs, Real rhs)
