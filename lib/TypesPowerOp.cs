@@ -59,6 +59,45 @@ namespace Calculon.Types
             return output;
         }
 
+        // Newton's method
+        public static Number nthRoot(this Number num, Number root)
+        {
+            // First find the "inital approximation" 
+            Number temp, temp2;
+            Number one = new Number(1);
+            Number init = new Number(0);
+            init.View = Number.ViewType.Real;
+            while ((init.Add(one)).Pow(root).LessThan(num))
+            {
+                init = init.Add(one);
+            }
+            // Find what precission we need
+            int precision = Math.Min(num.Precision, root.Precision);
+            int p = 0;
+            do
+            {
+                temp = (root.Subtract(one)).Multiply(init);
+                // THIS IS THE BUG//////
+                temp2 = init.Pow(root.Subtract(one));
+                temp = temp.Add(num.Divide(temp2));
+                //////////////
+                temp = temp.Multiply(root.Inverse());
+
+                init = temp;
+
+                if (p == 0)
+                {
+                    p = 1;
+                }
+                else
+                {
+                    p = p * 2;
+                }
+            } while (p <= precision);
+
+            return init;
+        }
+
         public static Number Pow(this Number num, Number exp)
         {
             if (exp.Equals(0))
@@ -91,13 +130,35 @@ namespace Calculon.Types
                 throw new NotImplementedException();
             }
 
-            // for whole number only
-            return new Number(num.Numerator.Pow(exp.Numerator));
+            // regular ol x^n here
+            // Exponentiation by squaring
+            Number two = new Number(2);
+            Number one = new Number(1);
+            Number y = new Number(1);
+            while (exp.GreaterThan(1))
+            {
+                if (exp.Mod(two).IsEqual(0)) // is even
+                {
+                    num = num.Multiply(num);
+                    exp = exp.Divide(two);
+                }
+                else
+                {
+                    y = num.Multiply(y);
+                    num = num.Multiply(num);
+                    exp = (exp.Subtract(one)).Divide(two);
+                }
+            }
+            return num.Multiply(y);
         }
 
         // Exponentiation by squaring
         public static BigInteger Pow(this BigInteger value, BigInteger exponent)
         {
+            if (exponent.Sign < 0)
+            {
+                throw new ArgumentException("BigIntger pow needs nonzero exponent");
+            }
             BigInteger two = new BigInteger(2);
             BigInteger y = BigInteger.One;
             BigInteger remainder;

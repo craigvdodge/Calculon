@@ -8,6 +8,14 @@ namespace ut
 {
     public class LibTest
     {
+        [Fact]
+        public void UnexposedNumberTests()
+        {
+            Number two = new Number(2);
+            Number bySqrt = two.Sqrt();
+            Number byNthRoot = two.nthRoot(two);
+            Assert.Equal(bySqrt.ToString(), byNthRoot.ToString());
+        }
         #region Number Class Tests
         [Fact]
         public void NumberCtors()
