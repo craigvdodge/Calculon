@@ -213,6 +213,13 @@ namespace Calculon.Types
                 Numerator = Numerator / gcd;
                 Denominator = Denominator / gcd;
             }
+            // enforce convention that Numerator is negative if negative
+            if (Denominator.Sign < 0)
+            {
+                Numerator = BigInteger.Negate(Numerator);
+                Denominator = BigInteger.Negate(Denominator);
+            }
+
         }
 
         public bool IsWholeNumber { get { return (Denominator == BigInteger.One); } }
