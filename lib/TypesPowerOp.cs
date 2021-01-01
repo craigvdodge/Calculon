@@ -71,16 +71,18 @@ namespace Calculon.Types
             {
                 init = init.Add(one);
             }
+            if (init.Add(one).Pow(root).IsEqual(num))
+            {
+                return init.Add(one);
+            }
             // Find what precission we need
             int precision = Math.Min(num.Precision, root.Precision);
             int p = 0;
             do
             {
                 temp = (root.Subtract(one)).Multiply(init);
-                // THIS IS THE BUG//////
                 temp2 = init.Pow(root.Subtract(one));
                 temp = temp.Add(num.Divide(temp2));
-                //////////////
                 temp = temp.Multiply(root.Inverse());
 
                 init = temp;
@@ -126,8 +128,8 @@ namespace Calculon.Types
 
             if (!exp.IsWholeNumber)
             {
-                // TODO: find nth root to pass along
-                throw new NotImplementedException();
+                Number fractPower = num.nthRoot(new Number(exp.Denominator));
+                return fractPower.Pow(new Number(exp.Numerator));
             }
 
             // regular ol x^n here
