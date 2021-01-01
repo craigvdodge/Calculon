@@ -120,9 +120,7 @@ namespace Calculon.Types
             // a mod b = a - b*(floor(a/b))
             Number AonB = lhs.Divide(rhs);
             AonB.View = Number.ViewType.Real;
-            //TODO: replace use of double when Number.Floor() is written
-            double intermediateDiv = double.Parse(AonB.ToString());
-            Number floorOfDiv = new Number((BigInteger)Math.Floor(intermediateDiv));
+            Number floorOfDiv = AonB.Floor();
             Number newRhs = rhs.Multiply(floorOfDiv);
             Number output = lhs.Subtract(newRhs);
             
