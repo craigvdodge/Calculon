@@ -357,7 +357,7 @@ namespace Calculon.Types
         {
             get
             {
-                return 70;
+                return 50;
             }
         }
         // Local precision override. zero or less is use global

@@ -129,7 +129,7 @@ namespace ut
         [InlineData("2 4 lcm", "4")]
         [InlineData("2 4 gcf", "2")]
         [InlineData("2.0 inverse", "0.5")]
-        [InlineData("2 sqrt", "1.4142135623730950488016887242096980785696718753769480731766797379907325")]
+        [InlineData("2 sqrt", "1.41421356237309504880168872420969807856967187537695")]
         public void ArithOpTest(string test, string expectedOut, int maxChar = -1)
         {
             BasicTest(test, expectedOut, maxChar);
@@ -167,7 +167,8 @@ namespace ut
         [InlineData("e 3.0 pow ln", "3")]
         [InlineData("5 epow ln", "5")]
         [InlineData("2 4 pow", "16")]
-        [InlineData("4 pi pow floor", "77")]
+       // [InlineData("4 pi pow floor", "77")] // Removed for perf reasons
+        [InlineData("4 1.4 pow 7 roundto", "6.9644045")]
         [InlineData("e ln", "1")]
         [InlineData("10 log", "1")]
         public void PowerTest(string test, string expected)
