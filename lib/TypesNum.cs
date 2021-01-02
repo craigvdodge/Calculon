@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Collections.Generic;
 using System.Numerics;
@@ -53,12 +54,27 @@ namespace Calculon.Types
 
         internal double data;
 
+        #region strings
+        public override string ToString()
+        {
+            return Display;
+        }
         // Needs to understand sig. digits   
         // 3.14 1 + returns 4.140000000000001 
         public string Display
         {
             get { return data.ToString();}
         }
+        #endregion
+
+        #region parsing
+        public static bool IsMatch(string s)
+        {
+            return RealMatch.IsMatch(s);
+        }
+        private static readonly Regex RealMatch =
+            new Regex(@"^[\+-]?\d*\.\d+$", RegexOptions.Compiled);
+        #endregion
     }
 
     public class Integer: ICalculonType
@@ -193,6 +209,29 @@ namespace Calculon.Types
         }
 
         internal BigInteger data;
+
+        #region Parsing 
+        public static bool IsMatch(string s)
+        {
+            return HexIntegerMatch.IsMatch(s) || DecIntegerMatch.IsMatch(s)
+                || OctIntegerMatch.IsMatch(s) || BinIntegerMatch.IsMatch(s);
+        }
+
+        private static readonly Regex HexIntegerMatch =
+            new Regex(@"^[\+-]?[0-9A-Fa-f]+[hH]$", RegexOptions.Compiled);
+        private static readonly Regex DecIntegerMatch =
+            new Regex(@"^[\+-]?\d+[dD]?$", RegexOptions.Compiled);
+        private static readonly Regex OctIntegerMatch =
+            new Regex(@"^[\+-]?[0-7]+[oO]$", RegexOptions.Compiled);
+        private static readonly Regex BinIntegerMatch =
+            new Regex(@"^[\+-]?[0-1]+[bB]$", RegexOptions.Compiled);
+        #endregion
+
+        #region strings
+        public override string ToString()
+        {
+            return Display;
+        }
         public string Display
         {
             get
@@ -219,6 +258,7 @@ namespace Calculon.Types
                 return val; 
             }
         }
+        #endregion
     }
 
     public class Rational : ICalculonType
@@ -259,10 +299,25 @@ namespace Calculon.Types
             }
         }
 
+        #region strings
+        public override string ToString()
+        {
+            return Display;
+        }
         public string Display
         {
             get { return numerator.ToString() + "/" + denominator.ToString();}
         }
+        #endregion
+        #region Parsing
+        public static bool IsMatch(string s)
+        {
+            return RationalMatch.IsMatch(s);
+        }
+
+        private static readonly Regex RationalMatch =
+            new Regex(@"^[\+-]?\d+\/\d+$", RegexOptions.Compiled);
+        #endregion
 
         public EvalReturn Eval(ref ControllerState cs)
         {
