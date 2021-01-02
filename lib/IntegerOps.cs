@@ -8,22 +8,18 @@ namespace Calculon.Types
 {
     public static class IntOpExt
     {
-        // TODO: Reimpement more efficently
         public static Integer Factorial(this Integer num)
         {
             if (num.data < 0)
             {
                 throw new ArgumentException("ERROR: Factorial needs positive integers");
             }
-            if (num.data == 0)
+            BigInteger result = BigInteger.One;
+            for (BigInteger i = BigInteger.One; i <= num.data; i++)
             {
-                return new Integer(1, num.DisplayBase);
+                result = result * i;
             }
-            else
-            {
-                Integer last = num.Subtract(new Integer(1, num.DisplayBase)).Factorial();
-                return num.Multiply(last);
-            }
+            return new Integer(result);
         }
 
         public static Integer GCF(this Integer lhs, Integer rhs)
