@@ -1,13 +1,18 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26124.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "calculonlib", "lib\calculonlib.csproj", "{BE70209B-5A0D-4E0D-AB99-7409826E9DD2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "calculonlib", "lib\calculonlib.csproj", "{BE70209B-5A0D-4E0D-AB99-7409826E9DD2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ut", "ut\ut.csproj", "{676B6549-D22A-494D-A221-16CC1A651991}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ut", "ut\ut.csproj", "{676B6549-D22A-494D-A221-16CC1A651991}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "calculoncl", "cl\calculoncl.csproj", "{54674932-BB52-4F4F-9D56-CFAFF1D71C23}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "calculoncl", "cl\calculoncl.csproj", "{54674932-BB52-4F4F-9D56-CFAFF1D71C23}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D152D594-5AB9-401F-90ED-C0980155994A}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,9 +22,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{BE70209B-5A0D-4E0D-AB99-7409826E9DD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -58,5 +60,11 @@ Global
 		{54674932-BB52-4F4F-9D56-CFAFF1D71C23}.Release|x64.Build.0 = Release|Any CPU
 		{54674932-BB52-4F4F-9D56-CFAFF1D71C23}.Release|x86.ActiveCfg = Release|Any CPU
 		{54674932-BB52-4F4F-9D56-CFAFF1D71C23}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FF6DB4EE-957D-46FD-8E8D-C21ED535C80A}
 	EndGlobalSection
 EndGlobal

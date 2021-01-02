@@ -8,60 +8,6 @@ namespace ut
 {
     public class LibTest
     {
-        #region Number Class Tests
-        [Fact]
-        public void NumberCtors()
-        {
-            Number oneHalf = new Number(16, 32);
-            Assert.Equal(1, oneHalf.Numerator);
-            Assert.Equal(2, oneHalf.Denominator);
-            Assert.Equal(Number.ViewType.Rational, oneHalf.View);
-            Number answer = new Number((BigInteger) 42);
-            Assert.Equal(42, answer.Numerator);
-            Assert.Equal(1, answer.Denominator);
-            Assert.Equal(Number.ViewType.Integer, answer.View);
-            Assert.Throws<ArgumentException>(() => Number.Parse("blarg"));
-        }
-
-        [Fact]
-        public void NumberToStringTest()
-        {
-            Number answer = new Number(42);
-            Assert.Equal("42", answer.ToString());
-            answer.DisplayBase = Number.Base.Bin;
-            Assert.Equal("0101010b", answer.ToString());
-            answer.DisplayBase = Number.Base.Hex;
-            Assert.Equal("2Ah", answer.ToString());
-            answer.DisplayBase = Number.Base.Oct;
-            Assert.Equal("052o", answer.ToString());
-            answer.DisplayBase = Number.Base.Dec;
-            answer.View = Number.ViewType.Rational;
-            Assert.Equal("42/1", answer.ToString());
-            Number piish = new Number(22,7);
-            piish.View = Number.ViewType.Real;
-            piish.Precision = 14;
-            Assert.Equal("3.14285714285714", piish.ToString());
-        }
-
-        [Theory]
-        [InlineData("-3/4", -3, 4, Number.ViewType.Rational, Number.Base.Dec)]
-        [InlineData("+FH", 15, 1, Number.ViewType.Integer, Number.Base.Hex)]
-        [InlineData("42", 42, 1, Number.ViewType.Integer, Number.Base.Dec)]
-        [InlineData("77o", 63, 1, Number.ViewType.Integer, Number.Base.Oct)]
-        [InlineData("-1000b", -8, 1, Number.ViewType.Integer, Number.Base.Bin)]
-        [InlineData(".75", 3, 4, Number.ViewType.Real, Number.Base.Dec)]
-        public void NumberStringParsing(
-            string input, int num, int denom, Number.ViewType view, Number.Base b)
-        {
-            Number n = new Number(input);
-            Assert.Equal(num, (int) n.Numerator);
-            Assert.Equal(denom, (int)n.Denominator);
-            Assert.Equal(view, n.View);
-            Assert.Equal(b, n.DisplayBase);
-        }
-
-        #endregion
-
         [Theory]
         [InlineData("8675309", typeof(Integer))]
         [InlineData("-45", typeof(Integer))]
