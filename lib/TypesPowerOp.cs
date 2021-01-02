@@ -204,6 +204,32 @@ namespace Calculon.Types
             return new Real(Math.Exp((double)num.data));
         }
 
+        // https://math.stackexchange.com/questions/75074/an-alternative-way-to-calculate-logx/75398#75398
+        // Borchardt's algorithm
+        public static Number Log(this Number num)
+        {
+            // find the required precision
+            double p = (double) num.Precision * -1;
+            p = Math.Pow(10.0, p);
+            //HACKHACK change this before checkin
+            Number precision = new Number(".1");
+            // Some helpful number constants
+            Number one = new Number(1);
+            Number two = new Number(2);
+
+            // init a and b
+            Number a = one.Add(num).Divide(two);
+            Number b = num.Sqrt();
+
+            do
+            {
+                a = a.Add(b).Divide(two);
+                b = a.Multiply(b).nthRoot(two);
+            } while (a.Subtract(b).Abs().GreaterThan(precision));
+
+            return two.Multiply(num.Subtract(one).Divide((a.Add(b))));
+        }
+
         public static Real Log(this Real num)
         {
             return new Real(Math.Log10(num.data));
@@ -261,7 +287,7 @@ namespace Calculon.Types
 
     public class Inverse : IFunctionCog
     {
-        public string FunctionName { get { return "inverse"; } }
+        public string FunctionName { get { return "inv"; } }
 
         public int NumArgs { get { return 1; } }
 
@@ -394,9 +420,8 @@ namespace Calculon.Types
             get
             {
                 Type[][] retVal = new Type[3][];
-                retVal[0] = new Type[] { typeof(Real) };
-                retVal[1] = new Type[] { typeof(RealConstant) };
-                retVal[2] = new Type[] { typeof(Integer) };
+                retVal[0] = new Type[] { typeof(Number) };
+                retVal[1] = new Type[] { typeof(Constant) };
                 return retVal;
             }
         }
@@ -404,23 +429,25 @@ namespace Calculon.Types
         public ICalculonType Execute(ref ControllerState cs)
         {
             ICalculonType input = cs.stack.Pop();
-            if (input.GetType() == typeof(Real))
+            if (input.GetType() == typeof(Number))
             {
-                return ((Real)input).Log();
+                return ((Number)input).Log();
             }
-            if (input.GetType() == typeof(RealConstant))
+            if (input.GetType() == typeof(Constant))
             {
-                return ((RealConstant)input).ToReal().Log();
+                return ((Constant)input).GetNumber(Number.GlobalPrecision).Log();
             }
-            if (input.GetType() == typeof(Integer))
-            {
-                return ((Integer)input).Log();
-            }
+
             throw new NotImplementedException();
         }
 
         public string PreExecCheck(ref ControllerState cs)
         {
+            Number arg = (Number) cs.stack.Peek();
+            if (arg.IsNegative)
+            {
+                return "Negative values for log are not supported.";
+            }
             return string.Empty;
         }
     }
