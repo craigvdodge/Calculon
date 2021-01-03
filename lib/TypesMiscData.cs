@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Collections.Generic;
 
@@ -25,5 +26,14 @@ namespace Calculon.Types
         {
             get { return data; }
         }
-    }
+
+        #region Parsing
+        private static readonly Regex LiteralStringMatch = 
+            new Regex("\\\"[A-Za-z0-9_]+\\\"", RegexOptions.Compiled);
+        public static bool IsMatch(string s)
+        {
+            return LiteralStringMatch.IsMatch(s);
+        }
+            #endregion
+        }
 }

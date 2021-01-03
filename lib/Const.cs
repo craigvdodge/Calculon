@@ -1,4 +1,5 @@
 using System;
+using System.Text.RegularExpressions;
 
 // For readablity, breaking the ICalculonTypes files based on roles.
 // These are constants
@@ -8,6 +9,25 @@ namespace Calculon.Types
     public class RealConstant: ICalculonType
     {
         public RealConstant(Constant c) => (Const) = (c);
+        public RealConstant(string s)
+        {
+            if (PiMatch.IsMatch(s))
+            {
+                Const = Constant.pi;
+            }
+            else if (eMatch.IsMatch(s))
+            {
+                Const = Constant.e;
+            }
+            else if (TauMatch.IsMatch(s))
+            {
+                Const = Constant.tau;
+            }
+            else
+            {
+                throw new ArgumentException("Unknown constant: " + s);
+            }
+        }
 
         public Real ToReal()
         {
@@ -28,6 +48,11 @@ namespace Calculon.Types
             return new EvalReturn(Response.Ok, this);
         }
 
+        public override string ToString()
+        {
+            return Display;
+        }
+
         public string Display
         {
             get
@@ -41,6 +66,19 @@ namespace Calculon.Types
                 }
             }
         }
+
+        #region Parsing
+        public static bool IsMatch(string s)
+        {
+            return PiMatch.IsMatch(s) || eMatch.IsMatch(s) || TauMatch.IsMatch(s);
+        }
+        private static readonly Regex PiMatch =
+            new Regex("^pi$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex eMatch =
+            new Regex("^e$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex TauMatch =
+            new Regex("^tau$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        #endregion
 
     }
 }
