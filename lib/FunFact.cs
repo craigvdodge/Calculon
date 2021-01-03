@@ -5,9 +5,7 @@ using System.Linq;
 
 namespace Calculon.Types
 {
-    // Registering every new function as a "keyword" 
-    // in the peg file is unsustainable. This is a factory
-    // which supervises the creation of all functions
+    // This is a factory which supervises the creation of all functions
     public class FunctionFactory
     {
         // made singleton b/c of expensive intial startup.
@@ -26,7 +24,10 @@ namespace Calculon.Types
             foreach (Type t in cogs)
             {
                 IFunctionCog cog = (IFunctionCog)Activator.CreateInstance(t);
-                functions.Add(cog.FunctionName.ToLower(), cog);
+                foreach (string name in cog.FunctionName)
+                {
+                    functions.Add(name.ToLower(), cog);
+                }
             }
         }
 
@@ -63,7 +64,7 @@ namespace Calculon.Types
                 if (cs.stack.Count < cog.NumArgs)
                 {
                     return new EvalReturn(Response.Error, 
-                        cog.FunctionName + " requires " + cog.NumArgs.ToString() + " argument(s)",
+                        cog.FunctionName[0] + " requires " + cog.NumArgs.ToString() + " argument(s)",
                         typeof(FunctionInstance));
                 }
                 // Check the types of arguments
@@ -146,7 +147,7 @@ namespace Calculon.Types
     // the Factory. Hence it's a "cog" in the "machine"
     public interface IFunctionCog
     {
-        string FunctionName { get; }
+        string[] FunctionName { get; }
         int NumArgs {get;}
         Type[][] AllowedTypes {get;}
         ICalculonType Execute(ref ControllerState cs);

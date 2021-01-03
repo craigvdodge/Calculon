@@ -61,7 +61,7 @@ namespace Calculon.Types
 
     public class Factorial : IFunctionCog
     {
-        public string FunctionName { get { return "fact"; } }
+        public string[] FunctionName { get { return new string[] { "fact", "!" }; } }
 
         public int NumArgs { get { return 1; } }
 
@@ -84,7 +84,7 @@ namespace Calculon.Types
 
     public class GreatestCommonFactor : IFunctionCog
     {
-        public string FunctionName { get { return "gcf"; } }
+        public string[] FunctionName { get { return new string[] { "gcf" }; } }
 
         public int NumArgs { get { return 2; } }
 
@@ -108,7 +108,7 @@ namespace Calculon.Types
 
     public class LeastCommonMultiple : IFunctionCog
     {
-        public string FunctionName { get { return "lcm"; } }
+        public string[] FunctionName { get { return new string[] { "lcm" }; } }
 
         public int NumArgs { get { return 2; } }
 

@@ -53,7 +53,7 @@ namespace Calculon.Types
 
     public class Pow : IFunctionCog
     {
-        public string FunctionName { get { return "pow"; } }
+        public string[] FunctionName { get { return new string[] { "pow", "^" }; } }
 
         public int NumArgs { get { return 2; } }
 
@@ -93,7 +93,7 @@ namespace Calculon.Types
 
     public class EPow : IFunctionCog
     {
-        public string FunctionName { get { return "epow"; } }
+        public string[] FunctionName { get { return new string[] { "epow" }; } }
 
         public int NumArgs { get { return 1; } }
 
@@ -134,7 +134,7 @@ namespace Calculon.Types
     /// </summary>
     public class Log : IFunctionCog
     {
-        public string FunctionName { get { return "log"; } }
+        public string[] FunctionName { get { return new string[] { "log" }; } }
 
         public int NumArgs { get { return 1; } }
 
@@ -171,7 +171,7 @@ namespace Calculon.Types
 
     public class Ln : IFunctionCog
     {
-        public string FunctionName { get { return "ln"; } }
+        public string[] FunctionName { get { return new string[] { "ln" }; } }
         public int NumArgs { get { return 1; } }
 
         public Type[][] AllowedTypes

@@ -11,7 +11,7 @@ namespace Calculon.Types
 {
     public class Round : IFunctionCog
     {
-        public string FunctionName { get { return "round"; } }
+        public string[] FunctionName { get { return new string[] { "round" }; } }
 
         public int NumArgs { get { return 1; } }
 
@@ -37,7 +37,7 @@ namespace Calculon.Types
 
     public class Floor : IFunctionCog
     {
-        public string FunctionName { get { return "floor"; } }
+        public string[] FunctionName { get { return new string[] { "floor" }; } }
 
         public int NumArgs { get { return 1; } }
 
@@ -61,7 +61,7 @@ namespace Calculon.Types
 
     public class Ceiling : IFunctionCog
     {
-        public string FunctionName { get { return "ceiling"; } }
+        public string[] FunctionName { get { return new string[] { "ceiling" }; } }
 
         public int NumArgs { get { return 1; } }
 
@@ -85,7 +85,7 @@ namespace Calculon.Types
 
     public class RoundTo : IFunctionCog
     {
-        public string FunctionName { get { return "roundto"; } }
+        public string[] FunctionName { get { return new string[] { "roundto" }; } }
 
         public int NumArgs { get { return 2; } }
 

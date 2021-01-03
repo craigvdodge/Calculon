@@ -111,7 +111,7 @@ namespace Calculon.Types
 
     public abstract class ArithBase : IFunctionCog
     {
-        public abstract string FunctionName { get; }
+        public abstract string[] FunctionName { get; }
         public int NumArgs { get { return 2; } }
         public Type[][] AllowedTypes
         {
@@ -193,7 +193,7 @@ namespace Calculon.Types
 
     public class Add : ArithBase
     {
-        public override string FunctionName { get { return "add"; } }
+        public override string[] FunctionName { get { return new string[] { "add", "+" }; } }
         internal override Integer Op(Integer lhs, Integer rhs)
         {
             return lhs.Add(rhs);
@@ -212,7 +212,7 @@ namespace Calculon.Types
 
     public class Sub : ArithBase
     {
-        public override string FunctionName { get { return "sub"; } }
+        public override string[] FunctionName { get { return new string[] { "sub", "-" }; } }
 
         internal override Integer Op(Integer lhs, Integer rhs)
         {
@@ -232,7 +232,7 @@ namespace Calculon.Types
 
     public class Mult : ArithBase
     {
-        public override string FunctionName { get { return "mult"; } }
+        public override string[] FunctionName { get { return new string[] { "mult", "*" }; } }
 
         internal override Integer Op(Integer lhs, Integer rhs)
         {
@@ -252,7 +252,7 @@ namespace Calculon.Types
 
     public class Div : ArithBase
     {
-        public override string FunctionName { get { return "div"; } }
+        public override string[] FunctionName { get { return new string[] { "div", "/" }; } }
 
         internal override Integer Op(Integer lhs, Integer rhs)
         {
@@ -272,7 +272,7 @@ namespace Calculon.Types
 
     public class Mod : ArithBase
     {
-        public override string FunctionName { get { return "mod"; } }
+        public override string[] FunctionName { get { return new string[] { "mod" }; } }
 
         internal override Integer Op(Integer lhs, Integer rhs)
         {

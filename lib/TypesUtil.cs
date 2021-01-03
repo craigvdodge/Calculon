@@ -40,7 +40,7 @@ namespace Calculon.Types
 
     public class Exit : IFunctionCog
     {
-        public virtual string FunctionName { get { return "exit"; } }
+        public virtual string[] FunctionName { get { return new string[] { "exit", "quit" }; } }
 
         public int NumArgs { get { return 0; } }
 
@@ -60,11 +60,6 @@ namespace Calculon.Types
         }
     }
 
-    public class Quit : Exit 
-    {
-        public override string FunctionName { get { return "quit"; } }
-    }
-
     /// <summary>
     /// Use to bypass type-checking on utilty functions that 
     /// can take literally anything.
@@ -81,7 +76,7 @@ namespace Calculon.Types
 
     public class Drop : IFunctionCog
     {
-        public string FunctionName { get { return "drop"; } }
+        public string[] FunctionName { get { return new string[] { "drop" }; } }
 
         public int NumArgs { get { return 1; } }
 
@@ -104,7 +99,7 @@ namespace Calculon.Types
 
     public class Swap : IFunctionCog
     {
-        public string FunctionName { get { return "swap"; } }
+        public string[] FunctionName { get { return new string[] { "swap" }; } }
 
         public int NumArgs { get { return 2; } }
 
@@ -130,7 +125,7 @@ namespace Calculon.Types
 
     public class Clear : IFunctionCog
     {
-        public string FunctionName { get { return "clear";  } }
+        public string[] FunctionName { get { return new string []{ "clear" };  } }
 
         public int NumArgs { get { return 0; } }
 

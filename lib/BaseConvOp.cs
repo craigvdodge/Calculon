@@ -7,7 +7,7 @@ namespace Calculon.Types
 {
     public abstract class BaseConvBase : IFunctionCog
     {
-        public virtual string FunctionName { get; }
+        public virtual string[] FunctionName { get; }
         public virtual Integer.Base NewBase { get; }
 
         public int NumArgs { get { return 1; } }
@@ -32,25 +32,25 @@ namespace Calculon.Types
 
     public class ToDec : BaseConvBase
     {
-        public override string FunctionName { get { return "todec"; } }
+        public override string[] FunctionName { get { return new string[] { "todec" }; } }
         public override Integer.Base NewBase { get { return Integer.Base.Dec; } }
     }
 
     public class ToBin : BaseConvBase
     {
-        public override string FunctionName { get { return "tobin"; } }
+        public override string[] FunctionName { get { return new string[] { "tobin" }; } }
         public override Integer.Base NewBase { get { return Integer.Base.Bin; } }
     }
 
     public class ToHex : BaseConvBase
     {
-        public override string FunctionName { get { return "tohex"; } }
+        public override string[] FunctionName { get { return new string[] { "tohex" }; } }
         public override Integer.Base NewBase { get { return Integer.Base.Hex; } }
     }
 
     public class ToOct : BaseConvBase
     {
-        public override string FunctionName { get { return "tooct"; } }
+        public override string[] FunctionName { get { return new string[] { "tooct" }; } }
         public override Integer.Base NewBase { get { return Integer.Base.Oct; } }
     }
 

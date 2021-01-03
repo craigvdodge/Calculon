@@ -12,12 +12,7 @@ literal <Literal>
     = value:("\"" [A-Za-z0-9_]+ "\"") { new Literal(value) }
 
 function <FunctionInstance>
-    = ("+") { FunctionFactory.Instance["add"] }
-    / ("-") { FunctionFactory.Instance["sub"] }
-    / ("*") { FunctionFactory.Instance["mult"] }
-    / ("/") { FunctionFactory.Instance["div"] }
-    / ("!") { FunctionFactory.Instance["fact"] }
-    / value:([A-Za-z0-9_]+) {FunctionFactory.Instance[util.Concat(value)]}
+    = value:([A-Za-z0-9_\+\-\*\/\!\^]+) {FunctionFactory.Instance[util.Concat(value)]}
 
 number <ICalculonType>
     = decimal
