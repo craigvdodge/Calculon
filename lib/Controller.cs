@@ -76,20 +76,20 @@ namespace Calculon
     }
 
     public sealed record EvalReturn
-        {
-            public Response Response { get; }
-            public string Msg { get; }
-            public Type Type { get; }
+    {
+        public Response Response { get; }
+        public string Msg { get; }
+        public Type Type { get; }
 
-            public EvalReturn(Response code, string msg, Type type) => (Response, Msg, Type) = (code, msg, type);
-            public EvalReturn(Response code, Types.ICalculonType calculonType) => (Response, Msg, Type) = (code, calculonType.Display, calculonType.GetType());
-        }
+        public EvalReturn(Response code, string msg, Type type) => (Response, Msg, Type) = (code, msg, type);
+        public EvalReturn(Response code, Types.ICalculonType calculonType) => (Response, Msg, Type) = (code, calculonType.Display, calculonType.GetType());
+    }
 
-        public enum Response
-        {
-            NotImpl = -2,
-            Error = -1,
-            Ok = 0,
-            Exit = 1
-        }
+    public enum Response
+    {
+        NotImpl = -2,
+        Error = -1,
+        Ok = 0,
+        Exit = 1
+    }
 }
