@@ -19,57 +19,7 @@ namespace ut
         [InlineData("pi", typeof(RealConstant))]
         [InlineData("e", typeof(RealConstant))]
         [InlineData("tau", typeof(RealConstant))]
-        [InlineData("ee", typeof(ErrorType))]
-        public void NewParserMockup(string teststr, Type ExpectedType)
-        {
-            if (Literal.IsMatch(teststr))
-            {
-                Literal l = new Literal(teststr);
-                Assert.Equal(ExpectedType, l.GetType());
-                return;
-            }
-            if (Real.IsMatch(teststr))
-            {
-                Real r = new Real(teststr);
-                Assert.Equal(ExpectedType, r.GetType());
-                return;
-            }
-            if (Rational.IsMatch(teststr))
-            {
-                Rational rat = new Rational(teststr);
-                Assert.Equal(ExpectedType, rat.GetType());
-                return;
-            }
-            if (Integer.IsMatch(teststr))
-            {
-                Integer i = new Integer(teststr);
-                Assert.Equal(ExpectedType, i.GetType());
-                return;
-            }
-            if (RealConstant.IsMatch(teststr))
-            {
-                RealConstant rc = new RealConstant(teststr);
-                Assert.Equal(ExpectedType, rc.GetType());
-                return;
-            }
-
-            ErrorType err = new ErrorType("Could not match " + teststr);
-            Assert.Equal(ExpectedType, err.GetType());
-        }
-
-
-        [Theory]
-        [InlineData("8675309", typeof(Integer))]
-        [InlineData("-45", typeof(Integer))]
-        [InlineData("-2.8", typeof(Real))]
-        [InlineData("3.14159", typeof(Real))]
-        [InlineData("3/4", typeof(Rational))]
-        [InlineData("-5/8", typeof(Rational))]
-        [InlineData(@"""Plan_9_From_Outer_Space""", typeof(Literal))]
-        [InlineData("pi", typeof(RealConstant))]
-        [InlineData("e", typeof(RealConstant))]
-        [InlineData("tau", typeof(RealConstant))]
-        [InlineData("@@@", typeof(ErrorType), Response.Error, "PARSE ERROR: @@@")]
+        [InlineData("@@@", typeof(ErrorType), Response.Error, "Error: @@@ is not a number or function")]
         public void BasicPushParsingTest(
             string testStr,
             Type ExpectedType,

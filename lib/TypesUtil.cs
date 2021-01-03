@@ -137,20 +137,4 @@ namespace Calculon.Types
             return new EmptyType();
         }
     }
-
-    public class util
-    {
-        // There's some way to get Pegasus to return the value as a nice
-        // single string, but putting a rabid wolverine into my trousers
-        // is preferable to debugging that, so do this for right now.
-        public static string Concat(IList<string> list)
-        {
-            StringBuilder sb = new StringBuilder(list.Count);
-            foreach (string s in list)
-            {
-                sb.Append(s);
-            }
-            return sb.ToString();
-        } 
-    }
 }

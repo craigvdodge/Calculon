@@ -81,8 +81,39 @@ namespace Calculon.Types
     {
         public Integer(string s, Integer.Base b = Base.Dec)
         {
-            data = ParseBigInteger(s, (int)b);
-            displayBase = b;
+            if (HexIntegerMatch.IsMatch(s))
+            {
+                // chomp the trailing "H"
+                s = s.TrimEnd(new char[] { 'h', 'H' });
+                data = ParseBigInteger(s, (int)Base.Hex);
+                displayBase = Base.Hex;
+            }
+            else if (s.EndsWith('d') || s.EndsWith('D'))
+            {
+                // chomp the trailing "d"
+                s = s.TrimEnd(new char[] { 'd', 'D' });
+                data = ParseBigInteger(s, (int)Base.Dec);
+                displayBase = Base.Dec;
+            }
+            else if (OctIntegerMatch.IsMatch(s))
+            {
+                // chomp the trailing "o"
+                s = s.TrimEnd(new char[] { 'o', 'O' });
+                data = ParseBigInteger(s, (int)Base.Oct);
+                displayBase = Base.Oct;
+            }
+            else if (BinIntegerMatch.IsMatch(s))
+            {
+                // chomp the trailing "b"
+                s = s.TrimEnd(new char[] { 'b', 'B' });
+                data = ParseBigInteger(s, (int)Base.Bin);
+                displayBase = Base.Bin;
+            }
+            else
+            {
+                data = ParseBigInteger(s, (int)b);
+                displayBase = b;
+            }
         }
 
         public Integer(BigInteger i, Base b = Base.Dec) => (data, displayBase) = (i, b);

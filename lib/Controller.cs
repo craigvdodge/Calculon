@@ -59,6 +59,47 @@ namespace Calculon
 
     }
 
+    public class Parser
+    {
+        public Types.ICalculonType Parse(string input)
+        {
+            if (Literal.IsMatch(input))
+            {
+                Literal l = new Literal(input);
+                return l;
+            }
+            if (Real.IsMatch(input))
+            {
+                Real r = new Real(input);
+                return r;
+            }
+            if (Rational.IsMatch(input))
+            {
+                Rational rat = new Rational(input);
+                return rat;
+            }
+            if (Integer.IsMatch(input))
+            {
+                Integer i = new Integer(input);
+                return i;
+            }
+            if (RealConstant.IsMatch(input))
+            {
+                RealConstant rc = new RealConstant(input);
+                return rc;
+            }
+            else
+            {
+                FunctionInstance fi = FunctionFactory.Instance[input];
+                if (fi.IsError)
+                {
+                    return new ErrorType("Error: " + input + " is not a number or function");
+                }
+                return fi;
+            }
+        }
+    }
+
     // Hoist this into it's own class so it can be passed aroumd
     public class ControllerState
     {
