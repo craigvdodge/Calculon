@@ -8,6 +8,12 @@ namespace ut
 {
     public class LibTest
     {
+        [Fact]
+        public void ConfigTest()
+        {
+            Config c = new Config();
+            Assert.True(c.AllowFilesystemWrites);
+        }
         [Theory]
         [InlineData("8675309", typeof(Integer))]
         [InlineData("-45", typeof(Integer))]
