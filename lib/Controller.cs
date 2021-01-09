@@ -107,6 +107,7 @@ namespace Calculon
         {
             stack = new Stack<Types.ICalculonType>();
             running = true;
+            Config = new Calculon.Types.Config();
         }
 
         internal Stack<Types.ICalculonType> stack;
@@ -114,6 +115,7 @@ namespace Calculon
         internal bool running;
         public bool Running { get{ return running; } }
 
+        public Calculon.Types.Config Config;
     }
 
     public sealed record EvalReturn

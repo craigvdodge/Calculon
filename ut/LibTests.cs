@@ -118,6 +118,16 @@ namespace ut
             BasicTest(test, expected);
         }
 
+        [Theory]
+        [InlineData("2 \"foo\" sto \"foo\" rcl", "2")]
+        [InlineData("3.14 \"bar\" sto \"bar\" rcl", "3.14")]
+        [InlineData("1/2 \"fred\" sto \"fred\" rcl", "1/2")]
+        [InlineData("\"HelloWorld\" \"barney\" sto \"barney\" rcl", "\"HelloWorld\"")]
+        public void MemoryTest(string test, string expected)
+        {
+            BasicTest(test, expected);
+        }
+
         // This code gets written over and over but it just
         // needs different names
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "xUnit1013:Public method should be marked as test", Justification = "<Pending>")]

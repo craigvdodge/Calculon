@@ -79,7 +79,8 @@ namespace Calculon.Types
 
     public class Integer: ICalculonType
     {
-        public Integer(string s, Integer.Base b = Base.Dec)
+        public Integer(string s) : this(s, Base.Dec) { }
+        public Integer(string s, Integer.Base b)
         {
             if (HexIntegerMatch.IsMatch(s))
             {
