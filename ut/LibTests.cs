@@ -8,6 +8,12 @@ namespace ut
 {
     public class LibTest
     {
+        [Fact]
+        public void ConfigTest()
+        {
+            Config c = new Config();
+            Assert.True(c.AllowFilesystemWrites);
+        }
         [Theory]
         [InlineData("8675309", typeof(Integer))]
         [InlineData("-45", typeof(Integer))]
@@ -108,6 +114,16 @@ namespace ut
         [InlineData("e ln", "1")]
         [InlineData("10 log", "1")]
         public void PowerTest(string test, string expected)
+        {
+            BasicTest(test, expected);
+        }
+
+        [Theory]
+        [InlineData("2 \"foo\" sto \"foo\" rcl", "2")]
+        [InlineData("3.14 \"bar\" sto \"bar\" rcl", "3.14")]
+        [InlineData("1/2 \"fred\" sto \"fred\" rcl", "1/2")]
+        [InlineData("\"HelloWorld\" \"barney\" sto \"barney\" rcl", "\"HelloWorld\"")]
+        public void MemoryTest(string test, string expected)
         {
             BasicTest(test, expected);
         }
