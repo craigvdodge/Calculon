@@ -15,6 +15,9 @@ namespace Calculon.Types
                 .AddIniFile("calculon.ini", optional: true, reloadOnChange: true)
                 .Build();
 
+            backupfile = Path.Combine(Environment.GetFolderPath(
+                    System.Environment.SpecialFolder.MyDocuments), "calculon.sqlite");
+
             SqliteConnectionStringBuilder connectionStringBuilder = new SqliteConnectionStringBuilder(
                     "Data Source=InMemoryPack;Mode=Memory;Cache=Shared");
             memoryConnection = new SqliteConnection(connectionStringBuilder.ToString());
@@ -36,18 +39,41 @@ namespace Calculon.Types
 
         private IConfiguration configuration;
 
+        private string backupfile;
+
+        public bool WriteConfigToFile()
+        {
+            if (AllowFilesystemWrites)
+            {
+                ICalculonType val = this["\"UseFile\""];
+                if ((val.GetType() == typeof(Literal)) &&
+                    (val.Display.ToLower() == "\"true\""))
+                {
+                SqliteConnectionStringBuilder source =
+                        new SqliteConnectionStringBuilder();
+                source.DataSource = backupfile;
+                using (SqliteConnection file = new SqliteConnection(source.ToString()))
+                    {
+                        file.Open();
+                        memoryConnection.BackupDatabase(file);
+                        file.Close();
+                    }
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private bool LoadConfigFromFile()
         {
             if (AllowFilesystemWrites)
             {
-                string file = Path.Combine(Environment.GetFolderPath(
-                    System.Environment.SpecialFolder.MyDocuments),
-                    "calculon.sqlite");
-                if (File.Exists(file))
+                if (File.Exists(backupfile))
                 {
                     SqliteConnectionStringBuilder source =
                         new SqliteConnectionStringBuilder();
-                    source.DataSource = file;
+                    source.DataSource = backupfile;
 
                     using (SqliteConnection src = new SqliteConnection(source.ToString()))
                     {
@@ -98,6 +124,7 @@ namespace Calculon.Types
                 cmd.Parameters.AddWithValue("@value", value.Display);
                 cmd.Parameters.AddWithValue("@type", value.GetType().ToString());
                 int status = cmd.ExecuteNonQuery();
+                WriteConfigToFile();
             }
         }
 
