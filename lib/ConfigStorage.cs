@@ -159,6 +159,20 @@ namespace Calculon.Types
             }
         }
 
+        public string Language
+        {
+            get
+            {
+                string lang = configuration["Language"];
+                if (lang is null)
+                {
+                    lang = "ENG";
+                }
+
+                return lang;
+            }
+        }
+
         private SqliteConnection memoryConnection;
     }
 
