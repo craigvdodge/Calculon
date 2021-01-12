@@ -7,7 +7,7 @@ namespace Calculon
 {
     public class Controller
     {
-        public Controller() 
+        public Controller()
         {
             state = new ControllerState();
         }
@@ -26,18 +26,16 @@ namespace Calculon
             }
 
         }
-        
+
         public EvalReturn Eval(string input)
         {
-            Parser parser = new Parser();
-
             try
             {
                 EvalReturn retVal = new EvalReturn(Response.Ok, string.Empty, typeof(Types.EmptyType));
                 string[] parts = input.Split(' ');
                 foreach (string i in parts)
                 {
-                    Types.ICalculonType val = parser.Parse(i);
+                    Types.ICalculonType val = Parse(i);
                     retVal = val.Eval(ref state);
                     if (retVal.Response != Response.Ok)
                     {
@@ -49,18 +47,20 @@ namespace Calculon
             }
             catch (System.FormatException)  //Parser didn't understand input
             {
-                Types.ErrorType err = new Types.ErrorType("PARSE ERROR: " + input);
+                Types.ErrorType err = new Types.ErrorType(
+                    String.Format(GetString("ParseErr"), input));
                 return err.Eval(ref state);
             }
         }
-        
+
+        public string GetString(string key)
+        {
+            return state.Config.strings[key];
+        }
+
         private ControllerState state;
         public bool Running { get{ return state.Running; } }
 
-    }
-
-    public class Parser
-    {
         public Types.ICalculonType Parse(string input)
         {
             if (Literal.IsMatch(input))
@@ -93,7 +93,7 @@ namespace Calculon
                 FunctionInstance fi = FunctionFactory.Instance[input];
                 if (fi.IsError)
                 {
-                    return new ErrorType("Error: " + input + " is not a number or function");
+                    return new ErrorType(String.Format(GetString("NotNumNotString"), input));
                 }
                 return fi;
             }

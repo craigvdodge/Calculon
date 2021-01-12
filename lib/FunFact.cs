@@ -53,7 +53,8 @@ namespace Calculon.Types
             // verify cog exists
             if (!functions.ContainsKey(function))
             {
-                throw new ArgumentOutOfRangeException(function, "function not found");
+                throw new ArgumentOutOfRangeException(function, 
+                    String.Format(cs.Config.strings["FunNotFound"], function));
             }
 
             IFunctionCog cog = functions[function];
@@ -63,8 +64,8 @@ namespace Calculon.Types
                 // check number of arguments
                 if (cs.stack.Count < cog.NumArgs)
                 {
-                    return new EvalReturn(Response.Error, 
-                        cog.FunctionName[0] + " requires " + cog.NumArgs.ToString() + " argument(s)",
+                    return new EvalReturn(Response.Error,
+                        String.Format(cs.Config.strings["FunArgNumErr"], cog.FunctionName[0], cog.NumArgs),
                         typeof(FunctionInstance));
                 }
                 // Check the types of arguments
@@ -97,7 +98,7 @@ namespace Calculon.Types
                     argListString += ")";
 
                     return new EvalReturn(Response.Error,
-                        "Unsupported types " + argListString,
+                        String.Format(cs.Config.strings["FunArgTypeErr"], argListString),
                         typeof(FunctionInstance));
                 }
             }
@@ -136,7 +137,9 @@ namespace Calculon.Types
         {
             if (IsError)
             {
-                return new EvalReturn(Response.Error, "Function " + Display + " not found.", this.GetType());
+                return new EvalReturn(Response.Error, 
+                    String.Format(cs.Config.strings["FunNotFound"], Display),
+                    this.GetType());
             }
             return FunctionFactory.Instance.Execute(Display, ref cs);
         }

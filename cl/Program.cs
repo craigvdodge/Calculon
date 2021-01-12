@@ -20,7 +20,8 @@ namespace cl
                     try
                     {
                         AnsiConsole.Render(DrawStack(calc.StackView));
-                        string input = AnsiConsole.Ask<string>("[green]calculon[/]");
+                        string input = AnsiConsole.Ask<string>("[green]"+ 
+                            calc.GetString("PROMPT") + "[/]");
                         AnsiConsole.Console.Clear(true);
                         EvalReturn eval = calc.Eval(input);
                         if (eval.Response == Response.Error)
