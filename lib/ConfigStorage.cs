@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Reflection;
 using System.Linq;
 using System.IO;
 using Microsoft.Data.Sqlite;
+using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 
 namespace Calculon.Types
@@ -14,6 +18,8 @@ namespace Calculon.Types
             configuration = new ConfigurationBuilder()
                 .AddIniFile("calculon.ini", optional: true, reloadOnChange: true)
                 .Build();
+
+            strings = new StringTable(Language);
 
             backupfile = Path.Combine(Environment.GetFolderPath(
                     System.Environment.SpecialFolder.MyDocuments), "calculon.sqlite");
@@ -37,6 +43,8 @@ namespace Calculon.Types
             }
         }
 
+        public StringTable strings;
+
         private IConfiguration configuration;
 
         private string backupfile;
@@ -49,10 +57,11 @@ namespace Calculon.Types
                 if ((val.GetType() == typeof(Literal)) &&
                     (val.Display.ToLower() == "\"true\""))
                 {
-                SqliteConnectionStringBuilder source =
+                    SqliteConnectionStringBuilder source =
                         new SqliteConnectionStringBuilder();
-                source.DataSource = backupfile;
-                using (SqliteConnection file = new SqliteConnection(source.ToString()))
+                    source.DataSource = backupfile;
+                    using (SqliteConnection file = 
+                        new SqliteConnection(source.ToString()))
                     {
                         file.Open();
                         memoryConnection.BackupDatabase(file);
@@ -75,7 +84,8 @@ namespace Calculon.Types
                         new SqliteConnectionStringBuilder();
                     source.DataSource = backupfile;
 
-                    using (SqliteConnection src = new SqliteConnection(source.ToString()))
+                    using (SqliteConnection src = 
+                        new SqliteConnection(source.ToString()))
                     {
                         src.Open();
                         src.BackupDatabase(memoryConnection);
@@ -174,6 +184,40 @@ namespace Calculon.Types
         }
 
         private SqliteConnection memoryConnection;
+    }
+
+    public class StringTable
+    {
+        public StringTable(string language)
+        {
+            lang = language;
+            string jsonString = File.ReadAllText(StringFile);
+            strings = JsonSerializer.Deserialize<Dictionary<string, string>>(jsonString);
+        }
+
+        private string lang;
+        public string StringFile
+        {
+            get
+            {
+                string[] path = new string[3];
+                path[0] = Path.GetDirectoryName(
+                    Assembly.GetExecutingAssembly().Location);
+                path[1] = "lang";
+                path[2] = lang + ".json";
+                return Path.Combine(path);
+            }
+        }
+
+        public string this[string key]
+        {
+            get
+            {
+                return strings[key];
+            }
+        }
+
+        private Dictionary<string, string> strings;
     }
 
     public class Store : IFunctionCog
