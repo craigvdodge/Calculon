@@ -107,7 +107,7 @@ namespace Calculon
         {
             stack = new Stack<Types.ICalculonType>();
             running = true;
-            Config = new Calculon.Types.Config();
+            Config = Calculon.Types.Config.handle;
         }
 
         internal Stack<Types.ICalculonType> stack;

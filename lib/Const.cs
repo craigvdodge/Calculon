@@ -25,7 +25,8 @@ namespace Calculon.Types
             }
             else
             {
-                throw new ArgumentException("Unknown constant: " + s);
+                string errmsg = Config.handle.strings["UnknownConst"];
+                throw new ArgumentException(string.Format(errmsg, s));
             }
         }
 
@@ -36,7 +37,9 @@ namespace Calculon.Types
                 case Constant.pi : return new Real(Math.PI);
                 case Constant.e : return new Real(Math.E);
                 case Constant.tau : return new Real(Math.Tau);
-                default : throw new Exception("Unknown constant");
+                default :
+                    string errmsg = Config.handle.strings["UnknownConst"];
+                    throw new Exception(string.Format(errmsg, Const.ToString()));
             }
         } 
         public enum Constant {pi, e, tau}
@@ -62,7 +65,9 @@ namespace Calculon.Types
                     case Constant.pi : return "pi"; 
                     case Constant.e : return "e";
                     case Constant.tau : return "tau";
-                    default: return "If you're seeing this, this is a bug.";
+                    default:
+                        string errmsg = Config.handle.strings["UnknownConst"];
+                        return string.Format(errmsg, Const.ToString());
                 }
             }
         }

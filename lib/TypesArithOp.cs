@@ -170,7 +170,8 @@ namespace Calculon.Types
             {
                 return Op((Real) lhs, new Real(rhs));
             }
-            throw new ArgumentException("Unhandled argument types " + argTypes.ToString());
+            throw new ArgumentException(String.Format(
+                Config.handle.strings["ArithArgUnhandled"], argTypes));
         }
 
         internal static Integer.Base BaseRules(Integer lhs, Integer rhs)

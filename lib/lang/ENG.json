@@ -4,5 +4,8 @@
   "FunArgNumErr": "{0} requires {1} argument(s)",
   "FunArgTypeErr": "Unsupported types {0}",
   "ParseErr": "Parse error: {0}",
-  "NotNumNotString": "Error: {0} is not a number or function"
+  "NotNumNotString": "Error: {0} is not a number or function",
+  "UnknownConst": "Unknown constant: {0}",
+  "FactorialNeg": "ERROR: Factorial needs positive integers",
+  "ArithArgUnhandled": "Unhandled argument types {0}"
 }

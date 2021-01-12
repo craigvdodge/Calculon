@@ -12,7 +12,7 @@ namespace Calculon.Types
         {
             if (num.data < 0)
             {
-                throw new ArgumentException("ERROR: Factorial needs positive integers");
+                throw new ArgumentException(Config.handle.strings["FactorialNeg"]);
             }
             BigInteger result = BigInteger.One;
             for (BigInteger i = BigInteger.One; i <= num.data; i++)

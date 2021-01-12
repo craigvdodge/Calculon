@@ -43,6 +43,9 @@ namespace Calculon.Types
             }
         }
 
+        private static readonly Config _instance = new Config();
+        public static Config handle { get { return _instance; } }
+
         public StringTable strings;
 
         private IConfiguration configuration;
