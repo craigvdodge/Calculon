@@ -42,7 +42,8 @@ namespace Calculon.Types
             }
             else
             {
-                throw new ArgumentException("Unhandled type " + toCopy.GetType().ToString());
+                throw new ArgumentException(
+                    String.Format(Config.handle.strings["UnsupportedTypes"], toCopy.GetType()));
             }
         }
 

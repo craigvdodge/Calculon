@@ -87,7 +87,8 @@ namespace Calculon.Types
             {
                 return ((Integer)lhs).Pow((Integer)rhs);
             }
-            throw new ArgumentException("Unhandled argument types " + argTypes.ToString());
+            throw new ArgumentException(
+                String.Format(Config.handle.strings["UnsupportedTypes"], argTypes));
         }
     }
 

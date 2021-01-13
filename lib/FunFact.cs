@@ -98,7 +98,7 @@ namespace Calculon.Types
                     argListString += ")";
 
                     return new EvalReturn(Response.Error,
-                        String.Format(cs.Config.strings["FunArgTypeErr"], argListString),
+                        String.Format(cs.Config.strings["UnsupportedTypes"], argListString),
                         typeof(FunctionInstance));
                 }
             }
