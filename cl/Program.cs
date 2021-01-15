@@ -27,6 +27,9 @@ namespace cl
                         if (eval.Response == Response.Error)
                         {
                             AnsiConsole.MarkupLine("[red]" + eval.Msg + "[/]");
+                        } else if (eval.Response == Response.Help)
+                        {
+                            AnsiConsole.MarkupLine("[bold]" + eval.Msg + "[/]");
                         }
                     }
                     catch (Exception e)

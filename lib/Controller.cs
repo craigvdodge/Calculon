@@ -37,6 +37,10 @@ namespace Calculon
                 {
                     Types.ICalculonType val = Parse(i);
                     retVal = val.Eval(ref state);
+                    if (retVal.Response == Response.Help)
+                    {
+                        return HelpType.ExtendedHelp(ref state, parts);
+                    }
                     if (retVal.Response != Response.Ok)
                     {
                         return retVal; // Something went wrong, bail here
@@ -68,25 +72,30 @@ namespace Calculon
                 Literal l = new Literal(input);
                 return l;
             }
-            if (Real.IsMatch(input))
+            else if (Real.IsMatch(input))
             {
                 Real r = new Real(input);
                 return r;
             }
-            if (Rational.IsMatch(input))
+            else if (Rational.IsMatch(input))
             {
                 Rational rat = new Rational(input);
                 return rat;
             }
-            if (Integer.IsMatch(input))
+            else if (Integer.IsMatch(input))
             {
                 Integer i = new Integer(input);
                 return i;
             }
-            if (RealConstant.IsMatch(input))
+            else if (RealConstant.IsMatch(input))
             {
                 RealConstant rc = new RealConstant(input);
                 return rc;
+            }
+            else if (HelpType.IsMatch(input))
+            {
+                HelpType ht = new HelpType();
+                return ht;
             }
             else
             {
@@ -133,6 +142,7 @@ namespace Calculon
         NotImpl = -2,
         Error = -1,
         Ok = 0,
-        Exit = 1
+        Exit = 1,
+        Help = 2
     }
 }

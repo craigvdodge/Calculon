@@ -7,5 +7,6 @@
   "NotNumNotString": "Error: {0} is not a number or function",
   "UnknownConst": "Unknown constant: {0}",
   "FactorialNeg": "ERROR: Factorial needs positive integers",
-  "ArithArgUnhandled": "Unhandled argument types {0}"
+  "ArithArgUnhandled": "Unhandled argument types {0}",
+  "HelpInitial": "Todo"
 }
