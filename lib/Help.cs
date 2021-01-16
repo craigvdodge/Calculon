@@ -24,11 +24,19 @@ namespace Calculon.Types
             Regex functions = regexize("HelpFun");
             if (functions.IsMatch(args[1]))
             {
-
+                StringBuilder output = new StringBuilder();
+                output.Append(cs.Config.strings["HelpFunHdr"]);
+                output.Append("\n");
+                foreach (string f in FunctionFactory.Instance.FunctionList)
+                {
+                    output.Append(f + "\n");
+                }
                 return new EvalReturn(Response.Help,
-                    "todo", typeof(HelpType));
+                    output.ToString(), typeof(HelpType));
             }
-            // need a generic help on help 
+            // TODO: need help on numbers
+            
+            // TODO: need a generic help on help 
 
             throw new NotImplementedException();
         }

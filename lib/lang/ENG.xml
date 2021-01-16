@@ -25,4 +25,5 @@ Each item is pushed onto a stack. A stack is a data structure that stores items 
 and when asked "pops" the last item entered. When a function is entered, that function operates on
 values entered on the stack.
   </entry>
+  <entry name="HelpFunHdr">Available Functions:</entry>
 </StringTable>

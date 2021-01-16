@@ -48,6 +48,8 @@ namespace Calculon.Types
             }
         }
 
+        public string[] FunctionList => functions.Keys.ToArray<string>();
+
         public EvalReturn Execute(string function, ref ControllerState cs)
         {
             // verify cog exists
