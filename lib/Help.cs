@@ -16,18 +16,37 @@ namespace Calculon.Types
 
         public static EvalReturn ExtendedHelp(ref ControllerState cs, string[] args)
         {
-            return new EvalReturn(Response.Help, 
-                cs.Config.strings["HelpInitial"], typeof(HelpType));
+            if (args.Length == 1 || string.IsNullOrEmpty(args[1]))
+            {
+                return new EvalReturn(Response.Help,
+                    cs.Config.strings["HelpInitial"], typeof(HelpType));
+            }
+            Regex functions = regexize("HelpFun");
+            if (functions.IsMatch(args[1]))
+            {
+
+                return new EvalReturn(Response.Help,
+                    "todo", typeof(HelpType));
+            }
+            // need a generic help on help 
+
+            throw new NotImplementedException();
         }
 
         #region parsing
         public static bool IsMatch(string s)
         {
+            Regex HelpMatch = regexize("HelpCmd");
             return HelpMatch.IsMatch(s);
         }
 
-        private static readonly Regex HelpMatch =
-            new Regex("^help$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static Regex regexize(string tableEntry)
+        {
+            StringBuilder match = new StringBuilder("^");
+            match.Append(Config.handle.strings[tableEntry]);
+            match.Append("$");
+            return new Regex(match.ToString(), RegexOptions.IgnoreCase);
+        }
         #endregion
     }
 }

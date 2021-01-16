@@ -9,5 +9,20 @@
   <entry name="UnknownConst">Unknown constant: {0}</entry>
   <entry name="FactorialNeg">ERROR: Factorial needs positive integers</entry>
   <entry name="ArithArgUnhandled">Unhandled argument types {0}</entry>
-  <entry name="HelpInitial">Todo</entry>
+  <entry name="HelpCmd">help</entry>
+  <entry name="HelpFun">functions</entry>
+  <entry name="HelpInitial">Calculon is a Reverse Polish Notation (RPN) or postfix calculator.This means that the arguments
+to an function are listed and then the function.
+For example, what you might typically write as:
+  
+  2 + 2
+  
+  is written:
+  
+  2 2 +
+
+Each item is pushed onto a stack. A stack is a data structure that stores items "pushed" into it,
+and when asked "pops" the last item entered. When a function is entered, that function operates on
+values entered on the stack.
+  </entry>
 </StringTable>
