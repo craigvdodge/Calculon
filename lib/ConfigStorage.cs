@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Reflection;
 using System.Linq;
 using System.IO;
 using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
+using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
 
 namespace Calculon.Types
 {
@@ -19,7 +20,7 @@ namespace Calculon.Types
                 .AddIniFile("calculon.ini", optional: true, reloadOnChange: true)
                 .Build();
 
-            strings = new StringTable(Language);
+            strings = StringTable.GetStringTable(Language);
 
             backupfile = Path.Combine(Environment.GetFolderPath(
                     System.Environment.SpecialFolder.MyDocuments), "calculon.sqlite");
@@ -189,13 +190,62 @@ namespace Calculon.Types
         private SqliteConnection memoryConnection;
     }
 
-    public class StringTable
+    public class StringTable : Dictionary<string, string>, IXmlSerializable
     {
-        public StringTable(string language)
+        public static StringTable GetStringTable(string language)
         {
-            lang = language;
-            string jsonString = File.ReadAllText(StringFile);
-            strings = JsonSerializer.Deserialize<Dictionary<string, string>>(jsonString);
+            StringTable output;
+            string[] path = new string[3];
+            path[0] = Path.GetDirectoryName(
+                Assembly.GetExecutingAssembly().Location);
+            path[1] = "lang";
+            path[2] = language + ".xml";
+            string xmlPath = Path.Combine(path);
+            string xmlString = File.ReadAllText(xmlPath);
+            XmlSerializer serializer = new XmlSerializer(typeof(StringTable));
+            
+            using (TextReader reader = new StringReader(xmlString))
+            {
+                output = (StringTable) serializer.Deserialize(reader);
+            }
+
+            return output;
+        }
+
+        public XmlSchema GetSchema()
+        {
+            return null;
+        }
+
+        public void ReadXml(XmlReader reader)
+        {
+            bool wasEmpty = reader.IsEmptyElement;
+            this.lang = reader.GetAttribute("lang");
+            reader.Read();
+
+            if (wasEmpty) { return; }
+
+            while (reader.NodeType != System.Xml.XmlNodeType.EndElement)
+            {
+                string key = reader.GetAttribute("name");
+                string value = reader.ReadInnerXml();
+                this.Add(key, value);
+            }
+
+            reader.ReadEndElement();
+        }
+
+        public void WriteXml(XmlWriter writer)
+        {
+            writer.WriteAttributeString("lang", lang);
+            foreach (string key in this.Keys)
+            {
+                writer.WriteStartElement("entry");
+                writer.WriteAttributeString("name", key);
+                string value = this[key];
+                writer.WriteRaw(value);
+                writer.WriteEndElement();
+            }
         }
 
         private string lang;
@@ -211,16 +261,6 @@ namespace Calculon.Types
                 return Path.Combine(path);
             }
         }
-
-        public string this[string key]
-        {
-            get
-            {
-                return strings[key];
-            }
-        }
-
-        private Dictionary<string, string> strings;
     }
 
     public class Store : IFunctionCog

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<StringTable lang="ENG">
+  <entry name="PROMPT">calculon</entry>
+  <entry name="FunNotFound">Function {0} not found</entry>
+  <entry name="FunArgNumErr">{0} requires {1} argument(s)</entry>
+  <entry name="UnsupportedTypes">Unsupported types {0}</entry>
+  <entry name="ParseErr">Parse error: {0}</entry>
+  <entry name="NotNumNotString">Error: {0} is not a number or function</entry>
+  <entry name="UnknownConst">Unknown constant: {0}</entry>
+  <entry name="FactorialNeg">ERROR: Factorial needs positive integers</entry>
+  <entry name="ArithArgUnhandled">Unhandled argument types {0}</entry>
+  <entry name="HelpInitial">Todo</entry>
+</StringTable>

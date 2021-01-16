@@ -6,14 +6,14 @@
 
   <ItemGroup>
     <None Remove="calculon.ini" />
-    <None Remove="lang\ENG.json" />
+    <None Remove="lang\ENG.xml" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="calculon.ini">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="lang\ENG.json">
+    <Content Include="lang\ENG.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
