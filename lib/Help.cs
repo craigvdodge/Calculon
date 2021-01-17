@@ -27,9 +27,16 @@ namespace Calculon.Types
                 StringBuilder output = new StringBuilder();
                 output.Append(cs.Config.strings["HelpFunHdr"]);
                 output.Append("\n");
-                foreach (string f in FunctionFactory.Instance.FunctionList)
+                string[] sortfun = FunctionFactory.Instance.FunctionList;
+                Array.Sort(sortfun);
+                foreach (string f in sortfun)
                 {
-                    output.Append(f + "\n");
+                    output.Append(f);
+                    if (cs.Config.strings.ContainsKey(f))
+                    {
+                        output.Append("\t" + cs.Config.strings[f]);
+                    }
+                    output.Append("\n");
                 }
                 return new EvalReturn(Response.Help,
                     output.ToString(), typeof(HelpType));

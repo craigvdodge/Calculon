@@ -26,4 +26,37 @@ and when asked "pops" the last item entered. When a function is entered, that fu
 values entered on the stack.
   </entry>
   <entry name="HelpFunHdr">Available Functions:</entry>
+  <entry name="todec">Converts an integer a decimal (base 10) format.</entry>
+  <entry name="tobin">Converts an integer to a binary (base 2) format.</entry>
+  <entry name="tohex">Converts an integer to a hexidecimal (base 16) format.</entry>
+  <entry name="tooct">Converts an integer to an octal (base 8) format.</entry>
+  <entry name="sto">Given item and a string literal name, stores item as name.</entry>
+  <entry name="rcl">Returns copy of previously stored item under string literal name.</entry>
+  <entry name="fact">Returns the factorial of an integer</entry>
+  <entry name="!">Alias for fact</entry>
+  <entry name="gcf">Finds the Greatest Common Factor of two integers</entry>
+  <entry name="lcm">Finds the Least Common Multiple of two integers</entry>
+  <entry name="round">Rounds a decimal number to the nearest integer</entry>
+  <entry name="floor">Returns the largest integer below the given decimal number.</entry>
+  <entry name="ceiling">Returns the integer above the given decimal number</entry>
+  <entry name="roundto">Given a decimal number, rounds to given integer decimal places</entry>
+  <entry name="add">Adds two numbers</entry>
+  <entry name="+">Alias for add</entry>
+  <entry name="sub">subtract two numbers</entry>
+  <entry name="-">Alias for subtract</entry>
+  <entry name="mult">Multiply two numbers</entry>
+  <entry name="*">Alias for mult</entry>
+  <entry name="div">Divide two numbers</entry>
+  <entry name="/">Alias for div</entry>
+  <entry name="mod">Find the modulus of two numbers</entry>
+  <entry name="pow">Finds the power of the one number raised to the second number.</entry>
+  <entry name="^">Alias for pow</entry>
+  <entry name="epow">Returns e to the power of the given number</entry>
+  <entry name="log">Logarithm (base 10) of a number</entry>
+  <entry name="ln">Natural logarithm (base e) of a number</entry>
+  <entry name="exit">Exits calculon</entry>
+  <entry name="quit">Alias for exit</entry>
+  <entry name="drop">Deletes last item on the stack</entry>
+  <entry name="swap">Swaps last item on the stack with the second to last item</entry>
+  <entry name="clear">Deletes all items from the stack</entry>
 </StringTable>
