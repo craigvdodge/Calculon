@@ -21,6 +21,7 @@ namespace Calculon.Types
                 return new EvalReturn(Response.Help,
                     cs.Config.strings["HelpInitial"], typeof(HelpType));
             }
+            // help on functions
             Regex functions = regexize("HelpFun");
             if (functions.IsMatch(args[1]))
             {
@@ -41,11 +42,18 @@ namespace Calculon.Types
                 return new EvalReturn(Response.Help,
                     output.ToString(), typeof(HelpType));
             }
-            // TODO: need help on numbers
-            
-            // TODO: need a generic help on help 
+            // help on numbers
+            Regex numbers = regexize("HelpNumCmd");
+            if (numbers.IsMatch(args[1]))
+            {
+                return new EvalReturn(Response.Help,
+                    cs.Config.strings["HelpNum"], typeof(HelpType));
+            }
+            // unknown help type
+            string helphelp = String.Format(
+                cs.Config.strings["HelpHelp"], args[1]);
 
-            throw new NotImplementedException();
+            return new EvalReturn(Response.Help, helphelp, typeof(HelpType));
         }
 
         #region parsing
