@@ -121,7 +121,7 @@ namespace Calculon.Types
             }
         }
 
-        public ICalculonType Execute(ref ControllerState cs)
+        public virtual ICalculonType Execute(ref ControllerState cs)
         {
             ICalculonType rhs = cs.stack.Pop();
             ICalculonType lhs = cs.stack.Pop();
@@ -258,6 +258,33 @@ namespace Calculon.Types
         internal override Integer Op(Integer lhs, Integer rhs)
         {
             return lhs.Divide(rhs);
+        }
+
+        public override ICalculonType Execute(ref ControllerState cs)
+        {
+            ICalculonType rhs = cs.stack.Pop();
+            ICalculonType lhs = cs.stack.Pop();
+            Type[] argTypes = new Type[] { lhs.GetType(), rhs.GetType() };
+            if (argTypes.SequenceEqual(new Type[] { typeof(Integer), typeof(Integer) }))
+            {
+                if (((Integer)lhs).Mod((Integer)rhs).data == 0)
+                {
+                    return Op((Integer)lhs, (Integer)rhs);
+                }
+                else
+                {
+                    // maybe include config option to convert to rational?
+                    return Op(new Real(lhs), new Real(rhs));
+                }
+            }
+            else
+            {
+                //push back onto stack
+                cs.stack.Push(lhs);
+                cs.stack.Push(rhs);
+                //run as normal
+                return base.Execute(ref cs);
+            }
         }
 
         internal override Real Op(Real lhs, Real rhs)
