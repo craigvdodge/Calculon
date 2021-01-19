@@ -11,8 +11,23 @@
   <entry name="ArithArgUnhandled">Unhandled argument types {0}</entry>
   <entry name="HelpCmd">help</entry>
   <entry name="HelpNumCmd">numbers</entry>
-  <entry name="HelpNum">
-    TODO
+  <entry name="HelpNum">Calculon has several number types.
+Integers are whole numbers. Additionally, integers can be in different bases, by appending the base to the end of the
+number: b for binary (base 2), o for octal (base 8), d for decimal (base 10), and h for hexidecimal (base 16). If no
+base is specified, base 10 is assumed.
+
+Rational numbers (also known as fractions) are two integers, a numerator and a denominator. They are represented as
+numerator/denominator (3/8, 7/16, etc.)
+
+Real numbers are floating point numbers. (3.14159, etc.)
+
+The constants pi, tau, and e can be entered by name. When used in calcuations they are converted to real numbers.
+
+Calculon will convert when it seems normal to do so. For instance, adding an integer and real will return a real
+number, or dividing two integers that don't divide evenly returns a real.
+
+While not a number, a Literal is another type. It is an alphanumberic string, enclused in double quotes (""). Literals
+can be used for things like storing values to recall later.
   </entry>
   <entry name="HelpHelp">Unknown topic {0}. For help on number types, see help numbers. For a list of functions, see 
 help functions.
