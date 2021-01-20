@@ -8,7 +8,12 @@
   <entry name="NotNumNotString">Error: {0} is not a number or function</entry>
   <entry name="UnknownConst">Unknown constant: {0}</entry>
   <entry name="FactorialNeg">ERROR: Factorial needs positive integers</entry>
+  <entry name="Degrees">degrees</entry>
+  <entry name="Radians">radians</entry>
+  <entry name="Grad">grad</entry>
+  <etnry name="AngleModeError">Unknown angle mode {0}</etnry>
   <entry name="ArithArgUnhandled">Unhandled argument types {0}</entry>
+  <entry name="CorruptedConfig">Config item {0} has been modified to an unknown value.</entry>
   <entry name="HelpCmd">help</entry>
   <entry name="HelpNumCmd">numbers</entry>
   <entry name="HelpNum">Calculon has several number types.
@@ -84,4 +89,6 @@ see help functions.
   <entry name="drop">Deletes last item on the stack</entry>
   <entry name="swap">Swaps last item on the stack with the second to last item</entry>
   <entry name="clear">Deletes all items from the stack</entry>
+  <entry name="getmode">Gets current angle units (Degrees, Radians, Grad)</entry>
+  <entry name="setmode">Sets the angle units mode</entry>
 </StringTable>

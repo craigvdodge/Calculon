@@ -23,7 +23,7 @@ namespace Calculon.Types
             strings = StringTable.GetStringTable(Language);
 
             backupfile = Path.Combine(Environment.GetFolderPath(
-                    System.Environment.SpecialFolder.MyDocuments), "calculon.sqlite");
+                    System.Environment.SpecialFolder.MyDocuments), "calculon.db");
 
             SqliteConnectionStringBuilder connectionStringBuilder = new SqliteConnectionStringBuilder(
                     "Data Source=InMemoryPack;Mode=Memory;Cache=Shared");
@@ -188,6 +188,50 @@ namespace Calculon.Types
         }
 
         private SqliteConnection memoryConnection;
+        #region Trig Angle Mode
+        public enum Mode { Degrees, Radians, Grad }
+
+        public Mode AngleMode
+        {
+            get
+            {
+                ICalculonType stored = this["AngleMode"];
+                if (stored.GetType() == typeof(EmptyType))
+                {
+                    return Mode.Radians;
+                }
+                if (stored.GetType() == typeof(Literal))
+                {
+                    switch (((Literal)stored).Display)
+                    {
+                        case "degrees": return Mode.Degrees;
+                        case "radians": return Mode.Radians;
+                        case "grad": return Mode.Grad;
+                        // otherwise we should fall through to error
+                        // below.
+                    }
+                }
+                string err = String.Format(strings["CorruptedConfig"], "AngleMode");
+                throw new Exception(err);
+            }
+            set
+            {
+                switch (value)
+                {
+                    case Mode.Degrees:
+                        this["AngleMode"] = new Literal("degrees");
+                        break;
+                    case Mode.Radians:
+                        this["AngleMode"] = new Literal("radians");
+                        break;
+                    case Mode.Grad:
+                        this["AngleMode"] = new Literal("grad");
+                        break;
+                    default: throw new Exception(String.Format("CorruptedConfig", value.ToString()));
+                }
+            }
+        }
+        #endregion
     }
 
     public class StringTable : Dictionary<string, string>, IXmlSerializable
