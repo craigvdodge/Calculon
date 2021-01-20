@@ -78,6 +78,11 @@ namespace Calculon.Types
         public ICalculonType Execute(ref ControllerState cs)
         {
             Integer input = (Integer) cs.stack.Pop();
+            if (input.data < 0)
+            {
+                cs.stack.Push(input);
+                return new ErrorType(cs.Config.strings["FactorialNeg"]);
+            }
             return input.Factorial();
         }
     }

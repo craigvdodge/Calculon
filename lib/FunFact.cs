@@ -106,6 +106,11 @@ namespace Calculon.Types
             }
             // call cog Execute
             ICalculonType retVal = cog.Execute(ref cs);
+            if (retVal.GetType() == typeof(ErrorType))
+            {
+                return new EvalReturn(Response.Error,
+                    retVal.Display, typeof(ErrorType));
+            }
             if (retVal.GetType() != typeof(EmptyType))
             {
                 cs.stack.Push(retVal);
