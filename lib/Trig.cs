@@ -6,6 +6,128 @@ using System.Numerics;
 
 namespace Calculon.Types
 {
+    public static class TrigExt
+    {
+        public static Real ToRadians(this Real angle, Config.Mode mode)
+        {
+            switch (mode)
+            {
+                case Config.Mode.Degrees:
+                    return new Real(angle.data * Math.PI / 180.0);
+                case Config.Mode.Radians:
+                    return angle;
+                case Config.Mode.Grad:
+                    return new Real(angle.data * Math.PI / 200.0);
+                default:
+                    string err = String.Format(Config.handle.strings["CorruptedConfig"], "AngleMode");
+                    throw new Exception(err);
+            }  
+        }
+
+        public static Real ToDegrees(this Real angle, Config.Mode mode)
+        {
+            switch (mode)
+            {
+                case Config.Mode.Degrees:
+                    return angle;
+                case Config.Mode.Radians:
+                    return new Real(angle.data * 180.0 / Math.PI);
+                case Config.Mode.Grad:
+                    return new Real(angle.data * 0.9);
+                default:
+                    string err = String.Format(Config.handle.strings["CorruptedConfig"], "AngleMode");
+                    throw new Exception(err);
+            }
+        }
+
+        public static Real ToGrad(this Real angle, Config.Mode mode)
+        {
+            switch (mode)
+            {
+                case Config.Mode.Degrees:
+                    return new Real(angle.data * 10.0 / 9.0);
+                case Config.Mode.Radians:
+                    return new Real(angle.data * 200.0 / Math.PI);
+                case Config.Mode.Grad:
+                    return angle;
+                default:
+                    string err = String.Format(Config.handle.strings["CorruptedConfig"], "AngleMode");
+                    throw new Exception(err);
+            }
+        }
+        // TODO: check for special angles and return specific answers?
+        public static Real Sin(this Real angle)
+        {
+            Real angleRadians = angle.ToRadians(Config.handle.AngleMode);
+            return new Real(Math.Sin(angleRadians.data));
+        }
+
+        public static Real Cos(this Real angle)
+        {
+            Real angleRadians = angle.ToRadians(Config.handle.AngleMode);
+            return new Real(Math.Cos(angleRadians.data));
+        }
+
+        //BUGBUG 90 tan should be NaN
+        public static Real Tan(this Real angle)
+        {
+            Real angleRadians = angle.ToRadians(Config.handle.AngleMode);
+            return new Real(Math.Tan(angleRadians.data));
+        }
+    }
+
+    public abstract class TrigBase : IFunctionCog
+    {
+        public abstract string[] FunctionName { get; }
+        public int NumArgs { get { return 1; } }
+        public Type[][] AllowedTypes
+        {
+            get
+            {
+                Type[][] output = new Type[4][];
+                output[0] = new Type[] { typeof(Real) };
+                output[1] = new Type[] { typeof(Integer) };
+                output[2] = new Type[] { typeof(Rational) };
+                output[3] = new Type[] { typeof(RealConstant) };
+                return output;
+            }
+        }
+        public virtual ICalculonType Execute(ref ControllerState cs)
+        {
+            Real convertedAngle = new Real((ICalculonType)cs.stack.Pop());
+            return Op(convertedAngle);
+        }
+
+        internal abstract Real Op(Real angle); 
+    }
+
+    public class Sin : TrigBase
+    {
+        public override string[] FunctionName { get { return new string[] { "sin"}; } }
+        internal override Real Op(Real angle)
+        {
+            return angle.Sin();
+        }
+    }
+
+    public class Cos : TrigBase
+    {
+        public override string[] FunctionName { get { return new string[] { "cos" }; } }
+        internal override Real Op(Real angle)
+        {
+            return angle.Cos();
+        }
+    }
+
+    public class Tan : TrigBase
+    {
+        public override string[] FunctionName { get { return new string[] { "tan" }; } }
+        internal override Real Op(Real angle)
+        {
+            return angle.Tan();
+        }
+    }
+
     public class GetMode : IFunctionCog
     {
         public string[] FunctionName { get { return new string[] { "getmode" }; } }

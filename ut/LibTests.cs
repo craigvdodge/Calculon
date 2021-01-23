@@ -2,6 +2,7 @@ using System;
 using Xunit;
 using Calculon;
 using Calculon.Types;
+using System.Text;
 using System.Numerics;
 
 namespace ut
@@ -46,6 +47,26 @@ namespace ut
             Assert.Equal(ExpectedResponse, ret.Response);
             Assert.Equal(msg, ret.Msg);
             Assert.True(ExpectedType == ret.Type);
+        }
+
+        [Theory]
+        [InlineData("0 sin", "0")]
+        [InlineData("30 sin", "0.5")]  
+        [InlineData("90 sin", "1")]
+        [InlineData("0 cos", "1")]
+        [InlineData("60 cos", "0.5")]
+        [InlineData("90 cos", "0")]
+        [InlineData("0 tan", "0")]
+        [InlineData("45 tan", "1")]
+        public void TrigTest(string input, string expected)
+        {
+            Controller calc = new Controller();
+            StringBuilder fullTest = new StringBuilder("\"degrees\" setmode ");
+            fullTest.Append(input);
+            fullTest.Append(" 2 roundto");
+            EvalReturn ret = calc.Eval(fullTest.ToString());
+            Assert.True(typeof(Calculon.Types.Real) == ret.Type);
+            Assert.Equal(expected, ret.Msg);
         }
 
         [Theory]
