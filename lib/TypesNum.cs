@@ -317,6 +317,16 @@ namespace Calculon.Types
             denominator = 1;
         }
 
+        public Rational(Real r)
+        {
+            string s = r.ToString();
+            int decimalPoint = s.IndexOf('.');
+            s = s.Replace(".", string.Empty);
+            numerator = BigInteger.Parse(s);
+            denominator = BigInteger.Pow(10, s.Length - decimalPoint);
+            this.Reduce();
+        }
+
         internal BigInteger numerator;
         internal BigInteger denominator;
 
@@ -359,4 +369,49 @@ namespace Calculon.Types
         }
     }
 
+    public class ToReal : IFunctionCog
+    {
+        public string[] FunctionName { get { return new string[] { "toreal" }; } }
+
+        public int NumArgs { get { return 1; } }
+
+        public Type[][] AllowedTypes
+        {
+            get
+            {
+                Type[][] retVal = new Type[1][];
+                retVal[0] = new Type[] { typeof(Rational) };
+                return retVal;
+            }
+        }
+
+        public ICalculonType Execute(ref ControllerState cs)
+        {
+            Rational input = (Rational) cs.stack.Pop();
+            return new Real(input);
+        }
+    }
+
+    public class ToRational : IFunctionCog
+    {
+        public string[] FunctionName { get { return new string[] { "torat" }; } }
+
+        public int NumArgs { get { return 1; } }
+
+        public Type[][] AllowedTypes
+        {
+            get
+            {
+                Type[][] retVal = new Type[1][];
+                retVal[0] = new Type[] { typeof(Real) };
+                return retVal;
+            }
+        }
+
+        public ICalculonType Execute(ref ControllerState cs)
+        {
+            Real input = (Real) cs.stack.Pop();
+            return new Rational(input);
+        }
+    }
 }

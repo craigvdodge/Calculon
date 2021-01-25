@@ -149,6 +149,14 @@ namespace ut
             BasicTest(test, expected);
         }
 
+        [Theory]
+        [InlineData("0.625 torat", "5/8")]
+        [InlineData("1/8 toreal", "0.125")]
+        public void RealRatoinalConversions(string test, string expected)
+        {
+            BasicTest(test, expected);
+        }
+
         // This code gets written over and over but it just
         // needs different names
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "xUnit1013:Public method should be marked as test", Justification = "<Pending>")]

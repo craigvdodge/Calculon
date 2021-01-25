@@ -91,6 +91,8 @@ see help functions.
   <entry name="clear">Deletes all items from the stack</entry>
   <entry name="getmode">Gets current angle units (Degrees, Radians, Grad)</entry>
   <entry name="setmode">Sets the angle units mode</entry>
+  <entry name="toreal">Converts a rational (fraction) number to a real (decimal)</entry>
+  <entry name="torat">Converts a real (decimal) number to a rational (fraction)</entry>
   <entry name="sin">Sine of an angle</entry>
   <entry name="cos">Cosine of an angle</entry>
   <entry name="tan">Tangent of an angle</entry>
