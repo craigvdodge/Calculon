@@ -96,4 +96,7 @@ see help functions.
   <entry name="sin">Sine of an angle</entry>
   <entry name="cos">Cosine of an angle</entry>
   <entry name="tan">Tangent of an angle</entry>
+  <entry name="arcsin">Arcsin (inverse sine) of number</entry>
+  <entry name="arccos">Arccos (inverse cosine) of a number</entry>
+  <entry name="arctan">Arctan (inverse tangent) of a number</entry>
 </StringTable>

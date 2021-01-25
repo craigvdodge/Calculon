@@ -62,10 +62,34 @@ namespace Calculon.Types
             return new Real(Math.Sin(angleRadians.data));
         }
 
+        public static Real ArcSin(this Real x)
+        {
+            Real output = new Real(Math.Asin(x.data));
+            switch (Config.handle.AngleMode)
+            {
+                case Config.Mode.Radians: return output;
+                case Config.Mode.Degrees: return output.ToDegrees(Config.Mode.Radians);
+                case Config.Mode.Grad: return output.ToGrad(Config.Mode.Radians);
+                default: throw new ArgumentException();
+            }
+        }
+
         public static Real Cos(this Real angle)
         {
             Real angleRadians = angle.ToRadians(Config.handle.AngleMode);
             return new Real(Math.Cos(angleRadians.data));
+        }
+
+        public static Real ArcCos(this Real x)
+        {
+            Real output = new Real(Math.Acos(x.data));
+            switch (Config.handle.AngleMode)
+            {
+                case Config.Mode.Radians: return output;
+                case Config.Mode.Degrees: return output.ToDegrees(Config.Mode.Radians);
+                case Config.Mode.Grad: return output.ToGrad(Config.Mode.Radians);
+                default: throw new ArgumentException();
+            }
         }
 
         //BUGBUG 90 tan should be NaN
@@ -73,6 +97,18 @@ namespace Calculon.Types
         {
             Real angleRadians = angle.ToRadians(Config.handle.AngleMode);
             return new Real(Math.Tan(angleRadians.data));
+        }
+
+        public static Real ArcTan(this Real x)
+        {
+            Real output = new Real(Math.Atan(x.data));
+            switch (Config.handle.AngleMode)
+            {
+                case Config.Mode.Radians: return output;
+                case Config.Mode.Degrees: return output.ToDegrees(Config.Mode.Radians);
+                case Config.Mode.Grad: return output.ToGrad(Config.Mode.Radians);
+                default: throw new ArgumentException();
+            }
         }
     }
 
@@ -110,6 +146,15 @@ namespace Calculon.Types
         }
     }
 
+    public class ArcSin : TrigBase
+    {
+        public override string[] FunctionName { get { return new string[] { "arcsin" }; } }
+        internal override Real Op(Real angle)
+        {
+            return angle.ArcSin();
+        }
+    }
+
     public class Cos : TrigBase
     {
         public override string[] FunctionName { get { return new string[] { "cos" }; } }
@@ -119,12 +164,30 @@ namespace Calculon.Types
         }
     }
 
+    public class ArcCos : TrigBase
+    {
+        public override string[] FunctionName { get { return new string[] { "arccos" }; } }
+        internal override Real Op(Real angle)
+        {
+            return angle.ArcCos();
+        }
+    }
+
     public class Tan : TrigBase
     {
         public override string[] FunctionName { get { return new string[] { "tan" }; } }
         internal override Real Op(Real angle)
         {
             return angle.Tan();
+        }
+    }
+
+    public class ArcTan : TrigBase
+    {
+        public override string[] FunctionName { get { return new string[] { "arctan" }; } }
+        internal override Real Op(Real angle)
+        {
+            return angle.ArcTan();
         }
     }
 

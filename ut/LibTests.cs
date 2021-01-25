@@ -58,12 +58,15 @@ namespace ut
         [InlineData("90 cos", "0")]
         [InlineData("0 tan", "0")]
         [InlineData("45 tan", "1")]
+        [InlineData("0.5 arcsin", "30")]
+        [InlineData("0.5 arccos", "60")]
+        [InlineData("1 arctan", "45")]
         public void TrigTest(string input, string expected)
         {
             Controller calc = new Controller();
             StringBuilder fullTest = new StringBuilder("\"degrees\" setmode ");
             fullTest.Append(input);
-            fullTest.Append(" 2 roundto");
+            fullTest.Append(" 4 roundto");
             EvalReturn ret = calc.Eval(fullTest.ToString());
             Assert.True(typeof(Calculon.Types.Real) == ret.Type);
             Assert.Equal(expected, ret.Msg);
