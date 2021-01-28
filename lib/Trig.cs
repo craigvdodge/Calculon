@@ -110,6 +110,37 @@ namespace Calculon.Types
                 default: throw new ArgumentException();
             }
         }
+
+        public static Real Sinh(this Real angle)
+        {
+            return new Real(Math.Sinh(angle.data));
+        }
+
+        public static Real ArcSinh(this Real x)
+        {
+            return new Real(Math.Asinh(x.data));
+        }
+
+        public static Real Cosh(this Real angle)
+        {
+            return new Real(Math.Cosh(angle.data));
+        }
+
+        public static Real ArcCosh(this Real x)
+        {
+            return new Real(Math.Acosh(x.data));
+        }
+
+        public static Real Tanh(this Real angle)
+        {
+            return new Real(Math.Tanh(angle.data));
+        }
+
+        public static Real ArcTanh(this Real x)
+        {
+            return new Real(Math.Atanh(x.data));
+        }
+
     }
 
     public abstract class TrigBase : IFunctionCog
@@ -188,6 +219,60 @@ namespace Calculon.Types
         internal override Real Op(Real angle)
         {
             return angle.ArcTan();
+        }
+    }
+
+    public class Sinh : TrigBase
+    {
+        public override string[] FunctionName { get { return new string[] { "sinh" }; } }
+        internal override Real Op(Real angle)
+        {
+            return angle.Sinh();
+        }
+    }
+
+    public class ArcSinh : TrigBase
+    {
+        public override string[] FunctionName { get { return new string[] { "arcsinh" }; } }
+        internal override Real Op(Real angle)
+        {
+            return angle.ArcSinh();
+        }
+    }
+
+    public class Cosh : TrigBase
+    {
+        public override string[] FunctionName { get { return new string[] { "cosh" }; } }
+        internal override Real Op(Real angle)
+        {
+            return angle.Cosh();
+        }
+    }
+
+    public class ArcCosh : TrigBase
+    {
+        public override string[] FunctionName { get { return new string[] { "arccosh" }; } }
+        internal override Real Op(Real angle)
+        {
+            return angle.ArcCosh();
+        }
+    }
+
+    public class Tanh : TrigBase
+    {
+        public override string[] FunctionName { get { return new string[] { "tanh" }; } }
+        internal override Real Op(Real angle)
+        {
+            return angle.Tanh();
+        }
+    }
+
+    public class ArcTanh : TrigBase
+    {
+        public override string[] FunctionName { get { return new string[] { "arctanh" }; } }
+        internal override Real Op(Real angle)
+        {
+            return angle.ArcTanh();
         }
     }
 

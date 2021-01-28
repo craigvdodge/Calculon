@@ -61,6 +61,12 @@ namespace ut
         [InlineData("0.5 arcsin", "30")]
         [InlineData("0.5 arccos", "60")]
         [InlineData("1 arctan", "45")]
+        [InlineData("10 sinh", "11013.2329")]
+        [InlineData("1000 arcsinh", "7.6009")]
+        [InlineData("8 cosh", "1490.4792")]
+        [InlineData("9001 arccosh", "9.7982")]
+        [InlineData("1 tanh", "0.7616")]
+        [InlineData("0.25 arctanh", "0.2554")]
         public void TrigTest(string input, string expected)
         {
             Controller calc = new Controller();
