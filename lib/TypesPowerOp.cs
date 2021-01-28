@@ -48,6 +48,21 @@ namespace Calculon.Types
         {
             return new Real(Math.Log((double) num.data));
         }
+
+        public static Real Log2(this Real num)
+        {
+            return new Real(Math.Log2(num.data));
+        }
+
+        public static Real Sqrt(this Real num)
+        {
+            return new Real(Math.Sqrt(num.data));
+        }
+
+        public static Real Root(this Real num, Real n)
+        {
+            return new Real(Math.Pow(num.data, 1.0 / n.data));
+        }
     }
     #endregion
 
@@ -130,6 +145,54 @@ namespace Calculon.Types
         }
     }
 
+    public class Sqrt : IFunctionCog
+    {
+        public string[] FunctionName { get { return new string[] { "sqrt" }; } }
+
+        public int NumArgs { get { return 1; } }
+
+        public Type[][] AllowedTypes
+        {
+            get
+            {
+                Type[][] retVal = new Type[3][];
+                retVal[0] = new Type[] { typeof(Real) };
+                retVal[1] = new Type[] { typeof(RealConstant) };
+                retVal[2] = new Type[] { typeof(Integer) };
+                return retVal;
+            }
+        }
+
+        public ICalculonType Execute(ref ControllerState cs)
+        {
+            ICalculonType input = cs.stack.Pop();
+            Real ConvertedInput = new Real(input);
+            return ConvertedInput.Sqrt();
+        }
+    }
+
+    public class Root : IFunctionCog
+    {
+        public string[] FunctionName { get { return new string[] { "root" }; } }
+
+        public int NumArgs { get { return 2; } }
+
+        public Type[][] AllowedTypes 
+        {
+            get
+            {
+                return FunctionFactory.TwoArgComboGenerator(typeof(Real), typeof(RealConstant), typeof(Integer));
+            }
+        }
+
+        public ICalculonType Execute(ref ControllerState cs)
+        {
+            Real y = new Real(cs.stack.Pop());
+            Real x = new Real(cs.stack.Pop());
+            return x.Root(y);
+        }
+    }
+
     /// <summary>
     /// Base 10 logarithim
     /// </summary>
@@ -170,6 +233,9 @@ namespace Calculon.Types
         }
     }
 
+    /// <summary>
+    /// Log base e
+    /// </summary>
     public class Ln : IFunctionCog
     {
         public string[] FunctionName { get { return new string[] { "ln" }; } }
@@ -203,6 +269,35 @@ namespace Calculon.Types
                 return ((Integer)input).Ln();
             }
             throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// log base 2
+    /// </summary>
+    public class Log2 : IFunctionCog
+    {
+        public string[] FunctionName { get { return new string[] { "log2" }; } }
+
+        public int NumArgs { get { return 1; } }
+
+        public Type[][] AllowedTypes
+        {
+            get
+            {
+                Type[][] retVal = new Type[3][];
+                retVal[0] = new Type[] { typeof(Real) };
+                retVal[1] = new Type[] { typeof(RealConstant) };
+                retVal[2] = new Type[] { typeof(Integer) };
+                return retVal;
+            }
+        }
+
+        public ICalculonType Execute(ref ControllerState cs)
+        {
+            ICalculonType input = cs.stack.Pop();
+            Real ConvertedInput = new Real(input);
+            return ConvertedInput.Log2();
         }
     }
 }

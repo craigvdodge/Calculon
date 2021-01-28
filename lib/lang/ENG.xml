@@ -81,9 +81,12 @@ see help functions.
   <entry name="mod">Find the modulus of two numbers</entry>
   <entry name="pow">Finds the power of the one number raised to the second number.</entry>
   <entry name="^">Alias for pow</entry>
+  <entry name="sqrt">Square root of a number</entry>
+  <entry name="root">For x and y, find yth root of x</entry>
   <entry name="epow">Returns e to the power of the given number</entry>
   <entry name="log">Logarithm (base 10) of a number</entry>
   <entry name="ln">Natural logarithm (base e) of a number</entry>
+  <entry name="log2">Logarithm base 2 of a number</entry>
   <entry name="exit">Exits calculon</entry>
   <entry name="quit">Alias for exit</entry>
   <entry name="drop">Deletes last item on the stack</entry>

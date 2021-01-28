@@ -137,6 +137,9 @@ namespace ut
         [InlineData("4 pi pow floor", "77")]
         [InlineData("e ln", "1")]
         [InlineData("10 log", "1")]
+        [InlineData("25 sqrt", "5")]
+        [InlineData("27 3 root", "3")]
+        [InlineData("256 log2", "8")]
         public void PowerTest(string test, string expected)
         {
             BasicTest(test, expected);
