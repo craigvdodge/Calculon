@@ -111,4 +111,5 @@ see help functions.
   <entry name="abs">Absolute value of a number</entry>
   <entry name="inv">Inverse of a number</entry>
   <entry name="logx">Given x and b, find log base b of x</entry>
+  <entry name="rand">Returns a random value between 0 and 1</entry>
 </StringTable>

@@ -10,6 +10,15 @@ namespace ut
     public class LibTest
     {
         [Fact]
+        public void RandTest()
+        {
+            Controller calc = new Controller();
+            EvalReturn ret = calc.Eval("rand");
+            double output = Double.Parse(ret.Msg);
+            Assert.InRange<double>(output, 0.0, 1.0);
+        }
+
+        [Fact]
         public void ConfigTest()
         {
             Config c = new Config();
