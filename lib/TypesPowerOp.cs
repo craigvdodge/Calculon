@@ -63,6 +63,16 @@ namespace Calculon.Types
         {
             return new Real(Math.Pow(num.data, 1.0 / n.data));
         }
+
+        public static Real Inv(this Real num)
+        {
+            return new Real(Math.Pow(num.data, -1.0));
+        }
+
+        public static Rational Inv(this Rational num)
+        {
+            return new Rational(num.denominator, num.numerator);
+        }
     }
     #endregion
 
@@ -298,6 +308,64 @@ namespace Calculon.Types
             ICalculonType input = cs.stack.Pop();
             Real ConvertedInput = new Real(input);
             return ConvertedInput.Log2();
+        }
+    }
+
+    /// <summary>
+    /// arbitrary base log
+    /// </summary>
+    public class LogX : IFunctionCog
+    {
+        public string[] FunctionName { get { return new string[] { "logx" }; } }
+
+        public int NumArgs { get { return 2; } }
+
+        public Type[][] AllowedTypes
+        {
+            get
+            {
+                return FunctionFactory.TwoArgComboGenerator(typeof(Real), typeof(RealConstant), typeof(Integer), typeof(Rational));
+            }
+        }
+
+        public ICalculonType Execute(ref ControllerState cs)
+        {
+            Real b = new Real(cs.stack.Pop());
+            Real x = new Real(cs.stack.Pop());
+            return x.Log().Divide(b.Log());
+        }
+    }
+
+    public class Inverse : IFunctionCog
+    {
+        public string[] FunctionName { get { return new string[] { "inv" }; } }
+        public int NumArgs { get { return 1; } }
+
+        public Type[][] AllowedTypes
+        {
+            get
+            {
+                Type[][] retVal = new Type[4][];
+                retVal[0] = new Type[] { typeof(Real) };
+                retVal[1] = new Type[] { typeof(Integer) };
+                retVal[2] = new Type[] { typeof(Rational) };
+                retVal[3] = new Type[] { typeof(RealConstant) };
+                return retVal;
+            }
+        }
+
+        public ICalculonType Execute(ref ControllerState cs)
+        {
+            ICalculonType input = cs.stack.Pop();
+            if (input.GetType() == typeof(Rational))
+            {
+                return ((Rational)input).Inv();
+            } 
+            else 
+            {
+                Real realInput = new Real(input);
+                return realInput.Inv();
+            }
         }
     }
 }

@@ -103,6 +103,13 @@ namespace ut
         [InlineData("5 !", "120")]
         [InlineData("2 4 lcm", "4")]
         [InlineData("2 4 gcf", "2")]
+        [InlineData("-1/3 abs", "1/3")]
+        [InlineData("-3.1415 abs", "3.1415")]
+        [InlineData("-12 abs", "12")]
+        [InlineData("2 inv", "0.5")]
+        [InlineData("0.5 inv", "2")]
+        [InlineData("5/8 inv", "8/5")]
+        [InlineData("9 3 logx", "2")]
         public void ArithOpTest(string test, string expectedOut, int maxChar = -1)
         {
             BasicTest(test, expectedOut, maxChar);

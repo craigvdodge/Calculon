@@ -108,4 +108,7 @@ see help functions.
   <entry name="arcsinh">Hyperbolic inverse sine of number</entry>
   <entry name="arccosh">Hyperbolic inverse cosine of a number</entry>
   <entry name="arctanh">Hyperbolic inverse tangent of a number</entry>
+  <entry name="abs">Absolute value of a number</entry>
+  <entry name="inv">Inverse of a number</entry>
+  <entry name="logx">Given x and b, find log base b of x</entry>
 </StringTable>

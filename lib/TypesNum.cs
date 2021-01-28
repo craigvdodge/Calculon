@@ -414,4 +414,46 @@ namespace Calculon.Types
             return new Rational(input);
         }
     }
+
+    public class abs : IFunctionCog
+    {
+        public string[] FunctionName { get { return new string[] { "abs" }; } }
+
+        public int NumArgs { get { return 1; } }
+
+        public Type[][] AllowedTypes
+        {
+            get
+            {
+                Type[][] retVal = new Type[3][];
+                retVal[0] = new Type[] { typeof(Real) };
+                retVal[1] = new Type[] { typeof(Integer) };
+                retVal[2] = new Type[] { typeof(Rational) };
+                return retVal;
+            }
+        }
+
+        public ICalculonType Execute(ref ControllerState cs)
+        {
+            ICalculonType input = cs.stack.Pop();
+            if (input.GetType() == typeof(Real))
+            {
+                return new Real(Math.Abs(((Real)input).data));
+            }
+            else if (input.GetType() == typeof(Integer))
+            {
+                return new Integer(BigInteger.Abs(((Integer)input).data));
+            }
+            else if (input.GetType() == typeof(Rational))
+            {
+                Rational temp = (Rational)input;
+                return new Rational(BigInteger.Abs(temp.numerator),
+                    BigInteger.Abs(temp.denominator));
+            }
+            else
+            {
+                throw new ArgumentException(input.GetType().ToString());
+            }
+        }
+    }
 }
