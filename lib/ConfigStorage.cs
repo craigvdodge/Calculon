@@ -198,7 +198,7 @@ namespace Calculon.Types
                 ICalculonType stored = this["AngleMode"];
                 if (stored.GetType() == typeof(EmptyType))
                 {
-                    return Mode.Radians;
+                    return Mode.Degrees;
                 }
                 if (stored.GetType() == typeof(Literal))
                 {
@@ -301,7 +301,7 @@ namespace Calculon.Types
                 path[0] = Path.GetDirectoryName(
                     Assembly.GetExecutingAssembly().Location);
                 path[1] = "lang";
-                path[2] = lang + ".json";
+                path[2] = lang + ".xml";
                 return Path.Combine(path);
             }
         }
