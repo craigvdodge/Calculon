@@ -1,12 +1,13 @@
-var target = Argument("target", "Build");
+string target = Argument("target", "Build");
 if (HasArgument("full"))
 {
-    target = Argument("target", "Publish");
+    target = Argument("target", "Zip");
 }
-var configuration = Argument("config", "Release");
-var projects = Argument("projects", "lib;cl;ut");
+string configuration = Argument("config", "Release");
+string projects = Argument("projects", "lib;cl;ut");
 string[] cleanDirs = {"obj", "bin"};
 string runtimes = Argument("rt", "win-x64;linux-x64;osx-x64");
+string framework = Argument("framework", "net5.0");
 
 // TASKS
 Task("Clean")
@@ -75,6 +76,17 @@ Task("Publish")
             SelfContained = true,
             PublishReadyToRun = readyToRun,
         });
+});
+
+Task("Zip")
+    .IsDependentOn("Publish")
+    .WithCriteria(c => HasArgument("full"))
+    .DoesForEach(runtimes.Split(';'), (target) =>
+    {
+        string src = $"./cl/bin/{configuration}/{framework}/{target}/publish";
+        string zipfile = $"./cl/bin/{configuration}/calculon_{target}.zip";
+        Information("Creating " + zipfile);
+        System.IO.Compression.ZipFile.CreateFromDirectory(src, zipfile); 
 });
 
 // EXECUTION
