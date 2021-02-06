@@ -63,18 +63,11 @@ Task("Publish")
     .DoesForEach(runtimes.Split(';'), (target) =>
     {
         Information("Publishing " + target);
-        // Ready to run only supported on Windows
-        bool readyToRun = false;
-        if (target.StartsWith("win"))
-        {
-            readyToRun = true;
-        }
         DotNetCorePublish("./cl/calculoncl.csproj", new DotNetCorePublishSettings
         {
             Runtime = target,
             Configuration = configuration,
             SelfContained = true,
-            PublishReadyToRun = readyToRun,
         });
 });
 
