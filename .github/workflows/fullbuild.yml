@@ -1,4 +1,4 @@
-name: .NET
+name: Fullbuild
 
 on: workflow_dispatch
 
